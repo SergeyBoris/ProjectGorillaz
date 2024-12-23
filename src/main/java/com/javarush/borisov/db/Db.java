@@ -81,7 +81,7 @@ public class Db {
     public Map<Integer,List<Integer>> allDatesWeGot(){
         Map<Integer,List<Integer>> result = new TreeMap<>();
         for (MultiKey multiKey : allRequests.keySet()) {
-            result.computeIfAbsent(multiKey.getYear(), k -> new ArrayList<>()).add(multiKey.getMonth());
+            result.computeIfAbsent(multiKey.year(), k -> new ArrayList<>()).add(multiKey.month());
         }
         return result;
     }
