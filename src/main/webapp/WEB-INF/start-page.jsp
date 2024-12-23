@@ -3,9 +3,10 @@
 
 <%@include file="parts/header.jsp" %>
 
-<h1><%= "Hello World!" %>
-</h1>
-<br/>
-<a href="list-user">List Users</a>
+<h1 ><%= "Union Service  контроль заявок" %></h1>
+
+<h2>Админ serg@mail.ru Pas: 1234</h2>
+<h2>User miha@mail.ru Pas: 1234</h2>
+<h2>Координатор nata@mail.ru Pas: 1234</h2>
 
 <%@include file="parts/footer.jsp" %>
