@@ -1,6 +1,5 @@
 package com.javarush.borisov.entity;
 
-import com.javarush.borisov.constants.UserRules;
 import lombok.Getter;
 import lombok.Setter;
 // финализированные поля с сеттерами? стоит ли сеттеры прописать отдельно без аннотаций? погуглить

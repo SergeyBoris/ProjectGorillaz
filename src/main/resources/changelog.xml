@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd
+        ">
+
+    <changeSet id="24-02-2025-21-13-10-add-roles" author="borisov">
+        <createTable tableName="user_roles">
+            <column name="role_id" type="SERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="value" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="24-02-2025-21-13-10-add-roles-values" author="borisov">
+        <insert tableName="user_roles">
+            <column name="value" value="ADMIN"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="value" value="COORDINATOR"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="value" value="ENGINEER"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="value" value="GUEST"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="24-02-2025-21-13-10-add-contragents" author="borisov">
+        <createTable tableName="contragents">
+            <column name="contragent_id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="contragent_name" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="24-02-2025-21-13-10-add-contragents-values" author="borisov">
+        <insert tableName="contragents">
+            <column name="contragent_name" value="Страйк"/>
+        </insert>
+        <insert tableName="contragents">
+            <column name="contragent_name" value="ПБФ"/>
+        </insert>
+        <insert tableName="contragents">
+            <column name="contragent_name" value="Engy"/>
+        </insert>
+        <insert tableName="contragents">
+            <column name="contragent_name" value="Hendz"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="24-02-2025-21-13-10-add-equipments" author="borisov">
+        <createTable tableName="equipments">
+            <column name="equipment_id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="model" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="serial_number" type="varchar">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="24-02-2025-21-13-10-add-requests" author="borisov">
+        <createTable tableName="requests">
+            <column name="request_id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="req_number" type="varchar">
+                <constraints nullable="true"/>
+            </column>
+            <column name="customer" type="varchar">
+                <constraints nullable="true"/>
+            </column>
+            <column name="customer_phone" type="varchar">
+                <constraints nullable="true"/>
+            </column>
+            <column name="customer_address" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="equipment_transferred" type="bigint">
+                <constraints nullable="true" foreignKeyName="requests_equipments_equipment_id_fk_2"
+                             references="equipments(equipment_id)"/>
+            </column>
+            <column name="equipment_taken" type="bigint">
+                <constraints nullable="true" foreignKeyName="requests_equipments_equipment_id_fk"
+                             references="equipments(equipment_id)"/>
+            </column>
+            <column name="sla" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="completion_date" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="comment" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="contragent" type="bigint">
+                <constraints nullable="true" foreignKeyName="requests_contragents_contragent_id_fk"
+                             references="contragents(contragent_id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+</databaseChangeLog>

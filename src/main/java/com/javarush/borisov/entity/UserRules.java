@@ -1,8 +1,7 @@
-package com.javarush.borisov.constants;
+package com.javarush.borisov.entity;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 @Getter
 public enum UserRules {
