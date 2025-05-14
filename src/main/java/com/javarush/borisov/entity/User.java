@@ -1,19 +1,31 @@
 package com.javarush.borisov.entity;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-// финализированные поля с сеттерами? стоит ли сеттеры прописать отдельно без аннотаций? погуглить
-@Getter@Setter
-public class User {
-    private String name;
-    private final String mail;
-    private final String password;
-    private UserRules role;
 
-    public User(String name,String mail, String password, UserRules role) {
-        this.name = name;
-        this.mail = mail;
-        this.password = password;
-        this.role = role;
-    }
+@Getter@Setter
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "users")
+public class User {
+    @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String mail;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private UserRoles role;
+
+
 }

@@ -1,6 +1,6 @@
 package com.javarush.borisov.filter;
 
-import com.javarush.borisov.entity.UserRules;
+import com.javarush.borisov.entity.UserRoles;
 import com.javarush.borisov.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,8 +24,8 @@ public class AuthorizationFilter extends HttpFilter {
         HttpSession session = req.getSession();
 
         if(session.getAttribute("user") == null) {
-            session.setAttribute("user", new User("guest", null, null, UserRules.GUEST));
-            res.sendRedirect("/start-page");
+            session.setAttribute("user", new User(123L,"guest", null, null, UserRoles.GUEST));
+            res.sendRedirect(requestURI);
         }else {
             boolean ok = false;
             User user = (User) req.getSession().getAttribute("user");

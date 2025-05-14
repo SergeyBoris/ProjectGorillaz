@@ -3,7 +3,7 @@ package com.javarush.borisov.db;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javarush.borisov.config.ClassCreator;
 import com.javarush.borisov.constants.RequestStatus;
-import com.javarush.borisov.entity.UserRules;
+import com.javarush.borisov.entity.UserRoles;
 import com.javarush.borisov.db.DbConfig.MultiKey;
 import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Equipment;
@@ -37,17 +37,23 @@ public class Db {
 
 //начало инициализации данных для примера
         for(int i=0;i<100;i++){
-            Request request = new Request(contragents.getFirst(), "APOS-123" + "" + i,
-                    "ООО Рога и Копыта","+7-903-258-33-33",List.of(new Equipment("PAX S300","123456")),
-                    List.of(new Equipment(null,null)),LocalDateTime.now(), LocalDateTime.now().plusHours(24),null,
-                    "654044, Кемеровская область, Новокузнецк, р-н Новоильинский, ул Новоселов, 21");
+            Request request = new Request();
+            request.setContragent(contragents.getFirst());
+            request.setReqNumber("APOS-123" + "" + i);
+                    request.setCustomer("ООО Рога и Копыта");
+            request.setCustomerPhone("+7-903-258-33-33");
+            request.setEquipmentsUnmontage(Set.of(new Equipment("PAX S300","123456"),new Equipment("PP s200","123456")));
+             request.setEquipmentsMontage( Set.of(new Equipment("Verifone v200","11112222333"),new Equipment("Verifone PP","987654321")));
+             request.setCreateDate(LocalDateTime.now());
+             request.setSla(LocalDateTime.now().plusHours(24));
+             request.setAddress("654044, Кемеровская область, Новокузнецк, р-н Новоильинский, ул Новоселов, 21");
             request.setStatus(RequestStatus.ASSIGNED);
             requestsToShow.add(request);
 
         }
-        User user1 = new User("Сергей","serg@mail.ru","1234", UserRules.ADMIN);
-        User user2 = new User("Миша","miha@mail.ru","1234", UserRules.ENGINEER);
-        User user3 = new User("Наташа","nata@mail.ru","1234", UserRules.COORDINATOR);
+        User user1 = new User(1L,"Сергей","serg@mail.ru","1234", UserRoles.ADMIN);
+        User user2 = new User(2L,"Миша","miha@mail.ru","1234", UserRoles.ENGINEER);
+        User user3 = new User(3L,"Наташа","nata@mail.ru","1234", UserRoles.COORDINATOR);
         users = List.of(user1,user2,user3);
 
 //конец инициализации заявок для примера

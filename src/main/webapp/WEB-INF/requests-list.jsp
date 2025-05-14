@@ -25,17 +25,18 @@ ${requestScope.tableLow}
 
                 for (let i = 0; i < message.length; i++) {
                     let row = document.createElement("tr");
-                    console.info(message[i].requestNumber);
+
+
 
                     row.innerHTML =
-                        "<td>" + message[i].requestNumber + "</td>"+
+                        "<td>" + message[i].reqNumber + "</td>"+
                         "<td>" + message[i].customer + "</td>"+
-                        "<td>" + message[i].phoneNumber + "</td>"+
+                        "<td>" + message[i].customerPhone + "</td>"+
                         "<td>" + message[i].address + "</td>" +
-                        "<td>" + message[i].equipmentsTransferred[0].model + "</td>"+
-                        "<td>" + message[i].equipmentsTransferred[0].serialNumber + "</td>"+
-                        "<td>" + message[i].equipmentsReceived[0].model + "</td>"+
-                        "<td>" + message[i].equipmentsReceived[0].serialNumber + "</td>"+
+                        "<td>" + getEqModels(message[i].equipmentsTaken)  + "</td>"+
+                        "<td>" + getEqSerials(message[i].equipmentsTaken) + "</td>"+
+                        "<td>" + getEqModels(message[i].equipmentsTransferred) + "</td>"+
+                        "<td>" + getEqSerials(message[i].equipmentsTransferred)+ "</td>"+
                         "<td>" + message[i].status + "</td>"+
                         "<td>" + message[i].createDate + "</td>"+
                         "<td>" + message[i].sla + "</td>"+
@@ -50,9 +51,36 @@ ${requestScope.tableLow}
                     tab.appendChild(row);
                 }
 
+
             }
         });
+        function getEqModels(arr){
+            let equipment= "";
+            for (let i = 0; i <arr.length; i++) {
+
+                equipment = equipment + arr[i].model
+                if (i != arr.length-1){
+                    equipment = equipment + " / "
+                }
+
+            }
+            return equipment;
+
+        }
+        function getEqSerials(arr){
+            let equipment= "";
+            for (let i = 0; i <arr.length; i++) {
+
+                equipment = equipment + arr[i].serialNumber
+                if (i != arr.length-1){
+                    equipment = equipment + " / "
+                }
+            }
+            return equipment;
+
+        }
     })
+
     // document.addEventListener("DOMContentLoaded", function () {
     //     const header = document.getElementById("head");
     //     const navbar = document.getElementById("navbar");

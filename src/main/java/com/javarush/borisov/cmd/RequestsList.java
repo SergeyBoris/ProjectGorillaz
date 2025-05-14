@@ -139,7 +139,7 @@ public class RequestsList implements Command {
         List<Contragent> contragents = db.getContragents();
         for (Contragent contragent : contragents) {
             result.append("<li class=\"nav-item\"><a class=\"nav-link\" href=\"#\">").
-                    append(contragent.name).
+                    append(contragent.getName()).
                     append("</a></li>");
         }
         return result.toString();
