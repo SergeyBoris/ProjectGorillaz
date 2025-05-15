@@ -2,6 +2,8 @@ package com.javarush.borisov.util;
 
 import com.javarush.borisov.config.MySessionCreator;
 import com.javarush.borisov.constants.RequestStatus;
+import com.javarush.borisov.db.Dao.AbstractDao;
+import com.javarush.borisov.db.Dao.UserRoleDao;
 import com.javarush.borisov.entity.*;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
@@ -15,6 +17,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Postgress {
     public static void main(String[] args) throws Exception {
 
+        UserRoleDao userRoleDao = new UserRoleDao();
+        UserRoles byId = userRoleDao.getById(UserRoles.class,1L);
 
         //CreateEquipment();
         //CreateUsers();

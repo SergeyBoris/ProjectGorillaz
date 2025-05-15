@@ -13,10 +13,9 @@ import java.util.List;
 public abstract class AbstractDao {
 
 
-    public <T> T getById(Class<T> clazz, Long id){
+    public <T> T getById(Class<T> clazz, Long id) {
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-            return  session.get(clazz,id);
-
+            return session.get(clazz, id);
         }
     }
 
