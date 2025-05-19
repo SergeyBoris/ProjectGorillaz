@@ -31,24 +31,7 @@ public abstract class AbstractDao<T> {
             return session.createQuery("from clazz.getSimpleName()", clazz).list();
         }
     }
-    public  T getSingleByField(Class<T> clazz, String fieldName, String value){
-        try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<T> cq = cb.createQuery(clazz);
-            Root<T> root = cq.from(clazz);
-            cq.select(root).where(cb.like(root.get(fieldName).as(String.class),"%" + value + "%"));
-            return session.createQuery(cq).getSingleResult();
-       }
-    }
-    public  List<T> getListByField(Class<T> clazz, String fieldName, String value){
-        try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<T> cq = cb.createQuery(clazz);
-            Root<T> root = cq.from(clazz);
-            cq.select(root).where(cb.equal(root.get(fieldName).as(String.class),value));
-            return session.createQuery(cq).getResultList();
-        }
-    }
+
 
     public  void save(T entity){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {

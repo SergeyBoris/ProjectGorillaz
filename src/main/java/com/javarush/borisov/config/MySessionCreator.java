@@ -29,4 +29,5 @@ public class MySessionCreator {
         return configuration.buildSessionFactory();
     }
 
+
 }

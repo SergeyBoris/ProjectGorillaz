@@ -1,6 +1,7 @@
 package com.javarush.borisov.db.Dao;
 
 import com.javarush.borisov.config.MySessionCreator;
+import com.javarush.borisov.constants.RequestStatus;
 import com.javarush.borisov.entity.Request;
 import org.hibernate.Session;
 
@@ -26,6 +27,18 @@ public class RequestDao extends AbstractDao<Request> {
                     .setParameter("serialNumber1", equipment)
                     .setParameter("serialNumber2", equipment)
                     .list();
+        }
+
+    }
+    public List<Request> getAssignedRequests(){
+        try (Session session = MySessionCreator.getSessionCreator().openSession()) {
+           return session.createQuery("select distinct r from Request r " +
+                                "left join fetch r.equipmentsMontage " +
+                                "left join fetch r.equipmentsUnmontage " +
+                                "where r.status = :status " +
+                                "order by r.closeDate",Request.class)
+                   .setParameter("status", RequestStatus.ASSIGNED)
+                   .list();
         }
     }
 }

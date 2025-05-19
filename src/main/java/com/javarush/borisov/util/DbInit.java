@@ -3,34 +3,25 @@ package com.javarush.borisov.util;
 import com.javarush.borisov.config.MySessionCreator;
 import com.javarush.borisov.constants.EquipmentStatus;
 import com.javarush.borisov.constants.RequestStatus;
-import com.javarush.borisov.constants.UserRoles;
-import com.javarush.borisov.db.Dao.RequestDao;
 
 import com.javarush.borisov.entity.*;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Transactional
-public class Postgress {
-    public static void main(String[] args) throws Exception {
+public class DbInit {
+    public static void start() {
 
-        //CreateEquipment();
-        //CreateUsers();
-        //CreateReq();
+        CreateEquipment();
+        CreateReq();
 
-        RequestDao requestDao = new RequestDao();
-        List<Request> requestsWhereUsedEquipment = requestDao.getRequestsWhereUsedEquipment("1234567892");
-        requestsWhereUsedEquipment.forEach(System.out::println);
-//        EquipmentDao equipmentDao = new EquipmentDao();
-//        Equipment byId = equipmentDao.getById(3L);
-//        for (Request request : byId.getRequestWhereMontageEquipment()) {
-//            System.out.println(request);
-//        }
+
+
 
     }
 
@@ -45,19 +36,23 @@ public class Postgress {
                 request1.setAddress("Новокузнецк Кирова 55 А");
                 request1.setContragent(session.get(Contragent.class, (long) random(1, 4)));
                 request1.setCustomerPhone("+79049600005");
-                request1.setEquipmentsMontage(Set.of(session.createQuery(
-                                "from Equipment where id = :id", Equipment.class)
-                        .setParameter("id", (long)random(1, 4))
-                        .uniqueResult()));
+                request1.setEquipmentsMontage(
+                        new HashSet<>(
+                                session.createQuery("from Equipment where id = :id or id = :id2", Equipment.class)
+                                        .setParameter("id", (long) random(1, 5))
+                                        .setParameter("id2", (long) random(0, 10))
+                                        .list()
+                        )
+                );
 
                 request1.setEquipmentsUnmontage(Set.of(session.createQuery(
                                 "from Equipment where id = :id", Equipment.class)
-                        .setParameter("id", (long)random(1, 4))
+                        .setParameter("id", (long) random(1, 5))
                         .uniqueResult()));
                 request1.setSla(LocalDateTime.now().plusDays(2));
                 request1.setStatus(RequestStatus.values()[random(0, 4)]);
                 request1.setUser(session.createQuery("from User where id = :id", User.class)
-                        .setParameter("id",(long) random(1, 3))
+                        .setParameter("id", (long) random(1, 3))
                         .uniqueResult());
                 session.save(request1);
                 session.getTransaction().commit();
@@ -102,36 +97,8 @@ public class Postgress {
         }
     }
 
-    private static void CreateUsers() {
-        try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-            session.beginTransaction();
-            User user1 = new User();
-            user1.setName("Сергей");
-            user1.setMail("serg@mail.ru");
-            user1.setPassword("1234");
-            user1.setRole(UserRoles.ADMIN);
-
-            User user2 = new User();
-            user2.setName("Миша");
-            user2.setMail("miha@mail.ru");
-            user2.setPassword("1234");
-            user2.setRole(UserRoles.ENGINEER);
-
-            User user3 = new User();
-            user3.setName("Наташа");
-            user3.setMail("nata@mail.ru");
-            user3.setPassword("1234");
-            user3.setRole(UserRoles.COORDINATOR);
-
-            session.save(user1);
-            session.save(user2);
-            session.save(user3);
-
-
-            session.getTransaction().commit();
-
-        }
-    }
-
 
 }
+
+
+

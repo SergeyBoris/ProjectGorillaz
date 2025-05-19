@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.javarush.borisov.config.ClassCreator;
+import com.javarush.borisov.constants.RequestStatus;
+import com.javarush.borisov.db.Dao.RequestDao;
 import com.javarush.borisov.db.Db;
+import com.javarush.borisov.db.Dto.RequestDto;
 import com.javarush.borisov.entity.Request;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,8 +26,11 @@ public class RestDb extends HttpServlet {
 
 
         if(req.getParameter("requestsToShow")!=null){
-            List<Request> requestsToShow = db.requestsToShow;
-            sendResponse(resp, requestsToShow);
+//            List<Request> requestsToShow = db.requestsToShow; TODO
+            RequestDao requestDao = new RequestDao();
+            List<Request> requests = requestDao.getAssignedRequests();
+            List<RequestDto> requestDtos = requests.stream().map(RequestDto::new).toList();
+            sendResponse(resp, requestDtos);
         }
 
 

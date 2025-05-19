@@ -33,10 +33,10 @@ ${requestScope.tableLow}
                         "<td>" + message[i].customer + "</td>"+
                         "<td>" + message[i].customerPhone + "</td>"+
                         "<td>" + message[i].address + "</td>" +
-                        "<td>" + getEqModels(message[i].equipmentsTaken)  + "</td>"+
-                        "<td>" + getEqSerials(message[i].equipmentsTaken) + "</td>"+
-                        "<td>" + getEqModels(message[i].equipmentsTransferred) + "</td>"+
-                        "<td>" + getEqSerials(message[i].equipmentsTransferred)+ "</td>"+
+                        "<td>" + getEqModels(message[i].equipmentsMontage)  + "</td>"+
+                        "<td>" + getEqSerials(message[i].equipmentsMontage) + "</td>"+
+                        "<td>" + getEqModels(message[i].equipmentsUnmontage) + "</td>"+
+                        "<td>" + getEqSerials(message[i].equipmentsUnmontage)+ "</td>"+
                         "<td>" + message[i].status + "</td>"+
                         "<td>" + message[i].createDate + "</td>"+
                         "<td>" + message[i].sla + "</td>"+

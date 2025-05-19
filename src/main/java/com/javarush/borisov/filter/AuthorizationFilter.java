@@ -24,7 +24,9 @@ public class AuthorizationFilter extends HttpFilter {
         HttpSession session = req.getSession();
 
         if(session.getAttribute("user") == null) {
+            session.setMaxInactiveInterval(300 * 60);
             session.setAttribute("user", new User(123L,"guest", null, null, UserRoles.GUEST));
+
             res.sendRedirect(requestURI);
         }else {
             boolean ok = false;
