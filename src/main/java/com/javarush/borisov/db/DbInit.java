@@ -1,4 +1,4 @@
-package com.javarush.borisov.util;
+package com.javarush.borisov.db;
 
 import com.javarush.borisov.config.MySessionCreator;
 import com.javarush.borisov.constants.EquipmentStatus;
@@ -15,6 +15,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Transactional
 public class DbInit {
+    static int COUNT_CREATED_TEST_REQUEST = 1000;
+
     public static void start() {
 
         CreateEquipment();
@@ -28,7 +30,8 @@ public class DbInit {
     private static void CreateReq() {
 
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-            for (int i = 0; i < 100; i++) {
+
+            for (int i = 0; i < COUNT_CREATED_TEST_REQUEST; i++) {
                 session.beginTransaction();
                 Request request1 = new Request();
                 request1.setReqNumber("APOS-" + String.valueOf(random(1000, 9999)));
@@ -50,10 +53,13 @@ public class DbInit {
                         .setParameter("id", (long) random(1, 5))
                         .uniqueResult()));
                 request1.setSla(LocalDateTime.now().plusDays(2));
-                request1.setStatus(RequestStatus.values()[random(0, 4)]);
+                request1.setStatus(RequestStatus.values()[random(2, 4)]);
                 request1.setUser(session.createQuery("from User where id = :id", User.class)
                         .setParameter("id", (long) random(1, 3))
                         .uniqueResult());
+                if(random(0,100)>90){
+                    request1.setStatus(RequestStatus.values()[random(0, 2)]);
+                }
                 session.save(request1);
                 session.getTransaction().commit();
             }

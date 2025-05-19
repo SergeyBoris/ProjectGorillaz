@@ -113,3 +113,10 @@ create table requests
 
 );
 
+EXPLAIN ANALYZE
+SELECT DISTINCT r.*
+FROM requests r
+LEFT JOIN requests_equipments_montage rem ON r.request_id = rem.request_id
+LEFT JOIN requests_equipments_unmontage reu ON r.request_id = reu.request_id
+WHERE r.request_status IN ('ASSIGNED', 'IN_PROGRESS')
+ORDER BY r.closed_date;

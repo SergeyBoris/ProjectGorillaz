@@ -33,11 +33,11 @@ public class RequestDao extends AbstractDao<Request> {
     public List<Request> getAssignedRequests(){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
            return session.createQuery("select distinct r from Request r " +
-                                "left join fetch r.equipmentsMontage " +
-                                "left join fetch r.equipmentsUnmontage " +
-                                "where r.status = :status " +
-                                "order by r.closeDate",Request.class)
-                   .setParameter("status", RequestStatus.ASSIGNED)
+                                      "left join fetch r.equipmentsMontage " +
+                                      "left join fetch r.equipmentsUnmontage " +
+                                      "where r.status in (:statuses) " +
+                                      "order by r.closeDate", Request.class)
+                   .setParameterList("statuses", List.of(RequestStatus.ASSIGNED, RequestStatus.IN_PROGRESS))
                    .list();
         }
     }

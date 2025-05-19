@@ -12,22 +12,16 @@ ${requestScope.tableLow}
     $(document).ready( function updateTable() {
         const tab = document.getElementById("reqTable");
         console.info(tab);
-
         $.ajax({
             type: "GET",
             url: `/rest/db?requestsToShow=${requestsToShow}`,
             success: function (message) {
                 console.info(message);
 
-                const tab = document.getElementById("reqTable");
-
-
+                // const tab = document.getElementById("reqTable");
 
                 for (let i = 0; i < message.length; i++) {
                     let row = document.createElement("tr");
-
-
-
                     row.innerHTML =
                         "<td>" + message[i].reqNumber + "</td>"+
                         "<td>" + message[i].customer + "</td>"+
@@ -40,12 +34,10 @@ ${requestScope.tableLow}
                         "<td>" + message[i].status + "</td>"+
                         "<td>" + message[i].createDate + "</td>"+
                         "<td>" + message[i].sla + "</td>"+
+                        "<td>" + message[i].closeDate + "</td>"+
+                        "<td>" + message[i].contragent + "</td>"+
                         "<td>" + "</td>"
-
-
                     ;
-
-
 
 
                     tab.appendChild(row);

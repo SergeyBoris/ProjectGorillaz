@@ -9,6 +9,7 @@ import com.javarush.borisov.constants.RequestStatus;
 import com.javarush.borisov.db.Dao.RequestDao;
 import com.javarush.borisov.db.Db;
 import com.javarush.borisov.db.Dto.RequestDto;
+import com.javarush.borisov.db.Service.RequestService;
 import com.javarush.borisov.entity.Request;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,15 +22,16 @@ import java.util.List;
 @WebServlet("/rest/db")
 public class RestDb extends HttpServlet {
     Db db = ClassCreator.get(Db.class);
+    RequestService requestService = new RequestService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
 
         if(req.getParameter("requestsToShow")!=null){
 //            List<Request> requestsToShow = db.requestsToShow; TODO
-            RequestDao requestDao = new RequestDao();
-            List<Request> requests = requestDao.getAssignedRequests();
-            List<RequestDto> requestDtos = requests.stream().map(RequestDto::new).toList();
+
+
+            List<RequestDto> requestDtos = requestService.getAssignedRequestDtos();
             sendResponse(resp, requestDtos);
         }
 

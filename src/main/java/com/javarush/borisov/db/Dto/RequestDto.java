@@ -1,24 +1,17 @@
 package com.javarush.borisov.db.Dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javarush.borisov.constants.RequestStatus;
 import com.javarush.borisov.entity.Contragent;
-import com.javarush.borisov.entity.Equipment;
 import com.javarush.borisov.entity.Request;
 import com.javarush.borisov.entity.User;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
+@Getter@Setter
 public class RequestDto {
 
 
@@ -28,15 +21,19 @@ public class RequestDto {
     private String address;
     private Set<EquipmentDto> equipmentsMontage;
     private Set<EquipmentDto> equipmentsUnmontage;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime sla;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDateTime closeDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime lastUpdate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime createDate;
     private String comment;
     private String linkToAktFile;
     private RequestStatus status;
-    private Contragent contragent;
-    private User user;
+    private String contragent;
+    private String user;
 
     public RequestDto(Request request) {
         this.reqNumber = request.getReqNumber() != null ? request.getReqNumber() : "";
@@ -57,11 +54,12 @@ public class RequestDto {
 
         this.sla = request.getSla()!=null ? request.getSla() : LocalDateTime.now();
         this.createDate = request.getCreateDate();
+        this.closeDate = request.getCloseDate()!=null ? request.getCloseDate() : null;
         this.comment = comment != null ? comment : "";
 
         this.status = request.getStatus();
-        this.contragent = request.getContragent()!=null ? request.getContragent() : null;
-        this.user = request.getUser();
+        this.contragent = request.getContragent()!=null ? request.getContragent().getName() : null;
+        this.user = request.getUser().getName();
     }
 
     @Override

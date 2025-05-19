@@ -59,6 +59,7 @@ public class RequestsList implements Command {
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Дата<br>поступления</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Дата<br>SLA</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Дата<br>выполнения</th>
+                <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Контрагент</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Печать</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Изменить</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Закрыть</th>
@@ -138,9 +139,11 @@ public class RequestsList implements Command {
         StringBuilder result = new StringBuilder();
         List<Contragent> contragents = db.getContragents();
         for (Contragent contragent : contragents) {
-            result.append("<li class=\"nav-item\"><a class=\"nav-link\" href=\"#\">").
-                    append(contragent.getName()).
-                    append("</a></li>");
+            result.append("<li class=\"nav-item\"><a class=\"nav-link contragent-link\" href=\"#\" data-name=\"")
+                    .append(contragent.getName())
+                    .append("\">")
+                    .append(contragent.getName())
+                    .append("</a></li>");
         }
         return result.toString();
     }
