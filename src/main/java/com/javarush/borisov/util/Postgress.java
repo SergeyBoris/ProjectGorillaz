@@ -1,15 +1,17 @@
 package com.javarush.borisov.util;
 
 import com.javarush.borisov.config.MySessionCreator;
+import com.javarush.borisov.constants.EquipmentStatus;
 import com.javarush.borisov.constants.RequestStatus;
-import com.javarush.borisov.db.Dao.AbstractDao;
-import com.javarush.borisov.db.Dao.UserRoleDao;
+import com.javarush.borisov.constants.UserRoles;
+import com.javarush.borisov.db.Dao.RequestDao;
+
 import com.javarush.borisov.entity.*;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 
-import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -17,26 +19,18 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Postgress {
     public static void main(String[] args) throws Exception {
 
-        UserRoleDao userRoleDao = new UserRoleDao();
-        UserRoles byId = userRoleDao.getById(UserRoles.class,1L);
-
         //CreateEquipment();
         //CreateUsers();
-       // CreateReq();
-        try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-            Long i = session.createQuery(
-                            "select count(r) from Request r " +
-                            "join r.equipmentsMontage em " +
-                            "join r.equipmentsUnmontage eum " +
-                            "where em.serialNumber = :serialNumber1 " +
-                            "and eum.serialNumber = :serialNumber2 "
-                            ,
-                            Long.class)
-                    .setParameter("serialNumber1", "123456789")
-                    .setParameter("serialNumber2", "123456789")
-                    .uniqueResult();
-            System.out.println(i);
-        }
+        //CreateReq();
+
+        RequestDao requestDao = new RequestDao();
+        List<Request> requestsWhereUsedEquipment = requestDao.getRequestsWhereUsedEquipment("1234567892");
+        requestsWhereUsedEquipment.forEach(System.out::println);
+//        EquipmentDao equipmentDao = new EquipmentDao();
+//        Equipment byId = equipmentDao.getById(3L);
+//        for (Request request : byId.getRequestWhereMontageEquipment()) {
+//            System.out.println(request);
+//        }
 
     }
 
@@ -82,18 +76,23 @@ public class Postgress {
             Equipment equipment1 = new Equipment();
             equipment1.setModel("AISINO V80");
             equipment1.setSerialNumber("123456789");
+            equipment1.setEquipmentStatus(EquipmentStatus.GOOD);
 
             Equipment equipment2 = new Equipment();
             equipment2.setModel("AISINO V10");
             equipment2.setSerialNumber("1234567891");
+            equipment2.setEquipmentStatus(EquipmentStatus.GOOD);
 
             Equipment equipment3 = new Equipment();
             equipment3.setModel("PAX Q25");
             equipment3.setSerialNumber("1234567892");
+            equipment3.setEquipmentStatus(EquipmentStatus.GOOD);
 
             Equipment equipment4 = new Equipment();
             equipment4.setModel("PAX S300");
             equipment4.setSerialNumber("1234567893");
+            equipment4.setEquipmentStatus(EquipmentStatus.GOOD);
+
             session.save(equipment1);
             session.save(equipment2);
             session.save(equipment3);

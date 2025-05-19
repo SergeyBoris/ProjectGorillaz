@@ -6,30 +6,30 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd
         ">
 
-    <changeSet id="24-02-2025-21-13-10-add-user_roles" author="borisov">
-        <createTable tableName="user_roles">
-            <column name="value" type="VARCHAR(255)">
-                <constraints primaryKey="true" unique="true"/>
-            </column>
+    <!--    <changeSet id="24-02-2025-21-13-10-add-user_roles" author="borisov">-->
+    <!--        <createTable tableName="user_roles">-->
+    <!--            <column name="value" type="VARCHAR(255)">-->
+    <!--                <constraints primaryKey="true" unique="true"/>-->
+    <!--            </column>-->
 
-        </createTable>
-    </changeSet>
+    <!--        </createTable>-->
+    <!--    </changeSet>-->
 
 
-    <changeSet id="24-02-2025-21-13-10-add-roles-values" author="borisov">
-        <insert tableName="user_roles">
-            <column name="value" value="ADMIN"/>
-        </insert>
-        <insert tableName="user_roles">
-            <column name="value" value="COORDINATOR"/>
-        </insert>
-        <insert tableName="user_roles">
-            <column name="value" value="ENGINEER"/>
-        </insert>
-        <insert tableName="user_roles">
-            <column name="value" value="GUEST"/>
-        </insert>
-    </changeSet>
+    <!--    <changeSet id="24-02-2025-21-13-10-add-roles-values" author="borisov">-->
+    <!--        <insert tableName="user_roles">-->
+    <!--            <column name="value" value="ADMIN"/>-->
+    <!--        </insert>-->
+    <!--        <insert tableName="user_roles">-->
+    <!--            <column name="value" value="COORDINATOR"/>-->
+    <!--        </insert>-->
+    <!--        <insert tableName="user_roles">-->
+    <!--            <column name="value" value="ENGINEER"/>-->
+    <!--        </insert>-->
+    <!--        <insert tableName="user_roles">-->
+    <!--            <column name="value" value="GUEST"/>-->
+    <!--        </insert>-->
+    <!--    </changeSet>-->
 
     <changeSet id="24-02-2025-21-13-10-add-contragents" author="borisov">
         <createTable tableName="contragents">
@@ -68,7 +68,10 @@
             <column name="serial_number" type="varchar(255)">
                 <constraints nullable="true" unique="true"/>
             </column>
-         </createTable>
+            <column name="equipment_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 
     <changeSet id="13-05-2025-19-23-10-create-users-table" author="borisov">
@@ -91,8 +94,7 @@
             </column>
 
             <column name="role" type="VARCHAR(255)">
-                <constraints nullable="false" foreignKeyName="users_user_roles_role_value_fk"
-                             referencedTableName="user_roles" referencedColumnNames="value"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
 
@@ -218,7 +220,13 @@
                 referencedColumnNames="equipment_id"
                 constraintName="fk_requests_equipments_unmontage_equipment"/>
     </changeSet>
-
+    <changeSet id="19-05-2025-15-28-10-add-request-status-index" author="borisov">
+        <createIndex
+                indexName="idx_request_status"
+                tableName="requests">
+            <column name="request_status"/>
+        </createIndex>
+    </changeSet>
 
 
 </databaseChangeLog>

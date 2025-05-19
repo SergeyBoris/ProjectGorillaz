@@ -3,7 +3,7 @@ package com.javarush.borisov.db;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javarush.borisov.config.ClassCreator;
 import com.javarush.borisov.constants.RequestStatus;
-import com.javarush.borisov.entity.UserRoles;
+import com.javarush.borisov.constants.UserRoles;
 import com.javarush.borisov.db.DbConfig.MultiKey;
 import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Equipment;

@@ -1,7 +1,7 @@
 package com.javarush.borisov.db;
 import com.javarush.borisov.config.AppConfig;
 import com.javarush.borisov.config.ClassCreator;
-import com.javarush.borisov.entity.UserRoles;
+import com.javarush.borisov.constants.UserRoles;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;

@@ -22,6 +22,7 @@
 <!--        <property name="hibernate.hbm2ddl.auto">update</property>-->
 
         <mapping class="com.javarush.borisov.entity.User"/>
+
         <mapping class="com.javarush.borisov.entity.Equipment"/>
         <mapping class="com.javarush.borisov.entity.Contragent"/>
         <mapping class="com.javarush.borisov.entity.Request"/>

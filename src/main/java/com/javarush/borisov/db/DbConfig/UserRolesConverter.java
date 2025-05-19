@@ -1,12 +1,9 @@
 package com.javarush.borisov.db.DbConfig;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javarush.borisov.entity.UserRoles;
+import com.javarush.borisov.constants.UserRoles;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-
-import java.util.List;
 
 
 @Converter(autoApply = true)

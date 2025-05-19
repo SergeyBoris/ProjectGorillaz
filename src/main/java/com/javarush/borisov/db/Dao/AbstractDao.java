@@ -10,21 +10,28 @@ import org.hibernate.query.Query;
 
 import java.util.List;
 @Transactional
-public abstract class AbstractDao {
+public abstract class AbstractDao<T> {
 
 
-    public <T> T getById(Class<T> clazz, Long id) {
+    private final Class<T> clazz;
+
+    public AbstractDao(Class<T> clazz) {
+        this.clazz = clazz;
+    }
+
+    public  T getById(Long id) {
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
             return session.get(clazz, id);
         }
     }
 
-    public <T> List<T> getAll(Class<T> clazz){
+    public  List<T> getAll(){
+
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
             return session.createQuery("from clazz.getSimpleName()", clazz).list();
         }
     }
-    public <T> T getSingleByField(Class<T> clazz, String fieldName, String value){
+    public  T getSingleByField(Class<T> clazz, String fieldName, String value){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(clazz);
@@ -33,7 +40,7 @@ public abstract class AbstractDao {
             return session.createQuery(cq).getSingleResult();
        }
     }
-    public <T> List<T> getListByField(Class<T> clazz, String fieldName, String value){
+    public  List<T> getListByField(Class<T> clazz, String fieldName, String value){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(clazz);
@@ -43,30 +50,30 @@ public abstract class AbstractDao {
         }
     }
 
-    public <T> void save(T entity){
+    public  void save(T entity){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
                     session.save(entity);
         }
     }
-    public <T> void update(T entity){
+    public  void update(T entity){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
                     session.update(entity);
         }
     }
-    public <T> void delete(T entity){
+    public  void delete(T entity){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
                     session.delete(entity);
 
         }
     }
-    public <T> void deleteById(Class<T> clazz, Long id){
+    public void deleteById(Long id){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-                    session.delete(getById(clazz,id));
+                    session.delete(getById(id));
         }
     }
-    public <T> void deleteAll(Class<T> clazz){
+    public void deleteAll(){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-                    session.delete(getAll(clazz));
+                    session.delete(getAll());
         }
     }
 }

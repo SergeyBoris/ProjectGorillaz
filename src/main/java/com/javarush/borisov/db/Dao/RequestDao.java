@@ -1,0 +1,31 @@
+package com.javarush.borisov.db.Dao;
+
+import com.javarush.borisov.config.MySessionCreator;
+import com.javarush.borisov.entity.Request;
+import org.hibernate.Session;
+
+import java.util.List;
+
+public class RequestDao extends AbstractDao<Request> {
+
+    public RequestDao() {
+        super(Request.class);
+    }
+
+    public List<Request> getRequestsWhereUsedEquipment(String equipment){
+
+        try (Session session = MySessionCreator.getSessionCreator().openSession()) {
+            return session.createQuery(
+                            "select distinct r from Request r " +
+                            "join fetch r.equipmentsMontage em " +
+                            "join fetch r.equipmentsUnmontage eum " +
+                            "where em.serialNumber = :serialNumber1 " +
+                            "or eum.serialNumber = :serialNumber2 " +
+                            "order by r.closeDate",
+                            Request.class)
+                    .setParameter("serialNumber1", equipment)
+                    .setParameter("serialNumber2", equipment)
+                    .list();
+        }
+    }
+}

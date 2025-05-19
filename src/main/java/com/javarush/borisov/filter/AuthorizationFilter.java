@@ -1,6 +1,6 @@
 package com.javarush.borisov.filter;
 
-import com.javarush.borisov.entity.UserRoles;
+import com.javarush.borisov.constants.UserRoles;
 import com.javarush.borisov.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

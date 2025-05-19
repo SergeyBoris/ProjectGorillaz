@@ -1,4 +1,4 @@
-package com.javarush.borisov.entity;
+package com.javarush.borisov.constants;
 
 import lombok.Getter;
 
