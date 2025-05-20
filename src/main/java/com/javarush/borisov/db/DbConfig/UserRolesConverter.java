@@ -1,7 +1,7 @@
 package com.javarush.borisov.db.DbConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javarush.borisov.constants.UserRoles;
+import com.javarush.borisov.db.constants.UserRoles;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

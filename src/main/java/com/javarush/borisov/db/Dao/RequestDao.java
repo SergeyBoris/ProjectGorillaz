@@ -1,7 +1,7 @@
 package com.javarush.borisov.db.Dao;
 
 import com.javarush.borisov.config.MySessionCreator;
-import com.javarush.borisov.constants.RequestStatus;
+import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.entity.Request;
 import org.hibernate.Session;
 
@@ -39,6 +39,18 @@ public class RequestDao extends AbstractDao<Request> {
                                       "order by r.closeDate", Request.class)
                    .setParameterList("statuses", List.of(RequestStatus.ASSIGNED, RequestStatus.IN_PROGRESS))
                    .list();
+        }
+    }
+    public List<Request> getAssignedUsersRequests(Long id){
+        try (Session session = MySessionCreator.getSessionCreator().openSession()) {
+            return session.createQuery("select r from Request r " +
+                                       "left join fetch r.equipmentsMontage " +
+                                       "left join fetch r.equipmentsUnmontage " +
+                                       "where r.user.id  = :userId " +
+                                       "and r.status in (:statuses) ", Request.class)
+                    .setParameter("userId",id)
+                    .setParameter("statuses", List.of(RequestStatus.ASSIGNED,RequestStatus.IN_PROGRESS))
+                    .list();
         }
     }
 }

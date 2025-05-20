@@ -1,4 +1,4 @@
-package com.javarush.borisov.constants;
+package com.javarush.borisov.db.constants;
 
 import lombok.Getter;
 

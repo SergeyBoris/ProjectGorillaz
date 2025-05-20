@@ -13,6 +13,18 @@
     <link rel="stylesheet" href="assets/css/baguetteBox.min.css">
     <link rel="stylesheet" href="assets/css/Footer-Dark-icons.css">
     <link rel="stylesheet" href="assets/css/vanilla-zoom.min.css">
+    <style>
+        #reqTable input[type="text"] {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+
+        #reqTable input[type="text"]:focus {
+            max-width: 300px;
+        }
+    </style>
 </head>
 
 <body>

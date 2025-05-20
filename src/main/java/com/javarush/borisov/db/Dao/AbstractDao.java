@@ -28,7 +28,7 @@ public abstract class AbstractDao<T> {
     public  List<T> getAll(){
 
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-            return session.createQuery("from clazz.getSimpleName()", clazz).list();
+            return session.createQuery("from " + clazz.getSimpleName(), clazz).list();
         }
     }
 

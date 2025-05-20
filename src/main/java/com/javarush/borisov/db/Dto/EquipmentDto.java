@@ -1,6 +1,6 @@
 package com.javarush.borisov.db.Dto;
 
-import com.javarush.borisov.constants.EquipmentStatus;
+import com.javarush.borisov.db.constants.EquipmentStatus;
 import com.javarush.borisov.entity.Equipment;
 import lombok.Getter;
 import lombok.Setter;

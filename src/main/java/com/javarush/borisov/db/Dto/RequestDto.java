@@ -1,10 +1,8 @@
 package com.javarush.borisov.db.Dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.javarush.borisov.constants.RequestStatus;
-import com.javarush.borisov.entity.Contragent;
+import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.entity.Request;
-import com.javarush.borisov.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
@@ -31,7 +29,7 @@ public class RequestDto {
     private LocalDateTime createDate;
     private String comment;
     private String linkToAktFile;
-    private RequestStatus status;
+    private String status;
     private String contragent;
     private String user;
 
@@ -57,7 +55,7 @@ public class RequestDto {
         this.closeDate = request.getCloseDate()!=null ? request.getCloseDate() : null;
         this.comment = comment != null ? comment : "";
 
-        this.status = request.getStatus();
+        this.status = request.getStatus().getName();
         this.contragent = request.getContragent()!=null ? request.getContragent().getName() : null;
         this.user = request.getUser().getName();
     }

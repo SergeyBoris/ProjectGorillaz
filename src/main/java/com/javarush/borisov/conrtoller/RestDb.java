@@ -1,46 +1,40 @@
 package com.javarush.borisov.conrtoller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.javarush.borisov.config.ClassCreator;
-import com.javarush.borisov.constants.RequestStatus;
-import com.javarush.borisov.db.Dao.RequestDao;
-import com.javarush.borisov.db.Db;
 import com.javarush.borisov.db.Dto.RequestDto;
+import com.javarush.borisov.db.Dto.UserDto;
 import com.javarush.borisov.db.Service.RequestService;
-import com.javarush.borisov.entity.Request;
+import com.javarush.borisov.db.constants.UserRoles;
+import com.javarush.borisov.entity.User;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/rest/db")
 public class RestDb extends HttpServlet {
-    Db db = ClassCreator.get(Db.class);
+    //  Db db = ClassCreator.get(Db.class);
     RequestService requestService = new RequestService();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
 
-        if(req.getParameter("requestsToShow")!=null){
+        if (req.getParameter("requestsToShow") != null) {
 //            List<Request> requestsToShow = db.requestsToShow; TODO
-
-
-            List<RequestDto> requestDtos = requestService.getAssignedRequestDtos();
+            HttpSession session = req.getSession();
+            UserDto userDto = (UserDto) session.getAttribute("user");
+            List<RequestDto> requestDtos = requestService.getAssignedRequestDtos(userDto);
             sendResponse(resp, requestDtos);
+
+
         }
-
-
-
-
-
-
-
 
 
     }
@@ -49,7 +43,7 @@ public class RestDb extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
-        String jsonArray="";
+        String jsonArray = "";
         StringBuilder jsonResp = new StringBuilder();
         jsonArray = mapper.writeValueAsString(toShow);
         jsonResp.append(jsonArray);

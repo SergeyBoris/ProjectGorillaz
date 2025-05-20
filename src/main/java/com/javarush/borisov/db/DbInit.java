@@ -1,8 +1,8 @@
 package com.javarush.borisov.db;
 
 import com.javarush.borisov.config.MySessionCreator;
-import com.javarush.borisov.constants.EquipmentStatus;
-import com.javarush.borisov.constants.RequestStatus;
+import com.javarush.borisov.db.constants.EquipmentStatus;
+import com.javarush.borisov.db.constants.RequestStatus;
 
 import com.javarush.borisov.entity.*;
 import jakarta.transaction.Transactional;

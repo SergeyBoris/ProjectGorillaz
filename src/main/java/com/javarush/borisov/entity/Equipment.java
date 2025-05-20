@@ -1,10 +1,9 @@
 package com.javarush.borisov.entity;
 
-import com.javarush.borisov.constants.EquipmentStatus;
+import com.javarush.borisov.db.constants.EquipmentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.Set;
 
 

@@ -1,16 +1,12 @@
 package com.javarush.borisov.entity;
 
-import com.javarush.borisov.constants.RequestStatus;
+import com.javarush.borisov.db.constants.RequestStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import net.bytebuddy.agent.builder.AgentBuilder;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,11 +83,6 @@ public class Request {
         return "Request{" +
                "reqNumber='" + reqNumber + '\'' +
                ", address='" + address + '\'' +
-               ", equipmentsMontage=" + equipmentsMontage +
-               ", equipmentsUnmontage=" + equipmentsUnmontage +
-               ", sla=" + sla +
-               ", closeDate=" + closeDate +
-               ", status=" + status +
                '}';
     }
 }

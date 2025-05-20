@@ -9,6 +9,7 @@ ${requestScope.tableHeadData}
 ${requestScope.tableLow}
 
 <script>
+
     $(document).ready( function updateTable() {
         const tab = document.getElementById("reqTable");
         console.info(tab);
@@ -23,25 +24,54 @@ ${requestScope.tableLow}
                 for (let i = 0; i < message.length; i++) {
                     let row = document.createElement("tr");
                     row.innerHTML =
-                        "<td>" + message[i].reqNumber + "</td>"+
-                        "<td>" + message[i].customer + "</td>"+
-                        "<td>" + message[i].customerPhone + "</td>"+
+                        "<td>" + message[i].reqNumber + "</td>" +
+                        "<td>" + message[i].customer + "</td>" +
+                        "<td>" + message[i].customerPhone + "</td>" +
                         "<td>" + message[i].address + "</td>" +
-                        "<td>" + getEqModels(message[i].equipmentsMontage)  + "</td>"+
-                        "<td>" + getEqSerials(message[i].equipmentsMontage) + "</td>"+
-                        "<td>" + getEqModels(message[i].equipmentsUnmontage) + "</td>"+
-                        "<td>" + getEqSerials(message[i].equipmentsUnmontage)+ "</td>"+
-                        "<td>" + message[i].status + "</td>"+
-                        "<td>" + message[i].createDate + "</td>"+
-                        "<td>" + message[i].sla + "</td>"+
-                        "<td>" + message[i].closeDate + "</td>"+
-                        "<td>" + message[i].contragent + "</td>"+
-                        "<td>" + "</td>"
+                        "<td>" + getEqModels(message[i].equipmentsMontage) + "</td>" +
+                        "<td>" + getEqSerials(message[i].equipmentsMontage) + "</td>" +
+                        "<td>" + getEqModels(message[i].equipmentsUnmontage) + "</td>" +
+                        "<td>" + getEqSerials(message[i].equipmentsUnmontage) + "</td>" +
+                        "<td>" + message[i].status + "</td>" +
+                        "<td>" + message[i].createDate + "</td>" +
+                        "<td>" + message[i].sla + "</td>" +
+                        "<td>" + message[i].closeDate + "</td>" +
+                        "<td>" + message[i].contragent + "</td>" +
+                        "<td>" + message[i].user + "</td>" +
+                        "<td>" + message[i].comment + "</td>" +
+                        "<td>" + "</td>" +
+                        `<td><button class="edit-btn">Редактировать</button></td>`;
+
                     ;
 
 
                     tab.appendChild(row);
                 }
+                $('#reqTable').on('click', '.edit-btn', function () {
+                    const row = $(this).closest('tr');
+                    const button = $(this);
+
+                    if (button.text() === 'Редактировать') {
+                        row.find('td').each(function (index) {
+                            // Пропускаем последний столбец (кнопку)
+                            if (index < 15) {
+                                const currentText = $(this).text();
+                                $(this).html(`<input type="text" value=` + currentText + `/>`);
+                            }
+                        });
+                        button.text('Сохранить');
+                    } else {
+                        row.find('td').each(function (index) {
+                            if (index < 15) {
+                                const newValue = $(this).find('input').val();
+                                $(this).text(newValue);
+                            }
+                        });
+                        button.text('Редактировать');
+
+                        // TODO: здесь можно отправить AJAX-запрос на сохранение изменений
+                    }
+                });
 
 
             }
@@ -72,6 +102,9 @@ ${requestScope.tableLow}
 
         }
     })
+
+
+
 
     // document.addEventListener("DOMContentLoaded", function () {
     //     const header = document.getElementById("head");
