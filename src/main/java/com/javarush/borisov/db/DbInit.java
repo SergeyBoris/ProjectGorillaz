@@ -36,7 +36,7 @@ public class DbInit {
                 Request request1 = new Request();
                 request1.setReqNumber("APOS-" + String.valueOf(random(1000, 9999)));
                 request1.setCustomer("ИП Пупкин");
-                request1.setAddress("Новокузнецк Кирова 55 А");
+                request1.setAddress("653039, Кемеровская область - Кузбасс, г Прокопьевск, пр-кт Гагарина, д 3");
                 request1.setContragent(session.get(Contragent.class, (long) random(1, 4)));
                 request1.setCustomerPhone("+79049600005");
                 request1.setEquipmentsMontage(

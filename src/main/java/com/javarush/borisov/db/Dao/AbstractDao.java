@@ -6,6 +6,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.util.List;
@@ -38,11 +39,20 @@ public abstract class AbstractDao<T> {
                     session.save(entity);
         }
     }
-    public  void update(T entity){
+    public boolean update(T entity){
+        Transaction transaction = null;
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-                    session.update(entity);
+            transaction = session.beginTransaction();
+            session.update(entity);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+            return false;
         }
     }
+
     public  void delete(T entity){
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
                     session.delete(entity);

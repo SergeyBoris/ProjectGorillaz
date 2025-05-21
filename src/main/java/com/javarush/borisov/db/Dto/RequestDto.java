@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Getter@Setter
 public class RequestDto {
 
-
+    private Long id;
     private String reqNumber;
     private String customer;
     private String customerPhone;
@@ -34,6 +34,7 @@ public class RequestDto {
     private String user;
 
     public RequestDto(Request request) {
+        this.id = request.getId();
         this.reqNumber = request.getReqNumber() != null ? request.getReqNumber() : "";
         this.customer = request.getCustomer()!=null ? request.getCustomer() : "";
         this.customerPhone = request.getCustomerPhone()!=null ? request.getCustomerPhone() : "";

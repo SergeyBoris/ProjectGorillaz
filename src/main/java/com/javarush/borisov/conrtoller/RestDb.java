@@ -24,15 +24,28 @@ public class RestDb extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
+        HttpSession session = req.getSession();
 
         if (req.getParameter("requestsToShow") != null) {
-//            List<Request> requestsToShow = db.requestsToShow; TODO
-            HttpSession session = req.getSession();
+
             UserDto userDto = (UserDto) session.getAttribute("user");
             List<RequestDto> requestDtos = requestService.getAssignedRequestDtos(userDto);
             sendResponse(resp, requestDtos);
+            return;
 
+        }
+        if (req.getParameter("closeReq") != null) {
+            Long closeReqId = Long.parseLong(req.getParameter("closeReq"));
+            Boolean success = requestService.closeRequest(closeReqId);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            if (success) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().write("{\"success\":true}");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().write("{\"success\":false}");
+            }
 
         }
 
@@ -52,6 +65,9 @@ public class RestDb extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(jsonArray);
     }
+
+
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.javarush.borisov.db;
 import com.javarush.borisov.config.AppConfig;
 import com.javarush.borisov.config.ClassCreator;
+import com.javarush.borisov.config.MySessionCreator;
 import com.javarush.borisov.db.constants.UserRoles;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
@@ -20,7 +21,10 @@ public class DockerMySQLStarter implements ServletContextListener {
 
             try {
 
-                startOrRestartMySQL();
+               // startOrRestartMySQL();
+                DockerMySQLStarterWSL startOrRestartWSL = new DockerMySQLStarterWSL();
+                startOrRestartWSL.start();
+                Thread.sleep(2000);
                 DbUpdate.start();
                 DbInit.start();
 
@@ -29,6 +33,7 @@ public class DockerMySQLStarter implements ServletContextListener {
                 throw new RuntimeException(e);
             }
         }
+        MySessionCreator.getSessionCreator();
     }
 
     public void startOrRestartMySQL() {

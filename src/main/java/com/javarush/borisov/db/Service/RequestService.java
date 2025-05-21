@@ -22,6 +22,10 @@ public class RequestService {
         }else return getAssignedRequestsByUser(userDto);
     }
 
+    public Boolean closeRequest(Long requestId) {
+        return requestDao.update(requestDao.getById(requestId));
+    }
+
 
     private List<RequestDto> getAssignedRequestsByUser(UserDto userDto) {
         List<Request> requests = requestDao.getAssignedUsersRequests(userDto.getId());

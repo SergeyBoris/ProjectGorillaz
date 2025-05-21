@@ -27,11 +27,11 @@ ${requestScope.tableLow}
                         "<td>" + message[i].reqNumber + "</td>" +
                         "<td>" + message[i].customer + "</td>" +
                         "<td>" + message[i].customerPhone + "</td>" +
-                        "<td>" + message[i].address + "</td>" +
-                        "<td>" + getEqModels(message[i].equipmentsMontage) + "</td>" +
-                        "<td>" + getEqSerials(message[i].equipmentsMontage) + "</td>" +
-                        "<td>" + getEqModels(message[i].equipmentsUnmontage) + "</td>" +
-                        "<td>" + getEqSerials(message[i].equipmentsUnmontage) + "</td>" +
+                        `<td class="wrap-text">` + message[i].address + `</td>` +
+                        `<td>` + getEqModels(message[i].equipmentsMontage) + `</td>` +
+                        `<td>` + getEqSerials(message[i].equipmentsMontage) + `</td>` +
+                        `<td>` + getEqModels(message[i].equipmentsUnmontage) + `</td>` +
+                        `<td>` + getEqSerials(message[i].equipmentsUnmontage) + `</td>` +
                         "<td>" + message[i].status + "</td>" +
                         "<td>" + message[i].createDate + "</td>" +
                         "<td>" + message[i].sla + "</td>" +
@@ -40,7 +40,8 @@ ${requestScope.tableLow}
                         "<td>" + message[i].user + "</td>" +
                         "<td>" + message[i].comment + "</td>" +
                         "<td>" + "</td>" +
-                        `<td><button class="edit-btn">Редактировать</button></td>`;
+                        `<td><button class="edit-btn">Изменить</button></td>`+
+                        `<td><button class="close-btn" data-id=` + message[i].id + `>Закрыть</button></td>`
 
                     ;
 
@@ -51,12 +52,13 @@ ${requestScope.tableLow}
                     const row = $(this).closest('tr');
                     const button = $(this);
 
-                    if (button.text() === 'Редактировать') {
+                    if (button.text() === 'Изменить') {
                         row.find('td').each(function (index) {
-                            // Пропускаем последний столбец (кнопку)
+
                             if (index < 15) {
-                                const currentText = $(this).text();
-                                $(this).html(`<input type="text" value=` + currentText + `/>`);
+                                const currentText = this.textContent.trim();
+                                $(this).html('<input type="text">');
+                                $(this).find('input').val(currentText);
                             }
                         });
                         button.text('Сохранить');
@@ -67,11 +69,36 @@ ${requestScope.tableLow}
                                 $(this).text(newValue);
                             }
                         });
-                        button.text('Редактировать');
+                        button.text('Изменить');
 
-                        // TODO: здесь можно отправить AJAX-запрос на сохранение изменений
+                        // TODO:  AJAX-запрос на сохранение изменений в темп
                     }
                 });
+
+
+
+                $(document).on('click', '.close-btn', function () {
+                    const button = $(this);
+                    const id = button.data('id');
+                    console.log(id)
+
+                    $.ajax({
+                        type: "GET",
+                        url: `rest/db?closeReq=${id}`,
+                        success: function (response) {
+
+                            if (response.success === true) {
+                                button.closest('tr').remove();
+                            } else {
+                                alert("Не удалось закрыть заявку");
+                            }
+                        },
+                        error: function () {
+                            alert("Ошибка при закрытии заявки");
+                        }
+                    });
+                });
+
 
 
             }
@@ -82,7 +109,7 @@ ${requestScope.tableLow}
 
                 equipment = equipment + arr[i].model
                 if (i != arr.length-1){
-                    equipment = equipment + " / "
+                    equipment = equipment + "<br>"
                 }
 
             }
@@ -95,7 +122,7 @@ ${requestScope.tableLow}
 
                 equipment = equipment + arr[i].serialNumber
                 if (i != arr.length-1){
-                    equipment = equipment + " / "
+                    equipment = equipment + "<br>"
                 }
             }
             return equipment;

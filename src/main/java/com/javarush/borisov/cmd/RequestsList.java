@@ -42,8 +42,8 @@ public class RequestsList implements Command {
             </section>
             <section>
                 <div class="table-responsive" style=border-top-style: ridge;">
-                    <table class="table" >
-                        <thead style="/*position: fixed;*/width: 100%;border-top-style: ridge;">
+                    <table class="table table-bordered table-striped" style="width: 100%;">
+                        <thead>
                         <tr>
             """;
     private String tableHeadData = """

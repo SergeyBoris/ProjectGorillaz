@@ -18,7 +18,7 @@ public  class DbUpdate {
         String schema = appConfig.get("DBSchema");
         try (Session session = MySessionCreator.firstRun().openSession()) {
             session.beginTransaction();
-            session.createNativeQuery("DROP DATABASE " + schema).executeUpdate();
+            session.createNativeQuery("DROP DATABASE IF EXISTS " + schema).executeUpdate();
             session.createNativeQuery("CREATE DATABASE " + schema).executeUpdate();
             session.getTransaction().commit();
 
