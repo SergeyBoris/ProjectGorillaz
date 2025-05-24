@@ -36,7 +36,7 @@ public class RequestDao extends AbstractDao<Request> {
                                       "left join fetch r.equipmentsMontage " +
                                       "left join fetch r.equipmentsUnmontage " +
                                       "where r.status in (:statuses) " +
-                                      "order by r.closeDate", Request.class)
+                                      "order by r.createDate", Request.class)
                    .setParameterList("statuses", List.of(RequestStatus.ASSIGNED, RequestStatus.IN_PROGRESS))
                    .list();
         }

@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="parts/header.jsp" %>
 
@@ -40,64 +41,19 @@ ${requestScope.tableLow}
                         "<td>" + message[i].user + "</td>" +
                         "<td>" + message[i].comment + "</td>" +
                         "<td>" + "</td>" +
-                        `<td><button class="edit-btn">Изменить</button></td>`+
-                        `<td><button class="close-btn" data-id=` + message[i].id + `>Закрыть</button></td>`
+                        `<td><button class="btn btn-primary ms-md-2 edit-btn">Изменить</button></td>`+
+                        `<td><button class="btn btn-sm btn-danger close-btn" data-id=` + message[i].id + `>Закрыть</button></td>`
 
                     ;
 
 
                     tab.appendChild(row);
                 }
-                $('#reqTable').on('click', '.edit-btn', function () {
-                    const row = $(this).closest('tr');
-                    const button = $(this);
-
-                    if (button.text() === 'Изменить') {
-                        row.find('td').each(function (index) {
-
-                            if (index < 15) {
-                                const currentText = this.textContent.trim();
-                                $(this).html('<input type="text">');
-                                $(this).find('input').val(currentText);
-                            }
-                        });
-                        button.text('Сохранить');
-                    } else {
-                        row.find('td').each(function (index) {
-                            if (index < 15) {
-                                const newValue = $(this).find('input').val();
-                                $(this).text(newValue);
-                            }
-                        });
-                        button.text('Изменить');
-
-                        // TODO:  AJAX-запрос на сохранение изменений в темп
-                    }
-                });
 
 
 
-                $(document).on('click', '.close-btn', function () {
-                    const button = $(this);
-                    const id = button.data('id');
-                    console.log(id)
 
-                    $.ajax({
-                        type: "GET",
-                        url: `rest/db?closeReq=` + id,
-                        success: function (response) {
 
-                            if (response.success === true) {
-                                button.closest('tr').remove();
-                            } else {
-                                alert("Не удалось закрыть заявку");
-                            }
-                        },
-                        error: function () {
-                            alert("Ошибка при закрытии заявки");
-                        }
-                    });
-                });
 
 
 
@@ -126,8 +82,8 @@ ${requestScope.tableLow}
             }else {
                 let equipment = "";
                 for (let i = 0; i < arr.length; i++) {
-
-                    equipment = equipment + arr[i].serialNumber
+                    const serial = arr[i].serialNumber;
+                    equipment += `<a href="/serialInfo?serial=` + serial + `)}" target="_blank">` + serial + `</a>`;
                     if (i !== arr.length - 1) {
                         equipment = equipment + "<br>"
                     }
@@ -137,7 +93,61 @@ ${requestScope.tableLow}
         }
     })
 
+    $(document).on('click', '.close-btn', function () {
+        const button = $(this);
+        const id = button.data('id');
+        const row = button.closest('tr');
+        const reqNumber = row.find('td').eq(0).text().trim();
 
+        const equipmentRawHtml = row.find('td').eq(4).html();
+        const equipment = equipmentRawHtml ? equipmentRawHtml.replace(/<br\s*\/?>/gi, ', ') : '';
+
+        const confirmed = confirm(`Вы точно хотите закрыть заявку №` + reqNumber +  `с оборудованием: `+ equipment + `?`);
+        if (!confirmed) return;
+
+        $.ajax({
+            type: "GET",
+            url: `rest/db?closeReq=` + id,
+            success: function (response) {
+
+                if (response.success === true) {
+                    button.closest('tr').remove();
+                } else {
+                    alert("Не удалось закрыть заявку");
+                }
+            },
+            error: function () {
+                alert("Ошибка при закрытии заявки");
+            }
+        });
+    });
+
+    $(document).on('click', '.edit-btn', function () {
+        const row = $(this).closest('tr');
+        const button = $(this);
+
+        if (button.text() === 'Изменить') {
+            row.find('td').each(function (index) {
+
+                if (index < 15) {
+                    const currentText = this.textContent.trim();
+                    $(this).html('<input type="text">');
+                    $(this).find('input').val(currentText);
+                }
+            });
+            button.text('Сохранить');
+        } else {
+            row.find('td').each(function (index) {
+                if (index < 15) {
+                    const newValue = $(this).find('input').val();
+                    $(this).text(newValue);
+                }
+            });
+            button.text('Изменить');
+
+            // TODO:  AJAX-запрос на сохранение изменений в темп
+        }
+    });
 
 
     // document.addEventListener("DOMContentLoaded", function () {

@@ -1,8 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<footer>
-    <footer class="text-center bg-dark" style="position: fixed;bottom: 0;left: 0;width: 100%;">
+</main>
+
+
+    <footer class="page-footer bg-dark text-white">
         <div class="container text-white py-4 py-lg-5">
             <ul class="list-inline">
                 <li class="list-inline-item me-4"><a class="link-light" href="#">Web design</a></li>
@@ -23,7 +23,7 @@
             <p class="text-muted mb-0">Copyright © 2024 Brand</p>
         </div>
     </footer>
-</footer>
+
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script src="assets/js/baguetteBox.min.js"></script>
 <script src="assets/js/vanilla-zoom.js"></script>

@@ -24,9 +24,9 @@ public class RequestService {
     }
 
     public Boolean closeRequest(Long requestId) {
-        Request requestDto = requestDao.getById(requestId);
-        requestDto.setStatus(RequestStatus.IN_PROGRESS);
-        return requestDao.update(requestDto);
+        Request request = requestDao.getById(requestId);
+        request.setStatus(RequestStatus.COMPLETED);
+        return requestDao.update(request);
     }
 
 
