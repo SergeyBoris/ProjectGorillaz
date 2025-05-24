@@ -2,7 +2,9 @@ package com.javarush.borisov.cmd;
 
 import com.javarush.borisov.config.ClassCreator;
 import com.javarush.borisov.db.Db;
+import com.javarush.borisov.db.Service.ContragentService;
 import com.javarush.borisov.entity.Contragent;
+import com.javarush.borisov.util.EntityCreator;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -16,7 +18,7 @@ public class RequestsList implements Command {
 
     private final String contragentBarBtnDatesTop = """
                   <section>
-                  <nav class="navbar navbar-expand-md bg-body" style=width: 100%;">
+                  <nav class="navbar navbar-expand-md bg-body" style="width: 100%;">
             <div class="container-fluid">
                  <div class="dropdown">
                                <button class="btn btn-primary dropdown-toggle" type="button" id="mainDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -139,7 +141,8 @@ public class RequestsList implements Command {
 
     private String ContragentNavBarFilling() {
         StringBuilder result = new StringBuilder();
-        List<Contragent> contragents = db.getContragents();
+        ContragentService contragentService = new ContragentService();
+        List<Contragent> contragents = contragentService.getAllContragents();
         for (Contragent contragent : contragents) {
             result.append("<li class=\"nav-item\"><a class=\"nav-link contragent-link\" href=\"#\" data-name=\"")
                     .append(contragent.getName())

@@ -1,7 +1,6 @@
 package com.javarush.borisov.db.Dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.entity.Request;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +17,7 @@ public class RequestDto {
     private String customerPhone;
     private String address;
     private Set<EquipmentDto> equipmentsMontage;
-    private Set<EquipmentDto> equipmentsUnmontage;
+    private Set<EquipmentDto> equipmentsUnMontage;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime sla;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
@@ -45,7 +44,7 @@ public class RequestDto {
                 .collect(Collectors.toSet())
                 : Collections.emptySet();
 
-        this.equipmentsUnmontage = request.getEquipmentsUnmontage() != null
+        this.equipmentsUnMontage = request.getEquipmentsUnmontage() != null
                 ? request.getEquipmentsUnmontage().stream()
                 .map(EquipmentDto::new)
                 .collect(Collectors.toSet())
@@ -67,7 +66,7 @@ public class RequestDto {
                "reqNumber='" + reqNumber + '\'' +
                ", address='" + address + '\'' +
                ", equipmentsMontage=" + equipmentsMontage +
-               ", equipmentsUnmontage=" + equipmentsUnmontage +
+               ", equipmentsUnmontage=" + equipmentsUnMontage +
                ", sla=" + sla +
                ", closeDate=" + closeDate +
                ", status=" + status +

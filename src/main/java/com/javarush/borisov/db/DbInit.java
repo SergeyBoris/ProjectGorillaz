@@ -23,8 +23,6 @@ public class DbInit {
         CreateReq();
 
 
-
-
     }
 
     private static void CreateReq() {
@@ -48,16 +46,21 @@ public class DbInit {
                         )
                 );
 
-                request1.setEquipmentsUnmontage(Set.of(session.createQuery(
-                                "from Equipment where id = :id", Equipment.class)
-                        .setParameter("id", (long) random(1, 5))
-                        .uniqueResult()));
+                int random = random(1, 7);
+                if (random <= 4) {
+                    Set<Equipment> id = Set.of(session.createQuery(
+                                    "from Equipment where id = :id", Equipment.class)
+                            .setParameter("id", (long) random)
+                            .uniqueResult());
+
+                    request1.setEquipmentsUnmontage(id);
+                }
                 request1.setSla(LocalDateTime.now().plusDays(2));
                 request1.setStatus(RequestStatus.values()[random(2, 4)]);
                 request1.setUser(session.createQuery("from User where id = :id", User.class)
                         .setParameter("id", (long) random(1, 3))
                         .uniqueResult());
-                if(random(0,100)>90){
+                if (random(0, 100) > 90) {
                     request1.setStatus(RequestStatus.values()[random(0, 2)]);
                 }
                 session.save(request1);

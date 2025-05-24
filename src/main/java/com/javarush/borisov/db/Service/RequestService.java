@@ -3,6 +3,7 @@ package com.javarush.borisov.db.Service;
 import com.javarush.borisov.db.Dao.RequestDao;
 import com.javarush.borisov.db.Dto.RequestDto;
 import com.javarush.borisov.db.Dto.UserDto;
+import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.db.constants.UserRoles;
 import com.javarush.borisov.entity.Request;
 
@@ -23,7 +24,9 @@ public class RequestService {
     }
 
     public Boolean closeRequest(Long requestId) {
-        return requestDao.update(requestDao.getById(requestId));
+        Request requestDto = requestDao.getById(requestId);
+        requestDto.setStatus(RequestStatus.IN_PROGRESS);
+        return requestDao.update(requestDto);
     }
 
 

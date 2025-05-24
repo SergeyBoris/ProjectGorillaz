@@ -15,7 +15,7 @@ ${requestScope.tableLow}
         console.info(tab);
         $.ajax({
             type: "GET",
-            url: `/rest/db?requestsToShow=${requestsToShow}`,
+            url: `/rest/db?requestsToShow=`,
             success: function (message) {
                 console.info(message);
 
@@ -30,8 +30,8 @@ ${requestScope.tableLow}
                         `<td class="wrap-text">` + message[i].address + `</td>` +
                         `<td>` + getEqModels(message[i].equipmentsMontage) + `</td>` +
                         `<td>` + getEqSerials(message[i].equipmentsMontage) + `</td>` +
-                        `<td>` + getEqModels(message[i].equipmentsUnmontage) + `</td>` +
-                        `<td>` + getEqSerials(message[i].equipmentsUnmontage) + `</td>` +
+                        `<td>` + getEqModels(message[i].equipmentsUnMontage) + `</td>` +
+                        `<td>` + getEqSerials(message[i].equipmentsUnMontage) + `</td>` +
                         "<td>" + message[i].status + "</td>" +
                         "<td>" + message[i].createDate + "</td>" +
                         "<td>" + message[i].sla + "</td>" +
@@ -84,7 +84,7 @@ ${requestScope.tableLow}
 
                     $.ajax({
                         type: "GET",
-                        url: `rest/db?closeReq=${id}`,
+                        url: `rest/db?closeReq=` + id,
                         success: function (response) {
 
                             if (response.success === true) {
@@ -104,29 +104,36 @@ ${requestScope.tableLow}
             }
         });
         function getEqModels(arr){
-            let equipment= "";
-            for (let i = 0; i <arr.length; i++) {
+            if (arr == null){
+                return "";
+            }else {
 
-                equipment = equipment + arr[i].model
-                if (i != arr.length-1){
-                    equipment = equipment + "<br>"
+                let equipment = "";
+                for (let i = 0; i < arr.length; i++) {
+
+                    equipment = equipment + arr[i].model
+                    if (i !== arr.length - 1) {
+                        equipment = equipment + "<br>"
+                    }
+
                 }
-
+                return equipment;
             }
-            return equipment;
-
         }
         function getEqSerials(arr){
-            let equipment= "";
-            for (let i = 0; i <arr.length; i++) {
+            if (arr == null){
+                return "";
+            }else {
+                let equipment = "";
+                for (let i = 0; i < arr.length; i++) {
 
-                equipment = equipment + arr[i].serialNumber
-                if (i != arr.length-1){
-                    equipment = equipment + "<br>"
+                    equipment = equipment + arr[i].serialNumber
+                    if (i !== arr.length - 1) {
+                        equipment = equipment + "<br>"
+                    }
                 }
+                return equipment;
             }
-            return equipment;
-
         }
     })
 

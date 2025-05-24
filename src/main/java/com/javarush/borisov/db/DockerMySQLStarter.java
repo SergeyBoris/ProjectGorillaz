@@ -21,10 +21,10 @@ public class DockerMySQLStarter implements ServletContextListener {
 
             try {
 
-               // startOrRestartMySQL();
-                DockerMySQLStarterWSL startOrRestartWSL = new DockerMySQLStarterWSL();
-                startOrRestartWSL.start();
-                Thread.sleep(2000);
+                startOrRestartMySQL();
+               // DockerMySQLStarterWSL startOrRestartWSL = new DockerMySQLStarterWSL();
+               // startOrRestartWSL.start();
+                Thread.sleep(5000);
                 DbUpdate.start();
                 DbInit.start();
 
