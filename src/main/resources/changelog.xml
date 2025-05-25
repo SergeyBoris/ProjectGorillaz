@@ -71,6 +71,10 @@
             <column name="equipment_status" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="contragent_id" type="BIGINT">
+                <constraints nullable="true" foreignKeyName="equipments_contragents_contragent_id_fk"
+                             references="contragents(contragent_id)"/>
+            </column>
         </createTable>
     </changeSet>
 

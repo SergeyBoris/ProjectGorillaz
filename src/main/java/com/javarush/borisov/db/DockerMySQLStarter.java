@@ -5,7 +5,9 @@ import com.javarush.borisov.config.MySessionCreator;
 import com.javarush.borisov.db.constants.UserRoles;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebListener;
+import org.hibernate.SessionFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,22 +19,16 @@ public class DockerMySQLStarter implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         AppConfig appConfig = ClassCreator.get(AppConfig.class);
+        startOrRestartMySQL();
+
         if(appConfig.get("firstRun").equals("true")) {
-
-            try {
-
-                startOrRestartMySQL();
-               // DockerMySQLStarterWSL startOrRestartWSL = new DockerMySQLStarterWSL();
-               // startOrRestartWSL.start();
-                Thread.sleep(5000);
-                DbUpdate.start();
-                DbInit.start();
-
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            // DockerMySQLStarterWSL startOrRestartWSL = new DockerMySQLStarterWSL();
+            // startOrRestartWSL.start();
+            DbUpdate.start();
+            DbInit.start();
         }
+
+
         MySessionCreator.getSessionCreator();
     }
 
@@ -53,7 +49,9 @@ public class DockerMySQLStarter implements ServletContextListener {
                 Process startProcess = startProcessBuilder.start();
                 int startExitCode = startProcess.waitFor();
                 if (startExitCode == 0) {
+                    sleep(5);
                     System.out.println("Контейнер успешно запущен.");
+
                 } else {
                     System.out.println("Ошибка запуска контейнера. Код: " + startExitCode);
                 }
@@ -74,6 +72,7 @@ public class DockerMySQLStarter implements ServletContextListener {
             Process runProcess = runProcessBuilder.start();
             int runExitCode = runProcess.waitFor();
             if (runExitCode == 0) {
+                sleep(8);
                 System.out.println("Новый контейнер MySQL запущен!");
             } else {
                 System.out.println("Ошибка запуска нового контейнера. Код: " + runExitCode);
@@ -105,10 +104,15 @@ public class DockerMySQLStarter implements ServletContextListener {
         return line != null && line.trim().equals(containerName);
     }
 
-    private static void roleSyncToUserRoles(){
-
-        for (UserRoles value : UserRoles.values()) {
-
+    private static void sleep(int second) {
+        try {
+            System.out.println("Ждём " + second + " сек...");
+            Thread.sleep(second * 1000L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
+
+
+
 }

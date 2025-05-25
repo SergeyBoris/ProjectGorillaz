@@ -81,21 +81,25 @@ public class DbInit {
             equipment1.setModel("AISINO V80");
             equipment1.setSerialNumber("123456789");
             equipment1.setEquipmentStatus(EquipmentStatus.GOOD);
+            equipment1.setContragent(session.get(Contragent.class, 1L));
 
             Equipment equipment2 = new Equipment();
             equipment2.setModel("AISINO V10");
             equipment2.setSerialNumber("1234567891");
             equipment2.setEquipmentStatus(EquipmentStatus.GOOD);
+            equipment2.setContragent(session.get(Contragent.class, 1L));
 
             Equipment equipment3 = new Equipment();
             equipment3.setModel("PAX Q25");
             equipment3.setSerialNumber("1234567892");
             equipment3.setEquipmentStatus(EquipmentStatus.GOOD);
+            equipment3.setContragent(session.get(Contragent.class, 2L));
 
             Equipment equipment4 = new Equipment();
             equipment4.setModel("PAX S300");
             equipment4.setSerialNumber("1234567893");
             equipment4.setEquipmentStatus(EquipmentStatus.GOOD);
+            equipment4.setContragent(session.get(Contragent.class, 2L));
 
             session.save(equipment1);
             session.save(equipment2);

@@ -2,6 +2,7 @@ package com.javarush.borisov.cmd;
 
 import com.javarush.borisov.config.ClassCreator;
 import com.javarush.borisov.db.Db;
+import com.javarush.borisov.db.Dto.ContragentDto;
 import com.javarush.borisov.db.Service.ContragentService;
 import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.util.EntityCreator;
@@ -53,10 +54,8 @@ public class RequestsList implements Command {
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Заказчик</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Телефон</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Адрес</th>
-                <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Модель установленного<br>оборудования</th>
-                <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">С/Н установленного<br> оборудования</th>
-                <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Модель снятого<br>оборудования</th>
-                <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">С/Н снятого<br>оборудования</th>
+                <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Утановленное<br>оборудование</th>
+                <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Снятое <br> оборудование</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Статус</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Дата<br>поступления</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Дата<br>SLA</th>
@@ -142,12 +141,12 @@ public class RequestsList implements Command {
     private String ContragentNavBarFilling() {
         StringBuilder result = new StringBuilder();
         ContragentService contragentService = new ContragentService();
-        List<Contragent> contragents = contragentService.getAllContragents();
-        for (Contragent contragent : contragents) {
+        List<ContragentDto> contragentsDto = contragentService.getAllContragents();
+        for (ContragentDto contragentDto : contragentsDto) {
             result.append("<li class=\"nav-item\"><a class=\"nav-link contragent-link\" href=\"#\" data-name=\"")
-                    .append(contragent.getName())
+                    .append(contragentDto.getName())
                     .append("\">")
-                    .append(contragent.getName())
+                    .append(contragentDto.getName())
                     .append("</a></li>");
         }
         return result.toString();

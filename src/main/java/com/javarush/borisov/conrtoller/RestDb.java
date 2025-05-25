@@ -19,7 +19,7 @@ import java.util.List;
 
 @WebServlet("/rest/db")
 public class RestDb extends HttpServlet {
-    //  Db db = ClassCreator.get(Db.class);
+
     RequestService requestService = new RequestService();
 
     @Override

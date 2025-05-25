@@ -2,6 +2,10 @@ package com.javarush.borisov.db.constants;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 public enum RequestStatus {
 
@@ -14,6 +18,15 @@ public enum RequestStatus {
     private final String name;
     RequestStatus(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public static List<String> getNames() {
+        return Arrays.stream(values())
+                .map(RequestStatus::getName)
+                .collect(Collectors.toList());
     }
 
   }

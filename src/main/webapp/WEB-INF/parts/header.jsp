@@ -5,6 +5,9 @@
 
 <head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>UnionService</title>
@@ -26,7 +29,7 @@
         }
 
         table td {
-            max-width: 150px;
+            max-width: 250px;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -38,7 +41,7 @@
             overflow-wrap: break-word;
             text-overflow: initial;
             overflow: visible;
-            max-width: 200px;
+            max-width: 250px;
         }
 
 

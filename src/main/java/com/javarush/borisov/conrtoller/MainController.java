@@ -15,7 +15,7 @@ import jdk.jfr.Name;
 
 import java.io.IOException;
 
-@WebServlet({"", "/start-page", "/requests-list", "/login" })
+@WebServlet({"", "/start-page", "/requests-list", "/login" ,"/select-equipment"})
 public class MainController extends HttpServlet {
 
     private final HttpResolver httpResolver = ClassCreator.get(HttpResolver.class);

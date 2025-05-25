@@ -11,7 +11,7 @@ import org.hibernate.Session;
 public  class DbUpdate {
 
 
-    public static void start() throws Exception {
+    public static void start()  {
         AppConfig appConfig = ClassCreator.get(AppConfig.class);
         System.out.println("Running Liquibase...");
 
@@ -25,18 +25,20 @@ public  class DbUpdate {
         }
 
 
-        Scope.child(Scope.Attr.resourceAccessor, new ClassLoaderResourceAccessor(), () -> {
-            CommandScope update = new CommandScope("update");
+        try {
+            Scope.child(Scope.Attr.resourceAccessor, new ClassLoaderResourceAccessor(), () -> {
+                CommandScope update = new CommandScope("update");
 
-            update.addArgumentValue("changelogFile", "changelog.xml");
-            update.addArgumentValue("url", "jdbc:mysql://localhost:3306/" + schema);
-            update.addArgumentValue("username", "root");
-            update.addArgumentValue("password", "root");
+                update.addArgumentValue("changelogFile", "changelog.xml");
+                update.addArgumentValue("url", "jdbc:mysql://localhost:3306/" + schema);
+                update.addArgumentValue("username", "root");
+                update.addArgumentValue("password", "root");
 
-            update.execute();
-        });
-
-
+                update.execute();
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 
         System.out.println("Running Liquibase...DONE");

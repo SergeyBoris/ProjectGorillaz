@@ -29,6 +29,9 @@ public class Equipment {
     private Set<Request> requestWhereUnmotageEquipment;
     @Column(name = "equipment_status")
     private EquipmentStatus equipmentStatus;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "contragent_id")
+    private Contragent contragent;
 
     public Equipment(String model, String serialNumber) {
         if (!(model == null) && !model.isEmpty()) {
