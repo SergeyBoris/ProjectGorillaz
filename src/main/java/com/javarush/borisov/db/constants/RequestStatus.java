@@ -13,7 +13,8 @@ public enum RequestStatus {
     IN_PROGRESS("Выехал"),
     COMPLETED("Выполнена"),
     FAIL_DEPARTURE("Ложный выезд"),
-    CANCELED("Отменено");
+    CANCELED("Отменено"),
+    CLOSED_BY_USER("Закрыто инженером");
 
     private final String name;
     RequestStatus(String name) {

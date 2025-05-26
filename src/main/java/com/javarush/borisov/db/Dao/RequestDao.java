@@ -13,16 +13,16 @@ public class RequestDao extends AbstractDao<Request> {
         super(Request.class);
     }
 
-    public List<Request> getRequestsWhereUsedEquipment(String equipment){
+    public List<Request> getRequestsWhereUsedEquipment(String equipment) {
 
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
             return session.createQuery(
                             "select distinct r from Request r " +
-                            "join fetch r.equipmentsMontage em " +
-                            "join fetch r.equipmentsUnmontage eum " +
-                            "where em.serialNumber = :serialNumber1 " +
-                            "or eum.serialNumber = :serialNumber2 " +
-                            "order by r.closeDate",
+                                    "join fetch r.equipmentsMontage em " +
+                                    "join fetch r.equipmentsUnmontage eum " +
+                                    "where em.serialNumber = :serialNumber1 " +
+                                    "or eum.serialNumber = :serialNumber2 " +
+                                    "order by r.closeDate",
                             Request.class)
                     .setParameter("serialNumber1", equipment)
                     .setParameter("serialNumber2", equipment)
@@ -30,26 +30,30 @@ public class RequestDao extends AbstractDao<Request> {
         }
 
     }
-    public List<Request> getAssignedRequests(){
+
+    public List<Request> getAssignedRequests() {
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
-           return session.createQuery("select distinct r from Request r " +
-                                      "left join fetch r.equipmentsMontage " +
-                                      "left join fetch r.equipmentsUnmontage " +
-                                      "where r.status in (:statuses) " +
-                                      "order by r.createDate", Request.class)
-                   .setParameterList("statuses", List.of(RequestStatus.ASSIGNED, RequestStatus.IN_PROGRESS))
-                   .list();
+            return session.createQuery("select distinct r from Request r " +
+                            "left join fetch r.equipmentsMontage " +
+                            "left join fetch r.equipmentsUnmontage " +
+                            "where r.status in (:statuses) " +
+                            "order by r.createDate", Request.class)
+                    .setParameterList("statuses", List.of(RequestStatus.ASSIGNED,
+                            RequestStatus.IN_PROGRESS,
+                            RequestStatus.CLOSED_BY_USER))
+                    .list();
         }
     }
-    public List<Request> getAssignedUsersRequests(Long id){
+
+    public List<Request> getAssignedUsersRequests(Long id) {
         try (Session session = MySessionCreator.getSessionCreator().openSession()) {
             return session.createQuery("select r from Request r " +
-                                       "left join fetch r.equipmentsMontage " +
-                                       "left join fetch r.equipmentsUnmontage " +
-                                       "where r.user.id  = :userId " +
-                                       "and r.status in (:statuses) ", Request.class)
-                    .setParameter("userId",id)
-                    .setParameter("statuses", List.of(RequestStatus.ASSIGNED,RequestStatus.IN_PROGRESS))
+                            "left join fetch r.equipmentsMontage " +
+                            "left join fetch r.equipmentsUnmontage " +
+                            "where r.user.id  = :userId " +
+                            "and r.status in (:statuses) ", Request.class)
+                    .setParameter("userId", id)
+                    .setParameter("statuses", List.of(RequestStatus.ASSIGNED, RequestStatus.IN_PROGRESS))
                     .list();
         }
     }

@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class Request {
     private LocalDateTime sla;
 
     @Column(name = "closed_date")
-    private LocalDateTime closeDate;
+    private LocalDate closeDate;
 
     @UpdateTimestamp
     @Column(name = "last_update")
@@ -59,6 +60,9 @@ public class Request {
     private LocalDateTime createDate;
 
     private String comment;
+
+    @Column(name = "range_to_address")
+    private int rangeToAddress;
 
     @Column(name = "link_to_akt_file")
     private String linkToAktFile;

@@ -3,11 +3,15 @@ package com.javarush.borisov.db.Dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javarush.borisov.entity.Request;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor
 @Getter@Setter
 public class RequestDto {
 
@@ -21,12 +25,13 @@ public class RequestDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime sla;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-    private LocalDateTime closeDate;
+    private LocalDate closeDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime lastUpdate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime createDate;
     private String comment;
+    private int rangeToAddress;
     private String linkToAktFile;
     private String status;
     private String contragent;

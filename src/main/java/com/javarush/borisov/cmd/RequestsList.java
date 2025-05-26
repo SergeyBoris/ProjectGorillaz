@@ -63,6 +63,7 @@ public class RequestsList implements Command {
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Контрагент</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Инженер</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Комментарий</th>
+                <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">КМ</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Печать</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Изменить</th>
                 <th style="border-width: 3px;border-style: outset;border-bottom-width: 5px;">Закрыть</th>

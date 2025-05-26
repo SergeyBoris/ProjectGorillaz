@@ -136,6 +136,9 @@
             <column name="comment" type="text">
                 <constraints nullable="true"/>
             </column>
+            <column name="range_to_address" type="INT">
+                <constraints nullable="true"/>
+            </column>
             <column name="link_to_akt_file" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>

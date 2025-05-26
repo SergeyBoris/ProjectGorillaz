@@ -13,7 +13,7 @@
 <h1>Выберите оборудование:</h1>
 
 <select id="select-equipment" style="width: 100%"></select>
-
+<button id="ok-button">ОК</button> <button>Отмена</button>
 <script>
     $('#select-equipment').select2({
         placeholder: 'Введите модель или серийник...',
@@ -67,7 +67,40 @@
             }
         });
     });
+    $('#ok-button').on('click', function () {
+        const selectedData = $('#select-equipment').select2('data');
 
+        if (!selectedData || selectedData.length === 0) {
+            alert("Выберите оборудование!");
+            return;
+        }
+        const item = selectedData[0];
+        const model = item.text.split(' (')[0];
+        const serialNumber = item.id;
+
+        returnEquipmentToMainPage(model, serialNumber);
+    });
+
+
+    function returnEquipmentToMainPage(model, serialNumber) {
+        if (window.opener && !window.opener.closed) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const rowIndex = urlParams.get("rowIndex");
+            const colIndex = urlParams.get("colIndex");
+
+            window.opener.receiveSelectedEquipment({
+                model: model,
+                serialNumber: serialNumber,
+                rowIndex: parseInt(rowIndex),
+                colIndex: parseInt(colIndex)
+            });
+
+            window.close();
+        }
+    }
+    $('button:contains("Отмена")').on('click', function () {
+        window.close();
+    });
 </script>
 </body>
 </html>

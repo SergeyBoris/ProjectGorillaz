@@ -37,4 +37,11 @@ public class EquipmentDao extends AbstractDao<Equipment> {
         }
             }
     }
+    public Equipment getBySerialUnique (String serial) {
+        try (Session session = MySessionCreator.getSessionCreator().openSession()) {
+            return session.createQuery("from Equipment where serialNumber=:serial",Equipment.class)
+                    .setParameter("serial", serial)
+                    .uniqueResult();
+        }
+    }
 }
