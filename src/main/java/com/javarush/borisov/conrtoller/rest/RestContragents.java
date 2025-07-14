@@ -1,10 +1,8 @@
-package com.javarush.borisov.conrtoller;
+package com.javarush.borisov.conrtoller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javarush.borisov.db.Dao.ContragentDao;
 import com.javarush.borisov.db.Dto.ContragentDto;
 import com.javarush.borisov.db.Service.ContragentService;
-import com.javarush.borisov.entity.Contragent;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

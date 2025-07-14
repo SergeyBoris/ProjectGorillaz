@@ -1,4 +1,4 @@
-package com.javarush.borisov.conrtoller;
+package com.javarush.borisov.conrtoller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javarush.borisov.db.Dto.EquipmentDto;

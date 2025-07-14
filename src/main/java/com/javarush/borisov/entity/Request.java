@@ -49,7 +49,7 @@ public class Request {
     private LocalDateTime sla;
 
     @Column(name = "closed_date")
-    private LocalDate closeDate;
+    private LocalDateTime closeDate;
 
     @UpdateTimestamp
     @Column(name = "last_update")

@@ -1,14 +1,11 @@
-package com.javarush.borisov.conrtoller;
+package com.javarush.borisov.conrtoller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.javarush.borisov.db.Dto.EquipmentDto;
 import com.javarush.borisov.db.Dto.RequestDto;
 import com.javarush.borisov.db.Dto.UserDto;
 import com.javarush.borisov.db.Service.RequestService;
-import com.javarush.borisov.db.constants.UserRoles;
-import com.javarush.borisov.entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,7 +16,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @WebServlet("/rest/db")
 public class RestDb extends HttpServlet {

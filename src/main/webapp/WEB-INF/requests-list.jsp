@@ -81,7 +81,7 @@ ${requestScope.tableLow}
                         "<td>" + message[i].status + "</td>" +
                         "<td>" + message[i].createDate + "</td>" +
                         "<td>" + message[i].sla + "</td>" +
-                        `<td><input type="date" class="close-date-input" value="` + formatDateForInput(message[i].closeDate) + `"> </td>` +
+                        `<td><input type="datetime-local" class="close-date-input" value="` + formatDateForInput(message[i].closeDate) + `"> </td>` +
                         "<td>" + message[i].contragent + "</td>" +
                         "<td>" + message[i].user + "</td>" +
                         "<td>" + message[i].comment + "</td>" +
@@ -146,6 +146,7 @@ ${requestScope.tableLow}
             `\n--------------------------------------------` +
             `\n Снято:            \n` + eqUnmontageText);
         if (!confirmed) return;
+
         const rowData = {
             reqNumber: reqNumber,
             customer: customer,
@@ -154,7 +155,7 @@ ${requestScope.tableLow}
             equipmentsMontage: eqMontageJson,
             equipmentsUnMontage: eqUnmontageJson,
             sla: sla,
-            closeDate: convertISOToDDMMYYYY(closeDate),
+            closeDate: convertISOToDDMMYYYYHHMM(closeDate),
             contragent: contragent,
             user: user,
             comment: comment,
@@ -179,12 +180,31 @@ ${requestScope.tableLow}
             }
         });
     });
-    function convertISOToDDMMYYYY(dateStr) {
+    function convertISOToDDMMYYYYHHMM(dateStr) {
+        console.info(dateStr);
+
         if (!dateStr) return '';
-        const parts = dateStr.split('-'); // ['2025', '05', '26']
-        if (parts.length !== 3) return '';
-        const [year, month, day] = parts;
-        return day+ `.` + month + `.` + year;
+
+        try {
+            // Создаем объект Date
+            const date = new Date(dateStr);
+
+            // Проверяем валидность даты
+            if (isNaN(date)) return '';
+
+            // Форматируем день, месяц, год
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+
+            // Форматируем часы и минуты
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+
+            return day + '.' + month + '.' + year +' '+  hours + ':'  + minutes;
+        } catch (error) {
+            return '';
+        }
     }
     $(document).on('click', '.edit-btn', function () {
         const row = $(this).closest('tr');
