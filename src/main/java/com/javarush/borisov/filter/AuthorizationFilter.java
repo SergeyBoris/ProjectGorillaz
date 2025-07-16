@@ -1,7 +1,7 @@
 package com.javarush.borisov.filter;
 
 import com.javarush.borisov.db.constants.UserRoles;
-import com.javarush.borisov.db.Dto.UserDto;
+import com.javarush.borisov.entity.dto.old.UserDtoOld;
 import com.javarush.borisov.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,12 +26,12 @@ public class AuthorizationFilter extends HttpFilter {
 
         if (session.getAttribute("user") == null) {
 
-            session.setAttribute("user", new UserDto(new User(123L, "guest", null, null, UserRoles.GUEST)));
+            session.setAttribute("user", new UserDtoOld(new User(123L, "guest", null, null, UserRoles.GUEST)));
 
             res.sendRedirect(requestURI);
         } else {
             boolean ok = false;
-            UserDto user = (UserDto) req.getSession().getAttribute("user");
+            UserDtoOld user = (UserDtoOld) req.getSession().getAttribute("user");
             List<String> permissions = user.getRole().getPermissions();
             for (String permission : permissions) {
                 if (requestURI.equals(permission)) {

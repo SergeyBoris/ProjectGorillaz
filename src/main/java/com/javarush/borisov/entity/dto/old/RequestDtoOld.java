@@ -1,4 +1,4 @@
-package com.javarush.borisov.db.Dto;
+package com.javarush.borisov.entity.dto.old;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.javarush.borisov.entity.Request;
@@ -6,22 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Getter@Setter
-public class RequestDto {
+public class RequestDtoOld {
 
     private Long id;
     private String reqNumber;
     private String customer;
     private String customerPhone;
     private String address;
-    private Set<EquipmentDto> equipmentsMontage;
-    private Set<EquipmentDto> equipmentsUnMontage;
+    private Set<EquipmentDtoOld> equipmentsMontage;
+    private Set<EquipmentDtoOld> equipmentsUnMontage;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime sla;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
@@ -37,7 +36,7 @@ public class RequestDto {
     private String contragent;
     private String user;
 
-    public RequestDto(Request request) {
+    public RequestDtoOld(Request request) {
         this.id = request.getId();
         this.reqNumber = request.getReqNumber() != null ? request.getReqNumber() : "";
         this.customer = request.getCustomer()!=null ? request.getCustomer() : "";
@@ -45,13 +44,13 @@ public class RequestDto {
         this.address = request.getAddress()!=null ? request.getAddress() : "";
         this.equipmentsMontage = request.getEquipmentsMontage() != null
                 ? request.getEquipmentsMontage().stream()
-                .map(EquipmentDto::new)
+                .map(EquipmentDtoOld::new)
                 .collect(Collectors.toSet())
                 : Collections.emptySet();
 
         this.equipmentsUnMontage = request.getEquipmentsUnmontage() != null
                 ? request.getEquipmentsUnmontage().stream()
-                .map(EquipmentDto::new)
+                .map(EquipmentDtoOld::new)
                 .collect(Collectors.toSet())
                 : Collections.emptySet();
 

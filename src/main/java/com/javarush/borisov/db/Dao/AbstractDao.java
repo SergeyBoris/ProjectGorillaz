@@ -8,9 +8,11 @@ import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Transactional
+
 public abstract class AbstractDao<T> {
 
 

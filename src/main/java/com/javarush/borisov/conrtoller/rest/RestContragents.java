@@ -1,7 +1,7 @@
 package com.javarush.borisov.conrtoller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javarush.borisov.db.Dto.ContragentDto;
+import com.javarush.borisov.entity.dto.old.ContragentDtoOld;
 import com.javarush.borisov.db.Service.ContragentService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,7 +17,7 @@ public class RestContragents extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
        ContragentService contragentService = new ContragentService();
-        List<ContragentDto> contragents = contragentService.getAllContragents();
+        List<ContragentDtoOld> contragents = contragentService.getAllContragents();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         new ObjectMapper().writeValue(resp.getWriter(), contragents);

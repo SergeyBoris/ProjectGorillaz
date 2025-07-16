@@ -39,7 +39,7 @@ public class FolderScanner {
                     this.scan(path + "/" + paths.getFileName().toString(), false);
                 } else {
                     if (!foundedSubFolders.isEmpty()) {
-                        foundedFolders.add(foundedSubFolders.getLast() + "/" + paths.getFileName().toString());
+                        foundedFolders.add(foundedSubFolders.get(foundedSubFolders.size() - 1) + "/" + paths.getFileName().toString());
                     } else {
                         foundedFolders.add(paths.getFileName().toString());
                     }

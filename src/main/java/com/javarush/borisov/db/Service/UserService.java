@@ -1,7 +1,7 @@
 package com.javarush.borisov.db.Service;
 
 import com.javarush.borisov.db.Dao.UserDao;
-import com.javarush.borisov.db.Dto.UserDto;
+import com.javarush.borisov.entity.dto.old.UserDtoOld;
 import com.javarush.borisov.entity.User;
 
 import java.util.ArrayList;
@@ -9,14 +9,14 @@ import java.util.List;
 
 public class UserService {
 
-    public List<UserDto> getAllUsersDto(){
+    public List<UserDtoOld> getAllUsersDto(){
 
         UserDao userDao = new UserDao();
         List<User> all = userDao.getAll();
-        List<UserDto> userDtos = new ArrayList<>();
+        List<UserDtoOld> userDtoOlds = new ArrayList<>();
         for (User user : all) {
-            userDtos.add(new UserDto(user));
+            userDtoOlds.add(new UserDtoOld(user));
         }
-        return userDtos;
+        return userDtoOlds;
     }
 }

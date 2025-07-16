@@ -4,9 +4,11 @@ import com.javarush.borisov.config.MySessionCreator;
 import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Equipment;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class EquipmentDao extends AbstractDao<Equipment> {
     public EquipmentDao() {
         super(Equipment.class);

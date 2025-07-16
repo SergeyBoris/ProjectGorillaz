@@ -3,8 +3,8 @@ package com.javarush.borisov.conrtoller.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.javarush.borisov.db.Dto.RequestDto;
-import com.javarush.borisov.db.Dto.UserDto;
+import com.javarush.borisov.entity.dto.old.RequestDtoOld;
+import com.javarush.borisov.entity.dto.old.UserDtoOld;
 import com.javarush.borisov.db.Service.RequestService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -41,11 +41,11 @@ public class RestDb extends HttpServlet {
         String json = sb.toString();
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        RequestDto requestDto = mapper.readValue(json, RequestDto.class);
+        RequestDtoOld requestDtoOld = mapper.readValue(json, RequestDtoOld.class);
         RequestService requestService = new RequestService();
-        requestDto.setId(id);
+        requestDtoOld.setId(id);
 
-        if(requestService.closeRequest(requestDto)){
+        if(requestService.closeRequest(requestDtoOld)){
             resp.setContentType("application/json");
             resp.getWriter().write("{\"success\": true}");
         }else {
@@ -62,9 +62,9 @@ public class RestDb extends HttpServlet {
 
         if (req.getParameter("requestsToShow") != null) {
 
-            UserDto userDto = (UserDto) session.getAttribute("user");
-            List<RequestDto> requestDtos = requestService.getAssignedRequestDtos(userDto);
-            sendResponse(resp, requestDtos);
+            UserDtoOld userDtoOld = (UserDtoOld) session.getAttribute("user");
+            List<RequestDtoOld> requestDtoOlds = requestService.getAssignedRequestDtos(userDtoOld);
+            sendResponse(resp, requestDtoOlds);
             return;
 
         }

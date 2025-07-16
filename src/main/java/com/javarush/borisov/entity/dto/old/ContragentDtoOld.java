@@ -1,6 +1,5 @@
-package com.javarush.borisov.db.Dto;
+package com.javarush.borisov.entity.dto.old;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.javarush.borisov.entity.Contragent;
 import lombok.Getter;
@@ -8,11 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ContragentDto {
+public class ContragentDtoOld {
 
     private String name;
 
-    public ContragentDto(Contragent contragent) {
+    public ContragentDtoOld(Contragent contragent) {
         this.name = contragent.getName();
     }
     @JsonValue

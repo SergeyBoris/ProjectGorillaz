@@ -1,7 +1,7 @@
 package com.javarush.borisov.conrtoller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javarush.borisov.db.Dto.EquipmentDto;
+import com.javarush.borisov.entity.dto.old.EquipmentDtoOld;
 import com.javarush.borisov.db.Service.EquipmentService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,7 +23,7 @@ public class RestEquipment extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }else {
 
-            List<EquipmentDto> bySerialAndContragent = equipmentService.getBySerialAndContragent(equipment, contragent,20);
+            List<EquipmentDtoOld> bySerialAndContragent = equipmentService.getBySerialAndContragent(equipment, contragent,20);
             resp.setContentType("application/json");
             new ObjectMapper().writeValue(resp.getWriter(),bySerialAndContragent);
         }

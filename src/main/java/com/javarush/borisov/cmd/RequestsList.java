@@ -1,21 +1,17 @@
 package com.javarush.borisov.cmd;
 
-import com.javarush.borisov.config.ClassCreator;
-import com.javarush.borisov.db.Db;
-import com.javarush.borisov.db.Dto.ContragentDto;
+import com.javarush.borisov.entity.dto.old.ContragentDtoOld;
 import com.javarush.borisov.db.Service.ContragentService;
-import com.javarush.borisov.entity.Contragent;
-import com.javarush.borisov.util.EntityCreator;
-import jakarta.servlet.http.Cookie;
+
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.Map;
 
 
 public class RequestsList implements Command {
-    private final Db db = ClassCreator.get(Db.class);
+
 
     private final String contragentBarBtnDatesTop = """
                   <section>
@@ -122,7 +118,8 @@ public class RequestsList implements Command {
     private String getReqByDate() {
 
         StringBuilder result = new StringBuilder();
-        Map<Integer, List<Integer>> allDatesWeGot = db.allDatesWeGot();
+        Map<Integer, List<Integer>> allDatesWeGot = Map.of(2024,List.of(1,2),2025,List.of(1,2,3,4,5,6,7,8)); //TODO
+
         for (Map.Entry<Integer, List<Integer>> stringListEntry : allDatesWeGot.entrySet()) {
             result.append("<li class=\"dropdown\"><a class=\"dropdown-item dropdown-toggle\" href=\"#\">")
                     .append(stringListEntry.getKey())
@@ -142,12 +139,12 @@ public class RequestsList implements Command {
     private String ContragentNavBarFilling() {
         StringBuilder result = new StringBuilder();
         ContragentService contragentService = new ContragentService();
-        List<ContragentDto> contragentsDto = contragentService.getAllContragents();
-        for (ContragentDto contragentDto : contragentsDto) {
+        List<ContragentDtoOld> contragentsDto = contragentService.getAllContragents();
+        for (ContragentDtoOld contragentDtoOld : contragentsDto) {
             result.append("<li class=\"nav-item\"><a class=\"nav-link contragent-link\" href=\"#\" data-name=\"")
-                    .append(contragentDto.getName())
+                    .append(contragentDtoOld.getName())
                     .append("\">")
-                    .append(contragentDto.getName())
+                    .append(contragentDtoOld.getName())
                     .append("</a></li>");
         }
         return result.toString();

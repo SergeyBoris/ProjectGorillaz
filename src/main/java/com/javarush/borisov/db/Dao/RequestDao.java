@@ -4,9 +4,11 @@ import com.javarush.borisov.config.MySessionCreator;
 import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.entity.Request;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class RequestDao extends AbstractDao<Request> {
 
     public RequestDao() {

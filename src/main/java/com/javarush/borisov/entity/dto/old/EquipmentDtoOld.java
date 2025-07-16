@@ -1,4 +1,4 @@
-package com.javarush.borisov.db.Dto;
+package com.javarush.borisov.entity.dto.old;
 
 import com.javarush.borisov.db.constants.EquipmentStatus;
 import com.javarush.borisov.entity.Contragent;
@@ -11,14 +11,14 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @Getter@Setter
-public class EquipmentDto {
+public class EquipmentDtoOld {
 
     private String model;
     private String serialNumber;
     private EquipmentStatus equipmentStatus;
     private Contragent contragent;
 
-    public EquipmentDto(Equipment equipment) {
+    public EquipmentDtoOld(Equipment equipment) {
         this.model = equipment.getModel();
         this.serialNumber = equipment.getSerialNumber();
         this.equipmentStatus = equipment.getEquipmentStatus();

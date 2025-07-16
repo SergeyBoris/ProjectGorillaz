@@ -1,4 +1,4 @@
-package com.javarush.borisov.db.Dto;
+package com.javarush.borisov.entity.dto.old;
 
 import com.javarush.borisov.db.constants.UserRoles;
 
@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter@Setter
-public class UserDto {
+public class UserDtoOld {
 
     private Long id;
     private String name;
@@ -15,7 +15,7 @@ public class UserDto {
     private String password;
     private UserRoles role;
 
-    public UserDto(User user) {
+    public UserDtoOld(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.mail = user.getMail();

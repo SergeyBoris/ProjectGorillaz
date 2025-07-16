@@ -3,7 +3,9 @@ package com.javarush.borisov.db.Dao;
 import com.javarush.borisov.config.MySessionCreator;
 import com.javarush.borisov.entity.User;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserDao extends AbstractDao<User> {
     public UserDao() {
         super(User.class);
