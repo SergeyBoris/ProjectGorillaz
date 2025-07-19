@@ -18,7 +18,7 @@ public class ReqService {
     RequestRepo requestRepo;
 
     public List<RequestDto> getRequestWithSerial(String serial) {
-        List<Request> requests = requestRepo.findByEquipmentsMontage_SerialNumberAndEquipmentsUnmontage_SerialNumber(serial, serial);
+        List<Request> requests = requestRepo.findByEquipmentsMontage_SerialNumberOrEquipmentsUnmontage_SerialNumber(serial, serial);
         return requests.stream().map(requestMapper::toDto).toList();
     }
 

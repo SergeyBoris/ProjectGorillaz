@@ -3,23 +3,44 @@ import com.javarush.borisov.config.AppConfig;
 import com.javarush.borisov.config.ClassCreator;
 import com.javarush.borisov.config.MySessionCreator;
 import com.javarush.borisov.db.constants.UserRoles;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebListener;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.SessionFactory;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-@WebListener
+@Component
+@RequiredArgsConstructor
 public class DockerMySQLStarter implements ServletContextListener {
+    private final DataSourceProperties dataSourceProperties;
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC драйвер зарегистрирован.");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Не удалось найти драйвер MySQL!");
+            e.printStackTrace();
+        }
+    }
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
+    @PostConstruct
+    public void startAndWait() {
         AppConfig appConfig = ClassCreator.get(AppConfig.class);
         startOrRestartMySQL();
+        waitForMySQLReady();
+
 
         if(appConfig.get("firstRun").equals("true")) {
             // DockerMySQLStarterWSL startOrRestartWSL = new DockerMySQLStarterWSL();
@@ -112,7 +133,34 @@ public class DockerMySQLStarter implements ServletContextListener {
             throw new RuntimeException(e);
         }
     }
+    private void waitForMySQLReady() {
+        String jdbcUrl = dataSourceProperties.getUrl();
+        String user = dataSourceProperties.getUsername();
+        String password = dataSourceProperties.getPassword();
 
+        int retries = 10;
+        int waitTime = 3000; // 3 секунды
+
+        for (int i = 0; i < retries; i++) {
+            try (Connection conn = DriverManager.getConnection(jdbcUrl, user, password)) {
+
+                System.out.println("MySQL доступен, подключение успешно!");
+                return;
+            } catch (SQLException e) {
+                System.out.println(jdbcUrl);
+                System.out.println(user);
+                System.out.println(password);
+                System.out.printf("MySQL ещё не доступен (%s: %s), ждем...%n",
+                        e.getClass().getSimpleName(), e.getMessage());
+                try {
+                    Thread.sleep(waitTime);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
+        throw new RuntimeException("Не удалось подключиться к MySQL после " + (retries * waitTime / 1000) + " секунд");
+    }
 
 
 }
