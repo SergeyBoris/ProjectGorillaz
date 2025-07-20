@@ -1,33 +1,172 @@
+<!-- templates/serial-info.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Заявки по серийному номеру</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
-</head>
-<body class="container mt-4">
-<h2>Заявки по серийному номеру: <span th:text="${serial}">...</span></h2>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:replace="fragments/head :: head"></head>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
 
-<div th:if="${#lists.isEmpty(requests)}">
-    <p>Заявки не найдены.</p>
-</div>
 
-<table class="table table-bordered" th:if="${!#lists.isEmpty(requests)}">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Описание</th>
-        <th>Дата</th>
-        <th>Статус</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="req : ${requests}">
-        <td th:text="${req.id}"></td>
-        <td th:text="${req.getAddress()}"></td>
-        <td th:text="${#temporals.format(req.getCreateDate(), 'dd.MM.yyyy')}"></td>
-        <td th:text="${req.status}"></td>
-    </tr>
-    </tbody>
-</table>
-</body>
-</html>
+<!-- HEADER -->
+<div th:replace="fragments/header :: header"></div>
+
+<!-- MAIN -->
+<main class="container mt-4 flex-grow-1">
+    <h2>Заявки по серийному номеру: <span th:text="${serial}">...</span></h2>
+
+    <div th:if="${#lists.isEmpty(requests)}">
+        <p>Заявки не найдены.</p>
+    </div>
+
+    <table class="table table-bordered" th:if="${!#lists.isEmpty(requests)}">
+        <thead>
+        <tr>
+            <th>Номер заявки</th>
+            <th>Заказчик</th>
+            <th>Телефон</th>
+            <th>Адрес</th>
+            <th>Установленное оборудование</th>
+            <th>Снятое оборудование</th>
+            <th>Статус</th>
+            <th>Дата закрытия</th>
+            <th>Инженер</th>
+            <th>Коментарий</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="req : ${requests}">
+            <td th:text="${req.reqNumber}"></td>
+            <td th:text="${req.customer}"></td>
+            <td th:text="${req.customerPhone}"></td>
+            <td th:text="${req.address}"></td>
+            <td>
+                <div th:if="${req.equipmentsMontage != null}"
+                     th:id="'equipment-list-' + ${req.id}">
+                    <div th:each="equipmentMontage : ${req.equipmentsMontage}"
+                         class="equipment-item"
+                         th:id="'equipment-' + ${equipmentMontage.id}">
+
+                        <a th:href="@{/equipment(equipment=${equipmentMontage.serialNumber})}" target="_blank">
+                            <strong th:text="${equipmentMontage.model}"></strong> /
+                            <span th:text="${equipmentMontage.serialNumber}"></span>
+                        </a>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-danger remove-equipment-btn"
+                                th:data-eqid="${equipmentMontage.id}"
+
+                                th:data-serial="${equipmentMontage.serialNumber}"
+                                th:data-reqid="${req.id}"
+                                data-type="montage">✖
+                        </button>
+                    </div>
+                </div>
+                <button type="button"
+                        class="btn btn-xs btn-success add-equipment-btn"
+                        th:data-reqid="${req.id}">
+                    ➕ Добавить оборудование
+                </button>
+            </td>
+            <td>
+                <div th:if="${req.equipmentsUnmontage != null}"
+                     th:id="'unmount-equipment-list-' + ${req.id}">
+                    <div th:each="equipmentUnmontage : ${req.equipmentsUnmontage}"
+                         class="equipment-item"
+                         th:id="'equipment-' + ${equipmentUnmontage.serialNumber}">
+                        <a th:href="@{/equipment(equipment=${equipmentUnmontage.serialNumber})}" target="_blank">
+                            <strong th:text="${equipmentUnmontage.model}"></strong> /
+                            <span th:text="${equipmentUnmontage.serialNumber}"></span>
+                        </a>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-danger remove-equipment-btn"
+                                th:data-eqId="${equipmentUnmontage.id}"
+                                th:data-serial="${equipmentUnmontage.serialNumber}"
+                                th:data-reqid="${req.id}"
+                                data-type="unmontage">✖
+                        </button>
+                    </div>
+                </div>
+                <button type="button"
+                        class="btn btn-xs btn-success add-equipment-btn"
+                        th:data-reqid="${req.id}">
+                    ➕ Добавить оборудование
+                </button>
+            </td>
+            <td th:text="${req.status.name}"></td>
+            <td th:text="${#temporals.format(req.closeDate, 'dd.MM.yyyy')}"></td>
+            <td th:text="${req.user.getName()}"></td>
+            <td th:text="${req.comment}"></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<!-- FOOTER -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<script>
+    document.querySelectorAll('.remove-equipment-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+            const eqId = button.dataset.eqid;
+            const serial = button.dataset.serial;
+            const reqId = button.dataset.reqid;
+            const type = button.dataset.type; // "montage" или "unmontage"
+            console.log(eqId)
+            console.log(reqId)
+            console.log(type)
+            const confirmed = confirm(`Удалить оборудование с серийным номером ${serial}?`);
+            if (!confirmed) return;
+
+            const url = type === 'montage'
+                ? `/equipment/${reqId}/montage/${eqId}`
+                : `/equipment/${reqId}/unmontage/${eqId}`;
+
+            const response = await fetch(url, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                // Удалить DOM-элемент
+                button.parentElement.remove();
+            } else {
+                alert("Ошибка при удалении оборудования");
+            }
+        });
+    });
+
+        // Добавление оборудования
+        document.querySelectorAll('.add-equipment-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const reqId = button.dataset.reqid;
+                const model = prompt("Введите модель:");
+                const serial = prompt("Введите серийный номер:");
+
+                if (!model || !serial) return;
+
+                const response = await fetch(`/api/request/${reqId}/equipment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model, serialNumber: serial })
+                });
+
+                if (response.ok) {
+                    const newElement = document.createElement('div');
+                    newElement.classList.add('equipment-item');
+                    newElement.id = `equipment-${serial}`;
+                    newElement.innerHTML = `
+                        <a href="/equipment?equipment=${serial}" target="_blank">
+                            <strong>${model}</strong> / <span>${serial}</span>
+                        </a>
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-equipment-btn" data-serial="${serial}" data-reqid="${reqId}">✖</button>
+                    `;
+                    document.getElementById(`equipment-list-${reqId}`)?.appendChild(newElement);
+
+                    // Повторно навесить обработчик удаления
+                    newElement.querySelector('.remove-equipment-btn').addEventListener('click', () => {
+                        newElement.remove();
+                    });
+
+                } else {
+                    alert("Ошибка при добавлении оборудования");
+                }
+            });
+        });
+
+</script>

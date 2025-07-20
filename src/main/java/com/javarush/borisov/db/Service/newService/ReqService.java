@@ -15,12 +15,14 @@ import java.util.List;
 public class ReqService {
 
     private final RequestMapper requestMapper;
-    RequestRepo requestRepo;
+    private final RequestRepo requestRepo;
 
     public List<RequestDto> getRequestWithSerial(String serial) {
         List<Request> requests = requestRepo.findByEquipmentsMontage_SerialNumberOrEquipmentsUnmontage_SerialNumber(serial, serial);
         return requests.stream().map(requestMapper::toDto).toList();
     }
+
+
 
 
 

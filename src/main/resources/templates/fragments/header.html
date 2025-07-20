@@ -1,0 +1,30 @@
+<!-- templates/fragments/header.html -->
+<header th:fragment="header">
+    <nav class="navbar navbar-expand-md bg-dark py-3" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <span class="bs-icon-sm bs-icon-rounded bs-icon-primary me-2 d-flex align-items-center justify-content-center">
+                    <!-- иконка -->
+                </span>
+                <span>UnionService</span>
+            </a>
+            <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-5">
+                <span class="visually-hidden">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-5">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" th:href="@{/start-page}">Главная</a></li>
+                    <li class="nav-item" th:if="${session.user?.role == 'ADMIN' or session.user?.role == 'ENGINEER' or session.user?.role == 'COORDINATOR'}">
+                        <a class="nav-link" th:href="@{/requests-list}">Заявки</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.user?.role == 'ADMIN'}">
+                        <a class="nav-link" href="#">Third Item</a>
+                    </li>
+                </ul>
+                <a class="btn btn-primary ms-md-2" th:if="${session.user == null or session.user.role == 'GUEST'}" th:href="@{/login}">Login</a>
+                <a class="btn btn-primary ms-md-2" th:if="${session.user?.role != 'GUEST'}" th:href="@{/start-page(invalidate=1)}">Выйти</a>
+            </div>
+        </div>
+    </nav>
+</header>

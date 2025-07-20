@@ -47,7 +47,7 @@ ${requestScope.tableLow}
     function getEqModels(equipments) {
         let html = equipments.map((eq, index) => `
         <div class="equipment-view-block" data-index="` + index + `">
-            <a class="eq-inline" href="/serialInfo?serial=` + encodeURIComponent(eq.serialNumber)+ `" target="_blank">
+            <a class="eq-inline" href="/equipment?equipment=` + encodeURIComponent(eq.serialNumber)+ `" target="_blank">
                 <strong>` + eq.model + `</strong> / `+ eq.serialNumber + `
             </a>
                  <button type="button" class="btn btn-sm btn-outline-danger remove-equipment-btn">✖</button>
