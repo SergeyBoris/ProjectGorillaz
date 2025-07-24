@@ -94,7 +94,7 @@ public class RequestsList implements Command {
     @Override
     public String doGet(HttpServletRequest req) {
         if (contragentBarBtnDatesData == null) {                                                                          //вычисление годов/месяцев с заявками
-            contragentBarBtnDatesData = getReqByDate();
+          contragentBarBtnDatesData = getReqByDate();
         }
         if (contragentBarTop == null) {                                                                                  //наполнение дропбокаса годами/месяцами
             contragentBarTop = contragentBarBtnDatesTop + contragentBarBtnDatesData + contragentBarBtnDatesLow;

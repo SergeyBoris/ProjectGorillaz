@@ -1,15 +1,16 @@
 <!-- templates/serial-info.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head th:replace="fragments/head :: head"></head>
-<body style="display: flex; flex-direction: column; min-height: 100vh;">
+<header th:replace="fragments/head :: head"></header>
 
 
-<!-- HEADER -->
-<div th:replace="fragments/header :: header"></div>
+
+<!--&lt;!&ndash; HEADER &ndash;&gt;-->
+<!--<div th:replace="fragments/header :: header"></div>-->
 
 <!-- MAIN -->
-<main class="container mt-4 flex-grow-1">
+<main style="flex: 1;">
+    <!-- Контент страницы здесь -->
     <h2>Заявки по серийному номеру: <span th:text="${serial}">...</span></h2>
 
     <div th:if="${#lists.isEmpty(requests)}">

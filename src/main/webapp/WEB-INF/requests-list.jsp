@@ -236,7 +236,7 @@ ${requestScope.tableLow}
                                 cell.html(select);
                             },
                             error: function () {
-                                cell.html('<span style="color: red;">Ошибка загрузки</span>');
+                                cell.html('<span style="color: #fa7676;">Ошибка загрузки</span>');
                             }
                         });
                     } else if (index === 4 || index === 5 || index === 9) {
