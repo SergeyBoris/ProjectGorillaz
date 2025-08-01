@@ -1,14 +1,15 @@
 <!-- templates/serial-info.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<header th:replace="fragments/head :: head"></header>
 
 
 
+<th:block th:replace="fragments/head :: head"></th:block>
 <!--&lt;!&ndash; HEADER &ndash;&gt;-->
 <!--<div th:replace="fragments/header :: header"></div>-->
 
-<!-- MAIN -->
+<body>
+<header th:replace="fragments/head :: head"></header>
 <main style="flex: 1;">
     <!-- Контент страницы здесь -->
     <h2>Заявки по серийному номеру: <span th:text="${serial}">...</span></h2>
@@ -98,9 +99,9 @@
         </tbody>
     </table>
 </main>
-
+</body>
 <!-- FOOTER -->
-<div th:replace="fragments/footer :: footer"></div>
+<th:block th:replace="fragments/footer :: footer"></th:block>
 
 <script>
     document.querySelectorAll('.remove-equipment-btn').forEach(button => {

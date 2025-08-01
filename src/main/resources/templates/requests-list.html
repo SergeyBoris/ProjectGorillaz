@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head"></head>
+<th:block th:replace="fragments/head :: head"></th:block>
 <body>
 <!-- Вставляем header -->
-<header th:replace="fragments/header :: header"></header>
+<th:block th:replace="fragments/header :: header"></th:block>
 
 <main>
     <!-- Содержимое страницы -->
@@ -12,4 +12,5 @@
 
 <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
+<th:block th:replace="fragments/footer :: footer"></th:block>
 </html>

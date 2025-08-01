@@ -1,38 +1,20 @@
 package com.javarush.borisov.conrtoller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import com.javarush.borisov.cmd.Command;
-import com.javarush.borisov.cmd.HttpResolver;
-import com.javarush.borisov.config.ClassCreator;
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jdk.jfr.Name;
+@Controller
+public class MainController {
 
-import java.io.IOException;
-
-@WebServlet({"", "/start-page", "/requests-list", "/login" ,"/select-equipment"})
-public class MainController extends HttpServlet {
-
-    private final HttpResolver httpResolver = ClassCreator.get(HttpResolver.class);
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Command command = httpResolver.resolve(req);
-        String commandName = command.doGet(req);
-        String fullJspPath = "/WEB-INF/" + commandName + ".jsp";
-        req.getRequestDispatcher(fullJspPath).forward(req, resp);
-
+    @GetMapping({"/", "/index"})
+    public String index(Model model) {
+      //  model.addAttribute("title", "Главная страница");
+        return "index"; // Вернётся index.html или index.jsp, в зависимости от шаблонизатора
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Command command = httpResolver.resolve(req);
-        String redirect = command.doPost(req);
-        resp.sendRedirect(redirect);
+    @GetMapping("/requests-list")
+    public String requestList(Model model) {
+        return "requests-list";
     }
 }
