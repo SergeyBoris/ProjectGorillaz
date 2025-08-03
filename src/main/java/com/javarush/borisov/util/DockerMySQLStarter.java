@@ -16,19 +16,19 @@ public class DockerMySQLStarter  {
 
 
 
-//    static {
-//        try {
-//            Class.forName("com.mysql.cj.jdbc.Driver");
-//            System.out.println("MySQL JDBC драйвер зарегистрирован.");
-//        } catch (ClassNotFoundException e) {
-//            System.err.println("Не удалось найти драйвер MySQL!");
-//            e.printStackTrace();
-//        }
-//    }
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC драйвер зарегистрирован.");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Не удалось найти драйвер MySQL!");
+            e.printStackTrace();
+        }
+    }
 
 
     public static void startAndWait() {
-        MySessionCreator.getSessionCreator();
+
         startOrRestartMySQL();
         waitForMySQLReady();
 

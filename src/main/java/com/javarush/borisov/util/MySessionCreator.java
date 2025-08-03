@@ -15,6 +15,7 @@ public class MySessionCreator {
 
     private MySessionCreator() {
         configuration = new Configuration().configure(); // Читает hibernate.cfg.xml
+
         sessionFactory = configuration.buildSessionFactory();
     }
 

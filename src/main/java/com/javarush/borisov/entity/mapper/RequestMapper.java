@@ -9,7 +9,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses ={EquipmentMapper.class, ContragentMapper.class, UserMapper.class})
 public interface RequestMapper {
 
+
     RequestDto toDto(Request request);
+
+
     @Mapping(target = "parameters", ignore = true)
     Request toEntity(RequestDto dto);
 }

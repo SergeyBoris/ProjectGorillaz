@@ -15,6 +15,6 @@ public class MainController {
 
     @GetMapping("/requests-list")
     public String requestList(Model model) {
-        return "requests-list";
+        return "assigned-requests";
     }
 }

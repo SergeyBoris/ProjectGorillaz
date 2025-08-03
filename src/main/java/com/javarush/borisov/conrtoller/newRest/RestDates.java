@@ -10,7 +10,7 @@ public class RestDates {
 
     @GetMapping
     public String temp(){
-        return "requests-list";
+        return "assigned-requests";
     }
 
 }

@@ -1,6 +1,7 @@
 package com.javarush.borisov.db.Service.newService;
 
 import com.javarush.borisov.db.Repository.YearMonthProjection;
+import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.entity.dto.RequestDto;
 
 import com.javarush.borisov.db.Repository.RequestRepo;
@@ -10,6 +11,7 @@ import jakarta.annotation.PostConstruct;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,6 +28,18 @@ public class ReqService {
     private final RequestMapper requestMapper;
     private final RequestRepo requestRepo;
     private Map<Integer, List<Integer>> cachedDates = new ConcurrentHashMap<>();
+
+    @Transactional(readOnly = true)
+    public List<RequestDto> getAssignedRequests(){
+        return requestRepo.findByStatusIn(
+                List.of(RequestStatus.ASSIGNED,RequestStatus.IN_PROGRESS,RequestStatus.CLOSED_BY_USER))
+                .stream()
+                .map(requestMapper::toDto)
+                .toList();
+
+
+    }
+
 
     public List<RequestDto> getRequestWithSerial(String serial) {
         List<Request> requests = requestRepo.findByEquipmentsMontage_SerialNumberOrEquipmentsUnmontage_SerialNumber(serial, serial);
