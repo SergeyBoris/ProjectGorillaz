@@ -1,13 +1,11 @@
-package com.javarush.borisov.db;
+package com.javarush.borisov.util;
 
-import com.javarush.borisov.config.MySessionCreator;
+
 import com.javarush.borisov.db.constants.EquipmentStatus;
 import com.javarush.borisov.db.constants.RequestStatus;
-
 import com.javarush.borisov.entity.*;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,20 +35,20 @@ public class DbInit {
                 request1.setAddress("653039, Кемеровская область - Кузбасс, г Прокопьевск, пр-кт Гагарина, д 3");
                 request1.setContragent(session.get(Contragent.class, (long) random(1, 4)));
                 request1.setCustomerPhone("+79049600005");
-                request1.setEquipmentsMontage(
-                        new HashSet<>(
-                                session.createQuery("from Equipment where id = :id or id = :id2", Equipment.class)
-                                        .setParameter("id", (long) random(1, 5))
-                                        .setParameter("id2", (long) random(0, 10))
-                                        .list()
-                        )
-                );
 
-                int random = random(1, 7);
-                if (random <= 4) {
+                request1.setEquipmentsMontage(new HashSet<>(session.createQuery("from Equipment where id = :id1 or id = :id2", Equipment.class)
+                        .setParameter("id1", (long) random(1, 5))
+                        .setParameter("id2", (long) random(0, 10))
+                        .list()));
+
+
+
+
+                int random1 = random(1, 7);
+                if (random1 <= 4) {
                     Set<Equipment> id = Set.of(session.createQuery(
                                     "from Equipment where id = :id", Equipment.class)
-                            .setParameter("id", (long) random)
+                            .setParameter("id", (long) random1)
                             .uniqueResult());
 
                     request1.setEquipmentsUnmontage(id);
@@ -112,6 +110,4 @@ public class DbInit {
 
 
 }
-
-
 

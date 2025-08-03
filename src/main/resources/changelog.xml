@@ -160,19 +160,19 @@
         <insert tableName="users">
             <column name="name" value="Сергей"/>
             <column name="mail" value="serg@mail.ru"/>
-            <column name="password" value="{noop}1234"/>
+            <column name="password" value="1234"/>
             <column name="role" value="ADMIN"/>
         </insert>
         <insert tableName="users">
             <column name="name" value="Миша"/>
             <column name="mail" value="miha@mail.ru"/>
-            <column name="password" value="{noop}1234"/>
+            <column name="password" value="1234"/>
             <column name="role" value="ENGINEER"/>
         </insert>
         <insert tableName="users">
             <column name="name" value="Наташа"/>
             <column name="mail" value="nata@mail.ru"/>
-            <column name="password" value="{noop}1234"/>
+            <column name="password" value="1234"/>
             <column name="role" value="COORDINATOR"/>
         </insert>
 

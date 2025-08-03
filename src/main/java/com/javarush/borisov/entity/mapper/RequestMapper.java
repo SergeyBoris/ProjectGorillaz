@@ -1,7 +1,6 @@
 package com.javarush.borisov.entity.mapper;
 
 import com.javarush.borisov.entity.dto.RequestDto;
-import com.javarush.borisov.entity.dto.old.RequestDtoOld;
 import com.javarush.borisov.entity.Request;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,4 +1,4 @@
-package com.javarush.borisov.db;
+package com.javarush.borisov.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

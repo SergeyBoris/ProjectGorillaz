@@ -1,10 +1,10 @@
 package com.javarush.borisov.db.constants;
 
 import lombok.Getter;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Getter
 public enum RequestStatus {

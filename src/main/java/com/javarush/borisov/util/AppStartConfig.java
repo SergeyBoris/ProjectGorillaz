@@ -1,17 +1,17 @@
-package com.javarush.borisov.config;
+package com.javarush.borisov.util;
+
 
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AppConfig {
+public class AppStartConfig {
 
     private Map<String,String> appConfigs;
-    ClassLoader appConfigClassLoader = AppConfig.class.getClassLoader();
-    public AppConfig() {
+    ClassLoader appConfigClassLoader = com.javarush.borisov.util.AppStartConfig.class.getClassLoader();
+    public AppStartConfig() {
         build();
     }
 

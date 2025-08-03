@@ -27,28 +27,14 @@ public class Equipment {
 
     @ManyToMany(mappedBy = "equipmentsUnmontage", fetch = FetchType.EAGER)
     private Set<Request> requestWhereUnmotageEquipment;
+    @Enumerated(EnumType.STRING)
     @Column(name = "equipment_status")
     private EquipmentStatus equipmentStatus;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contragent_id")
     private Contragent contragent;
 
-    public Equipment(String model, String serialNumber) {
-        if (!(model == null) && !model.isEmpty()) {
-            this.model = model;
-        }else {this.model= "-";}
-        if (!(serialNumber == null) && !serialNumber.isEmpty()) {
-            this.serialNumber = serialNumber;
-        }else {this.serialNumber= "-";}
 
-    }
 
-    @Override
-    public String toString() {
-        return "Equipment{" +
-               "model='" + model + '\'' +
-               ", serialNumber='" + serialNumber + '\'' +
-               ", equipmentStatus=" + equipmentStatus +
-               '}';
-    }
+
 }

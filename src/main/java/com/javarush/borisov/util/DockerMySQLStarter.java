@@ -1,18 +1,7 @@
-package com.javarush.borisov.db;
-import com.javarush.borisov.config.AppConfig;
-import com.javarush.borisov.config.ClassCreator;
-import com.javarush.borisov.config.MySessionCreator;
-import com.javarush.borisov.db.constants.UserRoles;
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.annotation.WebListener;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.SessionFactory;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.stereotype.Component;
+package com.javarush.borisov.util;
+
+import org.hibernate.cfg.Configuration;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,39 +10,42 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-@Component
-@RequiredArgsConstructor
-public class DockerMySQLStarter implements ServletContextListener {
-    private final DataSourceProperties dataSourceProperties;
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("MySQL JDBC драйвер зарегистрирован.");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Не удалось найти драйвер MySQL!");
-            e.printStackTrace();
-        }
-    }
 
-    @PostConstruct
-    public void startAndWait() {
-        AppConfig appConfig = ClassCreator.get(AppConfig.class);
+public class DockerMySQLStarter  {
+    private static final AppStartConfig appStartConfig= new AppStartConfig();
+
+
+
+//    static {
+//        try {
+//            Class.forName("com.mysql.cj.jdbc.Driver");
+//            System.out.println("MySQL JDBC драйвер зарегистрирован.");
+//        } catch (ClassNotFoundException e) {
+//            System.err.println("Не удалось найти драйвер MySQL!");
+//            e.printStackTrace();
+//        }
+//    }
+
+
+    public static void startAndWait() {
+        MySessionCreator.getSessionCreator();
         startOrRestartMySQL();
         waitForMySQLReady();
 
 
-        if(appConfig.get("firstRun").equals("true")) {
+        if(appStartConfig.get("firstRun").equals("true")) {
             // DockerMySQLStarterWSL startOrRestartWSL = new DockerMySQLStarterWSL();
             // startOrRestartWSL.start();
-            DbUpdate.start();
-            DbInit.start();
+           DbUpdate.start(appStartConfig);
+
+           DbInit.start();
         }
 
 
-        MySessionCreator.getSessionCreator();
+
     }
 
-    public void startOrRestartMySQL() {
+    public static void startOrRestartMySQL() {
         String containerName = "mysql-container";
         String password = "root";
 
@@ -133,13 +125,15 @@ public class DockerMySQLStarter implements ServletContextListener {
             throw new RuntimeException(e);
         }
     }
-    private void waitForMySQLReady() {
-        String jdbcUrl = dataSourceProperties.getUrl();
-        String user = dataSourceProperties.getUsername();
-        String password = dataSourceProperties.getPassword();
+    private static void waitForMySQLReady() {
+        Configuration configuration = MySessionCreator.getConfiguration();
+
+        String jdbcUrl = configuration.getProperty("hibernate.connection.url");
+        String user = configuration.getProperty("hibernate.connection.username");
+        String password = configuration.getProperty("hibernate.connection.password");
 
         int retries = 10;
-        int waitTime = 3000; // 3 секунды
+        int waitTime = 3000;
 
         for (int i = 0; i < retries; i++) {
             try (Connection conn = DriverManager.getConnection(jdbcUrl, user, password)) {

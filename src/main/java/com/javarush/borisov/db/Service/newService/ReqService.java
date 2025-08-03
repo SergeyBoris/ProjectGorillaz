@@ -2,18 +2,18 @@ package com.javarush.borisov.db.Service.newService;
 
 import com.javarush.borisov.db.Repository.YearMonthProjection;
 import com.javarush.borisov.entity.dto.RequestDto;
-import com.javarush.borisov.entity.dto.old.RequestDtoOld;
+
 import com.javarush.borisov.db.Repository.RequestRepo;
 import com.javarush.borisov.entity.Request;
 import com.javarush.borisov.entity.mapper.RequestMapper;
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.criteria.CriteriaBuilder;
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
