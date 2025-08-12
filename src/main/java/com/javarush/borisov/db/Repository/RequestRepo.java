@@ -26,6 +26,7 @@ public interface RequestRepo extends JpaRepository<Request,Long> {
     LEFT JOIN FETCH r.equipmentsMontage
     LEFT JOIN FETCH r.equipmentsUnmontage
     WHERE r.status IN :statuses
+    ORDER BY r.createDate ASC
 """)
     List<Request> findByStatusIn(@Param("statuses") Collection<RequestStatus> statuses);
 

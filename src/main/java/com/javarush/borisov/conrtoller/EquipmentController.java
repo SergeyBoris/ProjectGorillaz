@@ -1,4 +1,4 @@
-package com.javarush.borisov.conrtoller.newRest;
+package com.javarush.borisov.conrtoller;
 
 import com.javarush.borisov.db.Service.newService.EquService;
 import com.javarush.borisov.entity.dto.RequestDto;
@@ -18,20 +18,26 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping(("/equipment"))
+@RequestMapping("/equipment")
 @AllArgsConstructor
-public class RestEquipment {
+public class EquipmentController {
     private final ReqService reqService;
     private final EquService equService;
 
-    @GetMapping
+    @GetMapping("/in-request")
     public String getRequestWithSerials(@RequestParam("equipment") String serial, Model model) {
         List<RequestDto> requests = Optional.ofNullable(reqService.getRequestWithSerial(serial))
                 .orElse(Collections.emptyList());
         model.addAttribute("requests", requests);
 
-        return "serial-info"; // будет искать templates/serial-info.html
+        return "serial-info";
 
+    }
+
+    @GetMapping("/active-equipment")
+    public String getActiveEquipment(Model model) {
+
+        return "equip";
     }
 
     @DeleteMapping("/{reqId}/montage/{eqId}")

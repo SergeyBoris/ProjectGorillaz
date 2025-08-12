@@ -66,7 +66,7 @@
 <script>
     async function loadDateDropdown() {
         try {
-            const response = await fetch('/request/available-dates');
+            const response = await fetch('/api/request/available-dates');
             if (!response.ok) throw new Error('Ошибка загрузки данных');
 
             const dateMap = await response.json(); // объект вида { "2025": [1,2], ... }
@@ -113,7 +113,7 @@
 <script>
     async function loadContragents() {
         try {
-            const response = await fetch('/contragents/all'); // Замените на ваш реальный путь
+            const response = await fetch('/api/contragents/all'); // Замените на ваш реальный путь
             if (!response.ok) throw new Error('Ошибка загрузки контрагентов');
 
             const contragents = await response.json(); // Должен быть массив объектов

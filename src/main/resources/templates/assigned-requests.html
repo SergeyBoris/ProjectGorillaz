@@ -12,6 +12,8 @@
             <th>Номер заявки</th>
             <th>Заказчик</th>
             <th>Телефон</th>
+            <th>TID</th>
+            <th>Вид работ</th>
             <th>Адрес</th>
             <th>Монтаж</th>
             <th>Демонтаж</th>
@@ -19,55 +21,73 @@
             <th>Дата создания</th>
             <th>SLA</th>
             <th>Дата закрытия</th>
-            <th>Контрагент</th>
             <th>Пользователь</th>
             <th>Комментарий</th>
-            <th>Расстояние</th>
             <th></th> <!-- Пустая колонка -->
             <th>Действия</th>
             <th></th> <!-- Для кнопки закрытия -->
         </tr>
         </thead>
         <tbody>
-        <tr th:each="req : ${requests}">
+        <tr th:each="req : ${requests}" th:attr="data-req-id=${req.id}">
             <td th:text="${req.reqNumber}">Номер</td>
-            <td th:text="${req.customer}">Заказчик</td>
+            <td th:text="${req.customer}" style="word-break: break-word; white-space: normal;">Заказчик</td>
             <td th:text="${req.customerPhone}">Телефон</td>
+            <td th:text="${req.tid}">TID</td>
+            <td th:text="${req.workType}" style="word-break: break-word; white-space: normal;">Вид работ</td>
             <td th:text="${req.address}" class="wrap-text">Адрес</td>
-            <td>
-                <div th:each="equipment : ${req.equipmentsMontage}" class="equipment-view-block d-flex align-items-center gap-2">
+            <td style="width: 150px; font-size: 0.8rem;">
+                <div th:each="equipment : ${req.equipmentsMontage}"
+                     class="equipment-view-block d-flex align-items-center gap-2">
                     <a class="eq-inline text-decoration-none"
-                       th:href="@{/equipment(equipment=${equipment.serialNumber})}" target="_blank">
+                       th:href="@{/equipment/in-request(equipment=${equipment.serialNumber})}" target="_blank"
+                       style="font-size: 0.8rem;">
                         <strong th:text="${equipment.model}">Model</strong> / <span th:text="${equipment.serialNumber}">SN</span>
                     </a>
                     <button type="button" class="btn btn-sm btn-outline-danger remove-equipment-btn">✖</button>
                 </div>
-                <button type="button" class="btn btn-xs btn-success add-equipment-btn mt-2">➕ Добавить оборудование</button>
+                <button type="button" class="btn btn-xs btn-success add-equipment-btn mt-2"
+                        th:attr="data-contragent-id=${req.contragent.id}, data-req-id=${req.id}, data-equipment-type='montage'"
+                        style="font-size: 0.45rem; padding: 2px 6px;">
+                    ➕ Добавить оборудование
+                </button>
             </td>
-            <td>
-                <div th:each="equipment : ${req.equipmentsUnmontage}" class="equipment-view-block d-flex align-items-center gap-2">
+            <td style="width: 150px; font-size: 0.8rem;">
+                <div th:each="equipment : ${req.equipmentsUnmontage}"
+                     class="equipment-view-block d-flex align-items-center gap-2">
                     <a class="eq-inline text-decoration-none"
-                       th:href="@{/equipment(equipment=${equipment.serialNumber})}" target="_blank">
+                       th:href="@{/equipment(equipment=${equipment.serialNumber})}" target="_blank"
+                       style="font-size: 0.8rem;">
                         <strong th:text="${equipment.model}">Model</strong> / <span th:text="${equipment.serialNumber}">SN</span>
                     </a>
                     <button type="button" class="btn btn-sm btn-outline-danger remove-equipment-btn">✖</button>
                 </div>
-                <button type="button" class="btn btn-xs btn-success add-equipment-btn mt-2">➕ Добавить оборудование</button>
+                <button type="button" class="btn btn-xs btn-success add-equipment-btn mt-2"
+                        th:attr="data-contragent-id=${req.contragent.id}, data-req-id=${req.id}, data-equipment-type='unmontage'"
+                        style="font-size: 0.45rem; padding: 2px 6px;">
+                    ➕ Добавить оборудование
+                </button>
             </td>
             <td th:text="${req.status}">Статус</td>
-            <td th:text="${req.createDate != null ? #temporals.format(req.createDate, 'yyyy-MM-dd HH:mm') : '—'}">Дата создания</td>
-            <td th:text="${req.sla != null ? #temporals.format(req.sla, 'yyyy-MM-dd HH:mm') : '—'}">SLA</td>
+            <td th:utext="${req.createDate != null ?
+            #temporals.format(req.createDate, 'yyyy-MM-dd') + '<br/>' + #temporals.format(req.createDate, 'HH:mm') : '-'}">
+                Дата создания
+            </td>
+            <td th:utext="${req.sla != null ?
+            #temporals.format(req.sla, 'yyyy-MM-dd') + '<br/>' + #temporals.format(req.sla, 'HH:mm') : '-'}">
+                SLA
+            </td>
 
             <td>
                 <input type="datetime-local" class="close-date-input"
-                       th:value="${req.closeDate != null ? #temporals.format(req.closeDate, 'yyyy-MM-dd HH:mm') : ''}" />
+                       th:value="${req.closeDate != null ? #temporals.format(req.closeDate, 'yyyy-MM-dd HH:mm') : ''}"/>
             </td>
-            <td th:text="${req.contragent.name}">Контрагент</td>
-            <td th:text="${req.user.name}">Пользователь</td>
-            <td th:text="${req.comment}">Комментарий</td>
-            <td th:text="${req.rangeToAddress != null ? req.rangeToAddress : ''}">Расстояние</td>
+            <td th:text="${req.user != null} ? ${req.user.name} : 'Пользователь'">Пользователь</td>
+            <td th:text="${req.comment} ">Комментарий</td>
             <td></td>
-            <td><button class="btn btn-primary ms-md-2 edit-btn">Изменить</button></td>
+            <td>
+                <button class="btn btn-primary ms-md-2 edit-btn">Изменить</button>
+            </td>
             <td>
                 <button class="btn btn-sm btn-danger close-btn"
                         th:attr="data-id=${req.id}">
@@ -78,27 +98,167 @@
         </tbody>
     </table>
 </main>
+
+<!-- Модалка для добавления оборудования -->
+<div class="modal fade" id="equipmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить оборудование</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="serialSearch" class="form-label">Серийный номер</label>
+                    <input type="text" class="form-control" id="serialSearch" placeholder="Введите серийный номер">
+                    <div id="searchResults" class="list-group mt-2"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script th:src="@{/assets/bootstrap/js/bootstrap.min.js}"></script>
 <script>
+    let currentReqId = null;
+    let currentEquipmentType = null;
+    let currentContragentId = null;
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
+        // кнопка удаления оборудования
         if (event.target.classList.contains('remove-equipment-btn')) {
             const equipmentBlock = event.target.closest('.equipment-view-block');
             if (!equipmentBlock) return;
 
-            // Получаем название модели и серийный номер из блока
             const model = equipmentBlock.querySelector('strong')?.textContent || 'неизвестно';
             const serialNumber = equipmentBlock.querySelector('span')?.textContent || 'неизвестен';
 
-            const confirmMessage = `Вы уверены, что хотите удалить оборудование:\n${model} / ${serialNumber}?`;
-            if (confirm(confirmMessage)) {
+            if (confirm(`Вы уверены, что хотите удалить оборудование:\n${model} / ${serialNumber}?`)) {
                 equipmentBlock.remove();
             }
         }
+
+        // кнопка открытия модалки добавления оборудования
+        if (event.target.classList.contains('add-equipment-btn')) {
+            currentContragentId = event.target.getAttribute('data-contragent-id');
+            currentReqId = event.target.getAttribute('data-req-id');
+            currentEquipmentType = event.target.getAttribute('data-equipment-type');
+
+            const serialInput = document.getElementById('serialSearch');
+            if (serialInput) {
+                serialInput.value = "";
+                document.getElementById('searchResults').innerHTML = "";
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('equipmentModal'));
+            modal.show();
+        }
     });
 
+    // Поиск оборудования при вводе серийного номера
+    document.getElementById('serialSearch').addEventListener('input', async function () {
+        const query = this.value.trim();
+        const resultsDiv = document.getElementById('searchResults');
+        resultsDiv.innerHTML = "";
+
+        if (query.length < 3 || !currentContragentId) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/equipments/search-by-serial?serial=${encodeURIComponent(query)}&contragentId=${currentContragentId}`);
+            if (!response.ok) {
+                throw new Error("Ошибка поиска");
+            }
+            const equipmentList = await response.json();
+
+            if (equipmentList.length === 0) {
+                resultsDiv.innerHTML = `<div class="list-group-item text-muted">Ничего не найдено</div>`;
+                return;
+            }
+
+            equipmentList.forEach(eq => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.classList.add('list-group-item', 'list-group-item-action');
+                item.textContent = `${eq.model} / ${eq.serialNumber}`;
+
+                item.addEventListener('click', () => {
+                    // Находим строку заявки по data-req-id
+                    const reqRow = document.querySelector(`tr[data-req-id="${currentReqId}"]`);
+                    if (!reqRow) {
+                        alert('Ошибка: заявка не найдена');
+                        return;
+                    }
+
+                    // Определяем колонку для добавления оборудования
+                    let containerTd;
+                    if (currentEquipmentType === 'montage') {
+                        containerTd = reqRow.querySelector('td:nth-child(7)');
+                    } else if (currentEquipmentType === 'unmontage') {
+                        containerTd = reqRow.querySelector('td:nth-child(8)');
+                    }
+
+                    if (!containerTd) {
+                        alert('Ошибка: колонка не найдена');
+                        return;
+                    }
+
+                    // Создаем элемент оборудования и вставляем
+                    const equipmentElement = createEquipmentElement(eq);
+                    const addButton = containerTd.querySelector('.add-equipment-btn');
+                    containerTd.insertBefore(equipmentElement, addButton);
+
+
+                    // Закрываем модалку
+                    const modalEl = document.getElementById('equipmentModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) modalInstance.hide();
+
+                    // Очищаем результаты поиска и инпут
+                    resultsDiv.innerHTML = "";
+                    document.getElementById('serialSearch').value = "";
+                });
+                resultsDiv.appendChild(item);
+            });
+        } catch (err) {
+            console.error(err);
+            resultsDiv.innerHTML = `<div class="list-group-item text-danger">Ошибка поиска</div>`;
+        }
+    });
+
+    function createEquipmentElement(eq) {
+        const div = document.createElement('div');
+        div.classList.add('equipment-view-block', 'd-flex', 'align-items-center', 'gap-2');
+
+        const a = document.createElement('a');
+        a.classList.add('eq-inline', 'text-decoration-none');
+        a.target = '_blank';
+        a.href = `/equipment/in-request?equipment=${encodeURIComponent(eq.serialNumber)}`;
+
+        const strong = document.createElement('strong');
+        strong.textContent = eq.model;
+
+        const span = document.createElement('span');
+        span.textContent = eq.serialNumber;
+
+        a.appendChild(strong);
+        a.insertAdjacentText('beforeend', ' / ');
+        a.appendChild(span);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.classList.add('btn', 'btn-sm', 'btn-outline-danger', 'remove-equipment-btn');
+        btn.textContent = '✖';
+        div.appendChild(a);
+        div.appendChild(btn);
+
+        return div;
+    }
 </script>
 
-<th:block th:replace="fragments/footer :: footer"></th:block>
 </body>
 </html>

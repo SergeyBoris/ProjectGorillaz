@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Transactional
 public class DbInit {
-    static int COUNT_CREATED_TEST_REQUEST = 1000;
+    static int COUNT_CREATED_TEST_REQUEST = 100;
 
     public static void start() {
 

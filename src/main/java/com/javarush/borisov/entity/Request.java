@@ -1,6 +1,7 @@
 package com.javarush.borisov.entity;
 
 import com.javarush.borisov.db.constants.RequestStatus;
+import com.javarush.borisov.entity.mapper.MapToJsonConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,19 +31,23 @@ public class Request {
     private String customer;
     @Column(name = "customer_phone")
     private String customerPhone;
+    private String tid;
+    @Column(name = "work-type")
+    private String workType;
     @Column(name = "customer_address")
     private String address;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "requests_equipments_montage",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "equipment_id"))
     private Set<Equipment> equipmentsMontage;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(name = "requests_equipments_unmontage",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "equipment_id"))
+
     private Set<Equipment> equipmentsUnmontage;
 
 
@@ -79,7 +84,8 @@ public class Request {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Transient
+    @Column(columnDefinition = "json")
+    @Convert(converter = MapToJsonConverter.class)
     private Map<String, String> parameters;
 
     @Override

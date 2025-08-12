@@ -118,6 +118,12 @@
             <column name="customer_phone" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
+            <column name="tid" type="varchar(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="work-type" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
             <column name="customer_address" type="text">
                 <constraints nullable="true"/>
             </column>
@@ -150,8 +156,11 @@
                              references="contragents(contragent_id)"/>
             </column>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="requests_users_id_fk"
+                <constraints nullable="true" foreignKeyName="requests_users_id_fk"
                              referencedTableName="users" referencedColumnNames="id"/>
+            </column>
+            <column name="parameters" type="JSON">
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>

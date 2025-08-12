@@ -1,11 +1,15 @@
 package com.javarush.borisov.db.Repository;
 
+import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Equipment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
 
 public interface EquipmentRepo extends JpaRepository<Equipment, Long> {
 
@@ -30,4 +34,9 @@ public interface EquipmentRepo extends JpaRepository<Equipment, Long> {
       AND reu.request_id = :reqId
 """, nativeQuery = true)
    int deleteEquipmentUnmontageFromRequest(@Param("reqId") Long reqId, @Param("eqId")Long eqId);
+
+
+   List<Equipment> findByContragentId(Long contragentId);
+
+   List<Equipment> findBySerialNumberContainingAndContragent_Id(String serialNumber, Long contragentId);
 }

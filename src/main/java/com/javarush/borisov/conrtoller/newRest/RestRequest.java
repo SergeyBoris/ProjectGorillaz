@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/request")
+@RequestMapping("/api/request")
 @AllArgsConstructor
 public class RestRequest {
     private final ReqService reqService;

@@ -6,6 +6,7 @@ import com.javarush.borisov.entity.Equipment;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -16,6 +17,8 @@ public class RequestDto {
     private String reqNumber;
     private String customer;
     private String customerPhone;
+    private String tid;
+    private String workType;
     private String address;
 
     private Set<EquipmentDto> equipmentsMontage;
@@ -42,4 +45,6 @@ public class RequestDto {
     private ContragentDto contragent;
 
     private UserDto user;
+
+    private Map<String,String> parameters;
 }

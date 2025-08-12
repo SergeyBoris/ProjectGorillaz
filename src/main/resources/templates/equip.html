@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<th:block th:replace="fragments/head :: head"></th:block>
+<body>
+
+<div class="container mt-4" style="max-width: 900px;">
+    <div class="mb-3">
+        <label for="contragents" class="form-label">Выберите склад:</label>
+        <select id="contragents" class="form-select w-100">
+            <option value="">Загрузка...</option>
+        </select>
+    </div>
+
+    <!-- Поле для поиска серийного номера -->
+    <div class="mb-3 position-relative">
+        <label for="serialSearch" class="form-label">Введите серийный номер:</label>
+        <input type="text" id="serialSearch" class="form-control" placeholder="Начните вводить номер...">
+
+        <!-- Выпадающий список с результатами -->
+        <ul id="serialDropdown" class="list-group position-absolute w-100"
+            style="max-height: 200px; overflow-y: auto; display: none; z-index: 1000;"></ul>
+    </div>
+</div>
+
+<!-- Модальное окно с информацией -->
+<div class="modal fade" id="equipmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Информация об оборудовании</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <p><b>Модель:</b> <span id="modalModel"></span></p>
+                <p><b>Серийный номер:</b> <span id="modalSerial"></span></p>
+                <p><b>Статус:</b> <span id="modalStatus"></span></p>
+                <p><b>Контрагент:</b> <span id="modalContragent"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = async function () {
+        const select = document.getElementById('contragents');
+
+        // Загрузка складов (контрагентов)
+        try {
+            const response = await fetch('/api/contragents/all');
+            const contragents = await response.json();
+
+            select.innerHTML = '<option value="">Выберите склад:</option>';
+            contragents.forEach(contragent => {
+                const option = document.createElement('option');
+                option.value = contragent.id;
+                option.textContent = contragent.name;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            select.innerHTML = '<option value="">Ошибка загрузки</option>';
+            console.error('Ошибка при загрузке контрагентов:', error);
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const serialSearch = document.getElementById('serialSearch');
+        const serialDropdown = document.getElementById('serialDropdown');
+
+        serialSearch.addEventListener('input', async function () {
+            const query = this.value.trim();
+            const contragent = document.getElementById('contragents').value;
+
+            serialDropdown.innerHTML = '';
+            serialDropdown.style.display = 'none';
+
+            if (query.length < 2 || !contragent) {
+                // Можно показать сообщение, что нужно выбрать склад
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/equipments/search-by-serial?serial=${encodeURIComponent(query)}&contragentId=${encodeURIComponent(contragent)}`);
+                if (!response.ok) throw new Error('Ошибка поиска');
+
+                const results = await response.json();
+
+                if (!Array.isArray(results) || results.length === 0) {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item text-muted';
+                    li.textContent = 'Нет результатов';
+                    serialDropdown.appendChild(li);
+                } else {
+                    results.forEach(equipment => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item list-group-item-action';
+                        li.textContent = `${equipment.model} / ${equipment.serialNumber}`;
+                        li.addEventListener('click', () => {
+                            serialSearch.value = equipment.serialNumber;
+                            serialDropdown.style.display = 'none';
+
+                            document.getElementById('modalModel').textContent = equipment.model || '—';
+                            document.getElementById('modalSerial').textContent = equipment.serialNumber || '—';
+                            document.getElementById('modalStatus').textContent = equipment.status || '—';
+                            document.getElementById('modalContragent').textContent = equipment.contragentName || '—';
+
+                            new bootstrap.Modal(document.getElementById('equipmentModal')).show();
+                        });
+                        serialDropdown.appendChild(li);
+                    });
+                }
+
+                serialDropdown.style.display = 'block';
+            } catch (error) {
+                console.error('Ошибка при поиске по серийному номеру:', error);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!serialDropdown.contains(e.target) && e.target !== serialSearch) {
+                serialDropdown.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

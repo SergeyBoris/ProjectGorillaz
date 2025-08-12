@@ -9,7 +9,7 @@
 <!--<div th:replace="fragments/header :: header"></div>-->
 
 <body>
-<header th:replace="fragments/head :: head"></header>
+<th:block th:replace="fragments/header :: header"></th:block>
 <main style="flex: 1;">
     <!-- Контент страницы здесь -->
     <h2>Заявки по серийному номеру: <span th:text="${serial}">...</span></h2>
