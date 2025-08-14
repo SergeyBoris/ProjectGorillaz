@@ -62,14 +62,12 @@
             </td>
             <td style="width: 150px; font-size: 0.8rem;">
                 <div th:each="equipment : ${req.equipmentsMontage}"
-                     class="equipment-view-block d-flex align-items-center gap-2"
-                     th:attr="data-id=${equipment.id}">
+                     class="equipment-view-block d-flex align-items-center gap-2">
                     <a class="eq-inline text-decoration-none"
                        th:href="@{/equipment/in-request(equipment=${equipment.serialNumber})}" target="_blank"
                        style="font-size: 0.8rem;">
-                        <strong th:text="${equipment.model}">Model</strong> / <span th:text="${equipment.serialNumber}">SN</span>
+                        <strong th:attr="data-id=${equipment.id}" th:text="${equipment.model}">Model</strong> / <span th:text="${equipment.serialNumber}">SN</span>
                     </a>
-                    <input type="hidden" name="equipment-id" th:value="${equipment.id}">
 
                     <button type="button" class="btn btn-sm btn-outline-danger remove-equipment-btn">✖</button>
                 </div>
@@ -81,14 +79,13 @@
             </td>
             <td style="width: 150px; font-size: 0.8rem;">
                 <div th:each="equipment : ${req.equipmentsUnmontage}"
-                     class="equipment-view-block d-flex align-items-center gap-2"
-                     th:attr="data-id=${equipment.id}">
+                     class="equipment-view-block d-flex align-items-center gap-2">
                     <a class="eq-inline text-decoration-none"
                        th:href="@{/equipment(equipment=${equipment.serialNumber})}" target="_blank"
                        style="font-size: 0.8rem;">
-                        <strong th:text="${equipment.model}">Model</strong> / <span th:text="${equipment.serialNumber}">SN</span>
+                        <strong th:attr="data-id=${equipment.id}" th:text="${equipment.model}">Model</strong> / <span th:text="${equipment.serialNumber}">SN</span>
                     </a>
-                    <input type="hidden" name="equipment-id" th:value="${equipment.id}">
+
 
                     <button type="button" class="btn btn-sm btn-outline-danger remove-equipment-btn">✖</button>
                 </div>
@@ -157,6 +154,7 @@
 <script>
     let currentReqId = null;
     let currentEquipmentType = null;
+    let currentEquipmentId = null;
     let currentContragentId = null;
 
     document.addEventListener('click', function (event) {
@@ -208,6 +206,7 @@
             }
             const equipmentList = await response.json();
 
+
             if (equipmentList.length === 0) {
                 resultsDiv.innerHTML = `<div class="list-group-item text-muted">Ничего не найдено</div>`;
                 return;
@@ -245,8 +244,21 @@
                     const addButton = containerTd.querySelector('.add-equipment-btn');
                     containerTd.insertBefore(equipmentElement, addButton);
 
+                    fetch(`/api/request/add-equipment?requestId=${encodeURIComponent(currentReqId)}&equipmentId=${eq.id}&eqType=${encodeURIComponent(currentEquipmentType)}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfHeader]: csrfToken
+                        },
 
-                    // Закрываем модалку
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Ошибка добавления оборудования: " + response.status);
+                            }
+
+                        })
+                       // Закрываем модалку
                     const modalEl = document.getElementById('equipmentModal');
                     const modalInstance = bootstrap.Modal.getInstance(modalEl);
                     if (modalInstance) modalInstance.hide();
@@ -263,32 +275,28 @@
         }
     });
 
-    function createEquipmentElement(eq) {
+    function createEquipmentElement(equipment) {
         // Корневой блок оборудования
         const div = document.createElement('div');
         div.classList.add('equipment-view-block', 'd-flex', 'align-items-center', 'gap-2');
-        div.dataset.id = eq.id; // сохраняем ID в dataset
+
 
         // Ссылка на оборудование
         const a = document.createElement('a');
         a.classList.add('eq-inline', 'text-decoration-none');
         a.target = '_blank';
-        a.href = `/equipment/in-request?equipment=${encodeURIComponent(eq.serialNumber)}`;
+        a.href = `/equipment/in-request?equipment=${encodeURIComponent(equipment.serialNumber)}`;
 
         // Модель
         const strong = document.createElement('strong');
-        strong.textContent = eq.model;
+        strong.textContent = equipment.model;
+        strong.setAttribute('data-id' , equipment.id);
 
         // Серийный номер
         const span = document.createElement('span');
-        span.textContent = eq.serialNumber;
+        span.textContent = equipment.serialNumber;
 
-        // Скрытое поле с ID оборудования
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'equipment-id';
-        input.value = eq.id; // ID в инпуте
-        console.log(eq.id)
+
         // Склеиваем ссылку
         a.appendChild(strong);
         a.insertAdjacentText('beforeend', ' / ');
@@ -303,7 +311,6 @@
 
         // Добавляем все элементы в div
         div.appendChild(a);
-        div.appendChild(input)
         div.appendChild(btn);
 
         return div;
@@ -384,8 +391,6 @@
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('close-btn')) {
             const row = e.target.closest('tr');
-            const reqId = row.dataset.reqId;
-
             let dto = {};
 
             // Сбор обычных полей
@@ -399,7 +404,7 @@
                     .map(eq => {
 
                         return {
-                            id: eq.querySelector('input')?.value,
+                            id: eq.querySelector('strong')?.dataset?.id || null,
                             model: eq.querySelector('strong')?.textContent.trim() || null,
                             serialNumber: eq.querySelector('span')?.textContent.trim() || null
                         };
@@ -411,13 +416,10 @@
             // Сбор снятых
             const unmontageList = collectEquipments('td:nth-child(8) .equipment-view-block');
 
-            dto.equipmentsMontage = montageList;
-            dto.equipmentsUnmontage = unmontageList;
-
             // Подтверждение
             let confirmMsg = `Вы действительно хотите закрыть заявку?\n\n`;
-            confirmMsg += `Установлено: ${montageList.length ? montageList.map(e => e.model + ' / ' + e.serialNumber).join(', ') : 'нет'}\n`;
-            confirmMsg += `Снято: ${unmontageList.length ? unmontageList.map(e => e.model + ' / ' + e.serialNumber).join(', ') : 'нет'}`;
+            confirmMsg += `Установлено: ${montageList.length ? montageList.map(e => e.id + ' ' + e.model + ' / ' + e.serialNumber).join(', ') : 'нет'}\n`;
+            confirmMsg += `Снято: ${unmontageList.length ? unmontageList.map(e => e.id + ' ' + e.model + ' / ' + e.serialNumber).join(', ') : 'нет'}`;
 
             if (!confirm(confirmMsg)) {
                 return;
@@ -441,15 +443,7 @@
                 });
         }
     });
-    function collectEquipments(tdIndex) {
-        return Array.from(
-            row.querySelectorAll(`td:nth-child(${tdIndex}) .equipment-view-block`)
-        ).map(eq => ({
-            id: eq.dataset.id || eq.querySelector('input[name="equipment-id"]')?.value || null,
-            model: eq.querySelector('strong')?.textContent.trim() || null,
-            serialNumber: eq.querySelector('span')?.textContent.trim() || null
-        }));
-    }
+
 </script>
 
 </body>

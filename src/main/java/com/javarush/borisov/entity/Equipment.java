@@ -21,12 +21,6 @@ public class Equipment {
     private String model;
     @Column(name = "serial_number")
     private String serialNumber;
-
-    @ManyToMany(mappedBy = "equipmentsMontage", fetch = FetchType.EAGER)
-    private Set<Request> requestWhereMontageEquipment;
-
-    @ManyToMany(mappedBy = "equipmentsUnmontage", fetch = FetchType.EAGER)
-    private Set<Request> requestWhereUnmotageEquipment;
     @Enumerated(EnumType.STRING)
     @Column(name = "equipment_status")
     private EquipmentStatus equipmentStatus;

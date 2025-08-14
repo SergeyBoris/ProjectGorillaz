@@ -127,6 +127,17 @@ public class ReqService {
         requestRepo.save(request);
         return true;
     }
+    @Transactional
+    public boolean addEquipment(Long requestId, Long equipmentId, String eqType) {
+        Request request = requestRepo.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
+        Equipment equipment = equipmentRepo.findById(equipmentId).orElseThrow(() -> new RuntimeException("Equipment not found"));
+        switch (eqType.toLowerCase()) {
+            case "montage" -> request.addMontageEquipment(equipment);
+            case "unmontage" -> request.addUnmontageEquipment(equipment);
+            default -> throw new RuntimeException("Не удалось определить тип оборудования (montage/unmontage)");
+        }
+        return true;
+    }
 
 }
 

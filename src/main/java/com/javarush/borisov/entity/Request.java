@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,14 +42,14 @@ public class Request {
     @JoinTable(name = "requests_equipments_montage",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "equipment_id"))
-    private Set<Equipment> equipmentsMontage;
+    private Set<Equipment> equipmentsMontage = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "requests_equipments_unmontage",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "equipment_id"))
 
-    private Set<Equipment> equipmentsUnmontage;
+    private Set<Equipment> equipmentsUnmontage = new HashSet<>();
 
 
     private LocalDateTime sla;
@@ -94,5 +95,21 @@ public class Request {
                "reqNumber='" + reqNumber + '\'' +
                ", address='" + address + '\'' +
                '}';
+    }
+
+    public void addMontageEquipment(Equipment eq) {
+        equipmentsMontage.add(eq);
+    }
+
+    public void removeMontageEquipment(Equipment eq) {
+        equipmentsMontage.remove(eq);
+    }
+
+    public void addUnmontageEquipment(Equipment eq) {
+        equipmentsUnmontage.add(eq);
+    }
+
+    public void removeUnmontageEquipment(Equipment eq) {
+        equipmentsUnmontage.remove(eq);
     }
 }

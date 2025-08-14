@@ -36,4 +36,16 @@ public class RestRequest {
         }
     }
 
+    @PutMapping("/add-equipment")
+    public ResponseEntity<Void> addEquipment(
+            @RequestParam Long requestId,
+            @RequestParam Long equipmentId,
+            @RequestParam String eqType
+    ) {
+        if(reqService.addEquipment(requestId,equipmentId,eqType)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }
