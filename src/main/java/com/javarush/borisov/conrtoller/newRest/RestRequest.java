@@ -1,10 +1,10 @@
 package com.javarush.borisov.conrtoller.newRest;
 
 import com.javarush.borisov.db.Service.newService.ReqService;
+import com.javarush.borisov.entity.dto.RequestDto;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,22 @@ public class RestRequest {
     @GetMapping("/available-dates")
     public Map<Integer, List<Integer>> getAvailableDates() {
         return reqService.getAvailableDates();
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<RequestDto> update(@RequestParam Long id, @RequestBody RequestDto requestDto) {
+        RequestDto updatedRequest = reqService.updateRequest(id, requestDto);
+        return ResponseEntity.ok(updatedRequest);
+    }
+
+    @PostMapping("/close-req")
+    public ResponseEntity<Void> closeRequest(@RequestParam Long id,@RequestBody RequestDto requestDto) {
+
+        if (reqService.closeRequest(id,requestDto)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

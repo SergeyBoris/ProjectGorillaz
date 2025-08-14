@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ContragentRepo extends JpaRepository<Contragent, Integer> {
+public interface ContragentRepo extends JpaRepository<Contragent, Long> {
 
     @Override
     @NonNull

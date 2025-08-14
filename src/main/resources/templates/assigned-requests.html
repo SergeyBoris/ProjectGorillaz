@@ -30,20 +30,47 @@
         </thead>
         <tbody>
         <tr th:each="req : ${requests}" th:attr="data-req-id=${req.id}">
-            <td th:text="${req.reqNumber}">Номер</td>
-            <td th:text="${req.customer}" style="word-break: break-word; white-space: normal;">Заказчик</td>
-            <td th:text="${req.customerPhone}">Телефон</td>
-            <td th:text="${req.tid}">TID</td>
-            <td th:text="${req.workType}" style="word-break: break-word; white-space: normal;">Вид работ</td>
-            <td th:text="${req.address}" class="wrap-text">Адрес</td>
+            <td>
+                <span class="view-text" data-field="reqNumber" th:text="${req.reqNumber}"></span>
+                <input type="text" name="reqNumber" class="form-control editable" th:value="${req.reqNumber}"
+                       style="display:none;"/>
+            </td>
+            <td data-bs-toggle="tooltip" th:title="${req.customer}">
+                <span class="view-text" data-field="customer" th:text="${#strings.abbreviate(req.customer, 8)}"></span>
+                <input type="text" name="customer" class="form-control editable" th:value="${req.customer}"
+                       style="display:none;"/>
+            </td>
+            <td>
+                <span class="view-text" data-field="customerPhone" th:text="${req.customerPhone}"></span>
+                <input type="text" name="customerPhone" class="form-control editable" th:value="${req.customerPhone}"
+                       style="display:none;"/>
+            </td>
+            <td>
+                <span class="view-text" data-field="tid" th:text="${req.tid}"></span>
+                <input type="text" name="tid" class="form-control editable" th:value="${req.tid}"
+                       style="display:none;"/>
+            </td>
+            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;">
+                <span class="view-text" data-field="workType" th:text="${req.workType}"></span>
+                <input type="text" name="workType" class="form-control editable" th:value="${req.workType}"
+                       style="display:none;"/>
+            </td>
+            <td>
+                <span class="view-text" data-field="address" th:text="${req.address}"></span>
+                <input type="text" name="address" class="form-control editable" th:value="${req.address}"
+                       style="display:none;"/>
+            </td>
             <td style="width: 150px; font-size: 0.8rem;">
                 <div th:each="equipment : ${req.equipmentsMontage}"
-                     class="equipment-view-block d-flex align-items-center gap-2">
+                     class="equipment-view-block d-flex align-items-center gap-2"
+                     th:attr="data-id=${equipment.id}">
                     <a class="eq-inline text-decoration-none"
                        th:href="@{/equipment/in-request(equipment=${equipment.serialNumber})}" target="_blank"
                        style="font-size: 0.8rem;">
                         <strong th:text="${equipment.model}">Model</strong> / <span th:text="${equipment.serialNumber}">SN</span>
                     </a>
+                    <input type="hidden" name="equipment-id" th:value="${equipment.id}">
+
                     <button type="button" class="btn btn-sm btn-outline-danger remove-equipment-btn">✖</button>
                 </div>
                 <button type="button" class="btn btn-xs btn-success add-equipment-btn mt-2"
@@ -54,12 +81,15 @@
             </td>
             <td style="width: 150px; font-size: 0.8rem;">
                 <div th:each="equipment : ${req.equipmentsUnmontage}"
-                     class="equipment-view-block d-flex align-items-center gap-2">
+                     class="equipment-view-block d-flex align-items-center gap-2"
+                     th:attr="data-id=${equipment.id}">
                     <a class="eq-inline text-decoration-none"
                        th:href="@{/equipment(equipment=${equipment.serialNumber})}" target="_blank"
                        style="font-size: 0.8rem;">
                         <strong th:text="${equipment.model}">Model</strong> / <span th:text="${equipment.serialNumber}">SN</span>
                     </a>
+                    <input type="hidden" name="equipment-id" th:value="${equipment.id}">
+
                     <button type="button" class="btn btn-sm btn-outline-danger remove-equipment-btn">✖</button>
                 </div>
                 <button type="button" class="btn btn-xs btn-success add-equipment-btn mt-2"
@@ -68,25 +98,27 @@
                     ➕ Добавить оборудование
                 </button>
             </td>
-            <td th:text="${req.status}">Статус</td>
+            <td th:text="${req.status.getName()}"></td>
             <td th:utext="${req.createDate != null ?
             #temporals.format(req.createDate, 'yyyy-MM-dd') + '<br/>' + #temporals.format(req.createDate, 'HH:mm') : '-'}">
-                Дата создания
             </td>
             <td th:utext="${req.sla != null ?
             #temporals.format(req.sla, 'yyyy-MM-dd') + '<br/>' + #temporals.format(req.sla, 'HH:mm') : '-'}">
-                SLA
             </td>
-
             <td>
                 <input type="datetime-local" class="close-date-input"
                        th:value="${req.closeDate != null ? #temporals.format(req.closeDate, 'yyyy-MM-dd HH:mm') : ''}"/>
             </td>
             <td th:text="${req.user != null} ? ${req.user.name} : 'Пользователь'">Пользователь</td>
-            <td th:text="${req.comment} ">Комментарий</td>
+            <td data-bs-toggle="tooltip" th:title="${req.comment}">
+                <span th:text="${#strings.abbreviate(req.comment, 15)}"></span>
+            </td>
             <td></td>
             <td>
                 <button class="btn btn-primary ms-md-2 edit-btn">Изменить</button>
+                <button class="btn btn-success save-btn" style="display: none;"
+                        th:attr="data-id=${req.id}">Сохранить
+                </button>
             </td>
             <td>
                 <button class="btn btn-sm btn-danger close-btn"
@@ -128,6 +160,7 @@
     let currentContragentId = null;
 
     document.addEventListener('click', function (event) {
+
         // кнопка удаления оборудования
         if (event.target.classList.contains('remove-equipment-btn')) {
             const equipmentBlock = event.target.closest('.equipment-view-block');
@@ -231,32 +264,191 @@
     });
 
     function createEquipmentElement(eq) {
+        // Корневой блок оборудования
         const div = document.createElement('div');
         div.classList.add('equipment-view-block', 'd-flex', 'align-items-center', 'gap-2');
+        div.dataset.id = eq.id; // сохраняем ID в dataset
 
+        // Ссылка на оборудование
         const a = document.createElement('a');
         a.classList.add('eq-inline', 'text-decoration-none');
         a.target = '_blank';
         a.href = `/equipment/in-request?equipment=${encodeURIComponent(eq.serialNumber)}`;
 
+        // Модель
         const strong = document.createElement('strong');
         strong.textContent = eq.model;
 
+        // Серийный номер
         const span = document.createElement('span');
         span.textContent = eq.serialNumber;
 
+        // Скрытое поле с ID оборудования
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'equipment-id';
+        input.value = eq.id; // ID в инпуте
+        console.log(eq.id)
+        // Склеиваем ссылку
         a.appendChild(strong);
         a.insertAdjacentText('beforeend', ' / ');
         a.appendChild(span);
 
+
+        // Кнопка удаления
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.classList.add('btn', 'btn-sm', 'btn-outline-danger', 'remove-equipment-btn');
         btn.textContent = '✖';
+
+        // Добавляем все элементы в div
         div.appendChild(a);
+        div.appendChild(input)
         div.appendChild(btn);
 
         return div;
+    }
+
+    //раскрытие комментария
+    document.addEventListener("DOMContentLoaded", function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    })
+    // кнопка редактирования
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const row = this.closest('tr');
+            row.querySelectorAll('.view-text').forEach(span => span.style.display = 'none');
+            row.querySelectorAll('.editable').forEach(input => input.style.display = 'inline-block');
+            row.querySelector('.edit-btn').style.display = 'none';
+            row.querySelector('.save-btn').style.display = 'inline-block';
+        });
+    });
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+
+
+    document.querySelectorAll('.save-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const row = this.closest('tr');
+            const requestId = row.dataset.reqId;
+            const requestDto = {};
+
+            // Сбор данных только из полей с классом .editable
+            row.querySelectorAll('.editable').forEach(input => {
+                const key = input.name; // у input должен быть name, совпадающий с полем DTO
+                requestDto[key] = input.value;
+            });
+
+            fetch(`/api/request/update?id=${requestId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify(requestDto)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Ошибка при обновлении заявки');
+                    return response.json();
+                })
+                .then(updatedDto => {
+                    console.log('Сохранено', updatedDto);
+
+                    // Обновляем отображение на фронте
+                    row.querySelectorAll('.view-text').forEach(span => span.style.display = 'inline-block');
+                    row.querySelectorAll('.editable').forEach(input => input.style.display = 'none');
+                    row.querySelector('.save-btn').style.display = 'none';
+                    row.querySelector('.edit-btn').style.display = 'inline-block';
+
+                    // Можно обновить span.view-text с новыми данными из updatedDto
+                    row.querySelectorAll('.view-text').forEach(span => {
+                        const field = span.dataset.field; // у каждого span.view-text data-field = имени поля DTO
+                        if (updatedDto[field] !== undefined) {
+                            span.textContent = updatedDto[field];
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Не удалось сохранить данные');
+                });
+        });
+    });
+
+    //закрытие заявки
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('close-btn')) {
+            const row = e.target.closest('tr');
+            const reqId = row.dataset.reqId;
+
+            let dto = {};
+
+            // Сбор обычных полей
+            row.querySelectorAll('.view-text').forEach(span => {
+                dto[span.dataset.field] = span.textContent.trim();
+            });
+
+            // Универсальная функция сбора оборудования
+            const collectEquipments = (selector) => {
+                return Array.from(row.querySelectorAll(selector))
+                    .map(eq => {
+
+                        return {
+                            id: eq.querySelector('input')?.value,
+                            model: eq.querySelector('strong')?.textContent.trim() || null,
+                            serialNumber: eq.querySelector('span')?.textContent.trim() || null
+                        };
+                    });
+            };
+
+            // Сбор установленных
+            const montageList = collectEquipments('td:nth-child(7) .equipment-view-block');
+            // Сбор снятых
+            const unmontageList = collectEquipments('td:nth-child(8) .equipment-view-block');
+
+            dto.equipmentsMontage = montageList;
+            dto.equipmentsUnmontage = unmontageList;
+
+            // Подтверждение
+            let confirmMsg = `Вы действительно хотите закрыть заявку?\n\n`;
+            confirmMsg += `Установлено: ${montageList.length ? montageList.map(e => e.model + ' / ' + e.serialNumber).join(', ') : 'нет'}\n`;
+            confirmMsg += `Снято: ${unmontageList.length ? unmontageList.map(e => e.model + ' / ' + e.serialNumber).join(', ') : 'нет'}`;
+
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
+            fetch(`/api/request/close-req?id=${reqId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify(dto)
+            })
+                .then(r => {
+                    if (!r.ok) throw new Error('Ошибка при закрытии');
+                    row.remove();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Не удалось закрыть заявку');
+                });
+        }
+    });
+    function collectEquipments(tdIndex) {
+        return Array.from(
+            row.querySelectorAll(`td:nth-child(${tdIndex}) .equipment-view-block`)
+        ).map(eq => ({
+            id: eq.dataset.id || eq.querySelector('input[name="equipment-id"]')?.value || null,
+            model: eq.querySelector('strong')?.textContent.trim() || null,
+            serialNumber: eq.querySelector('span')?.textContent.trim() || null
+        }));
     }
 </script>
 
