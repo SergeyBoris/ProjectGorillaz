@@ -104,7 +104,7 @@ public class DbRealInit {
             equipment.setModel(strings[0]);
             equipment.setSerialNumber(strings[1]);
             if (strings[2].equalsIgnoreCase("склад") || strings[2].equalsIgnoreCase("Вова")) {
-                equipment.setEquipmentStatus(EquipmentStatus.GOOD);
+                equipment.setEquipmentStatus(EquipmentStatus.WAREHOUSE);
             } else if (strings[2].equalsIgnoreCase("нет")) {
                 equipment.setEquipmentStatus(EquipmentStatus.ON_REQUEST);
             } else {

@@ -1,6 +1,7 @@
 package com.javarush.borisov.db.Service.newService;
 
 import com.javarush.borisov.db.Repository.*;
+import com.javarush.borisov.db.constants.EquipmentStatus;
 import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Equipment;
@@ -121,10 +122,11 @@ public class ReqService {
 
         // Обновляем простые поля через mapper
         requestMapper.updateEntityFromDto(dto, request);
+        changeEquipmentStatus(request.getEquipmentsMontage(),"montage");
+        changeEquipmentStatus(request.getEquipmentsUnmontage(),"unmontage");
         request.setStatus(RequestStatus.COMPLETED);
-
-
-        requestRepo.save(request);
+        request.setCloseDate(dto.getCloseDate());
+        request.setLastUpdate(LocalDateTime.now());
         return true;
     }
     @Transactional
@@ -138,6 +140,24 @@ public class ReqService {
         }
         return true;
     }
+    @Transactional
+    public void assignUser(Long requestId, Long userId) {
+        Request request = requestRepo.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
+        User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        request.setUser(user);
+        //отправка в бот ToDo
+    }
+
+    private void changeEquipmentStatus(Set<Equipment> equipments, String eqType){
+        if (equipments == null) return;
+        for (Equipment equipment : equipments) {
+            switch (eqType.toLowerCase()) {
+                case "montage" -> equipment.setEquipmentStatus(EquipmentStatus.ON_REQUEST);
+                case "unmontage" -> equipment.setEquipmentStatus(EquipmentStatus.WAREHOUSE);
+            }
+        }
+    }
+
 
 }
 

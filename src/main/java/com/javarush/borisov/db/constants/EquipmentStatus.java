@@ -6,8 +6,7 @@ import lombok.Getter;
 
 @Getter
 public enum EquipmentStatus {
-    GOOD,
+    WAREHOUSE,
     ON_REQUEST,
-    BAD,
     DEPARTED
 }

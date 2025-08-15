@@ -57,7 +57,7 @@ public class Request {
     @Column(name = "closed_date")
     private LocalDateTime closeDate;
 
-    @UpdateTimestamp
+
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
 

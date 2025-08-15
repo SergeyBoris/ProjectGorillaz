@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <th:block th:replace="fragments/head :: head"></th:block>
 <body>
 <!-- Вставляем header -->
@@ -106,7 +106,20 @@
                 <input type="datetime-local" class="close-date-input"
                        th:value="${req.closeDate != null ? #temporals.format(req.closeDate, 'yyyy-MM-dd HH:mm') : ''}"/>
             </td>
-            <td th:text="${req.user != null} ? ${req.user.name} : 'Пользователь'">Пользователь</td>
+            <td sec:authorize="hasRole('ADMIN', 'COORDINATOR')">
+                <label th:for="${'user-select-' + req.id}" class="visually-hidden">Пользователь</label>
+                <select th:id="${'user-select-' + req.id}" class="user-select" th:data-req-id="${req.id}">
+                    <option th:value="${req.user != null ? req.user.id : ''}"
+                            th:text="${req.user != null ? req.user.name : 'Пользователь'}">
+                    </option>
+                    <!-- Остальные опции через fetch -->
+                </select>
+            </td>
+
+            <td sec:authorize="!hasRole('ADMIN', 'COORDINATOR')">
+                <span th:text="${req.user != null ? req.user.name : 'Пользователь'}"></span>
+            </td>
+
             <td data-bs-toggle="tooltip" th:title="${req.comment}">
                 <span th:text="${#strings.abbreviate(req.comment, 15)}"></span>
             </td>
@@ -154,7 +167,6 @@
 <script>
     let currentReqId = null;
     let currentEquipmentType = null;
-    let currentEquipmentId = null;
     let currentContragentId = null;
 
     document.addEventListener('click', function (event) {
@@ -415,15 +427,31 @@
             const montageList = collectEquipments('td:nth-child(7) .equipment-view-block');
             // Сбор снятых
             const unmontageList = collectEquipments('td:nth-child(8) .equipment-view-block');
+            dto.equipmentsMontage = montageList;
+            dto.equipmentsUnmontage = unmontageList
+            const closeDate = (document.querySelector('.close-date-input')).value;
 
-            // Подтверждение
+            if(!closeDate){
+                let errorMsg = 'НЕ ЗАПОЛНЕНА ДАТА ВЫПОЛНЕНИЯ'
+                alert(errorMsg)
+                return;
+
+            }
+
+
+
+
+
+                // Подтверждение
             let confirmMsg = `Вы действительно хотите закрыть заявку?\n\n`;
             confirmMsg += `Установлено: ${montageList.length ? montageList.map(e => e.id + ' ' + e.model + ' / ' + e.serialNumber).join(', ') : 'нет'}\n`;
             confirmMsg += `Снято: ${unmontageList.length ? unmontageList.map(e => e.id + ' ' + e.model + ' / ' + e.serialNumber).join(', ') : 'нет'}`;
 
+
             if (!confirm(confirmMsg)) {
                 return;
             }
+            const reqId = row.getAttribute('data-req-id');
 
             fetch(`/api/request/close-req?id=${reqId}`, {
                 method: 'POST',
@@ -443,8 +471,64 @@
                 });
         }
     });
+    //список юзеров
+    document.addEventListener('DOMContentLoaded', () => {
+        // Находим все селекты
+        const userSelects = document.querySelectorAll('.user-select');
 
+        userSelects.forEach(select => {
+            const reqId = select.dataset.reqId; // id заявки из data-атрибута
+
+            // Выполняем fetch для получения списка пользователей
+            fetch(`/api/users/all`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Ошибка при загрузке пользователей');
+                    return response.json();
+                })
+                .then(users => {
+                    // Очищаем все опции кроме первой (placeholder / текущий пользователь)
+                    const firstOption = select.querySelector('option');
+                    select.innerHTML = '';
+                    select.appendChild(firstOption);
+
+                    // Добавляем пользователей
+                    users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = user.name;
+                        select.appendChild(option);
+                    });
+
+                    // Можно при желании выбрать текущего пользователя
+                    if (firstOption.value) {
+                        select.value = firstOption.value;
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+    });
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('user-select')) {
+            const select = e.target;
+            const userId = select.value; // выбранный пользователь
+            const requestId = select.dataset.reqId; // id заявки
+
+            if (!userId) return; // если ничего не выбрано, выходим
+
+            fetch(`/api/request/${requestId}/assign-user?userId=${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken // если используешь CSRF
+                },
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Ошибка при обновлении пользователя');
+                    return response.json();
+                })
+        }
+    });
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

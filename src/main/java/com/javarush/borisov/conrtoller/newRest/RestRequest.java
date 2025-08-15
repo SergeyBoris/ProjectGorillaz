@@ -47,5 +47,12 @@ public class RestRequest {
         }
         return ResponseEntity.notFound().build();
     }
+    @PutMapping("/{requestId}/assign-user")
+    public ResponseEntity<Void> assignUser(
+            @PathVariable("requestId") Long requestId,
+            @RequestParam("userId") Long userId ){
+        reqService.assignUser(requestId,userId);
+        return ResponseEntity.ok().build();
+    }
 
 }
