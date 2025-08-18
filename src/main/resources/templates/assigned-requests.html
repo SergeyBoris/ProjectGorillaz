@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
-<th:block th:replace="fragments/head :: head"></th:block>
+
+
+
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:replace="~{fragments/head :: head}"> <title>assigned-requests</title></head>
+
+
 <body>
 <!-- Вставляем header -->
-<th:block th:replace="fragments/header :: header"></th:block>
-
+<header th:replace="~{fragments/header :: header}"></header>
 <main>
     <table id="reqTable" class="table">
         <thead>
@@ -106,7 +112,7 @@
                 <input type="datetime-local" class="close-date-input"
                        th:value="${req.closeDate != null ? #temporals.format(req.closeDate, 'yyyy-MM-dd HH:mm') : ''}"/>
             </td>
-            <td sec:authorize="hasRole('ADMIN', 'COORDINATOR')">
+            <td sec:authorize="hasAnyRole('ADMIN','COORDINATOR')">
                 <label th:for="${'user-select-' + req.id}" class="visually-hidden">Пользователь</label>
                 <select th:id="${'user-select-' + req.id}" class="user-select" th:data-req-id="${req.id}">
                     <option th:value="${req.user != null ? req.user.id : ''}"
@@ -116,7 +122,7 @@
                 </select>
             </td>
 
-            <td sec:authorize="!hasRole('ADMIN', 'COORDINATOR')">
+            <td sec:authorize="!hasAnyRole('ADMIN','COORDINATOR')">
                 <span th:text="${req.user != null ? req.user.name : 'Пользователь'}"></span>
             </td>
 

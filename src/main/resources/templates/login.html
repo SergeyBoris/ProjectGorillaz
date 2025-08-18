@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<th:block th:replace="fragments/head :: head"></th:block>
+<head th:replace="~{fragments/head :: head}"> <title>assigned-requests</title></head>
+
 <body>
-<th:block th:replace="fragments/header :: header"></th:block>
+<header th:replace="~{fragments/header :: header}"></header>
 <section class="position-relative py-4 py-xl-5">
     <div class="container">
         <div class="row mb-5">
@@ -44,6 +45,6 @@
 <script th:src="@{/assets/js/vanilla-zoom.js}"></script>
 <script th:src="@{/assets/js/theme.js}"></script>
 
-<th:block th:replace="fragments/footer :: footer"></th:block>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

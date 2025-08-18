@@ -2,9 +2,10 @@
 <html lang="ru"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<th:block th:replace="fragments/head :: head"></th:block>
+<head th:replace="~{fragments/head :: head}"> <title>main</title></head>
+
 <body>
-<th:block th:replace="fragments/header :: header"></th:block>
+<header th:replace="~{fragments/header :: header}"></header>
 
 
 
@@ -18,6 +19,7 @@
 
 
 </body>
-<th:block th:replace="fragments/footer :: footer"></th:block>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
 
 </html>

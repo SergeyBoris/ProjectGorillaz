@@ -10,7 +10,7 @@
                     <a class="nav-link active" href="/index">Главная</a>
                 </li>
 
-                <li sec:authorize="hasAnyRole('ADMIN', 'ENGINEER', 'COORDINATOR')" class="nav-item">
+                <li sec:authorize="hasAnyRole('ADMIN','ENGINEER','COORDINATOR')" class="nav-item">
                     <a class="nav-link" href="/assigned-requests">Заявки</a>
                 </li>
 
@@ -62,104 +62,102 @@
     </nav>
 </section>
 
-    <sec:authorize access="isAuthenticated()">
+
 <script>
-    async function loadDateDropdown() {
-        try {
-            const response = await fetch('/api/request/available-dates');
-            if (!response.ok) throw new Error('Ошибка загрузки данных');
+    document.addEventListener("DOMContentLoaded", () => {
+        const dropdown = document.getElementById("dateDropdown");
+        if (!dropdown) return; // Если элемент не существует, значит пользователь не авторизован
 
-            const dateMap = await response.json(); // объект вида { "2025": [1,2], ... }
-            const dropdown = document.getElementById("dateDropdown");
+        async function loadDateDropdown() {
+            try {
+                const response = await fetch('/api/request/available-dates');
+                if (!response.ok) throw new Error('Ошибка загрузки данных');
 
-            dropdown.innerHTML = ''; // Очистим, если вдруг есть старые данные
+                const dateMap = await response.json(); // объект вида { "2025": [1,2], ... }
+                dropdown.innerHTML = ''; // Очистим старые данные
 
-            for (const [year, months] of Object.entries(dateMap)) {
-                const yearLi = document.createElement("li");
-                yearLi.classList.add("dropdown");
+                for (const [year, months] of Object.entries(dateMap)) {
+                    const yearLi = document.createElement("li");
+                    yearLi.classList.add("dropdown");
 
-                const yearLink = document.createElement("a");
-                yearLink.className = "dropdown-item dropdown-toggle";
-                yearLink.href = "#";
-                yearLink.textContent = year;
-                yearLink.setAttribute("data-bs-toggle", "dropdown");
+                    const yearLink = document.createElement("a");
+                    yearLink.className = "dropdown-item dropdown-toggle";
+                    yearLink.href = "#";
+                    yearLink.textContent = year;
+                    yearLink.setAttribute("data-bs-toggle", "dropdown");
 
-                const monthsDropdown = document.createElement("ul");
-                monthsDropdown.className = "dropdown-menu";
+                    const monthsDropdown = document.createElement("ul");
+                    monthsDropdown.className = "dropdown-menu";
 
-                months.forEach(month => {
-                    const monthLi = document.createElement("li");
-                    const monthLink = document.createElement("a");
-                    monthLink.className = "dropdown-item";
-                    monthLink.href = "#";
-                    monthLink.textContent = String(month).padStart(2, '0');
-                    monthLi.appendChild(monthLink);
-                    monthsDropdown.appendChild(monthLi);
-                });
+                    months.forEach(month => {
+                        const monthLi = document.createElement("li");
+                        const monthLink = document.createElement("a");
+                        monthLink.className = "dropdown-item";
+                        monthLink.href = "#";
+                        monthLink.textContent = String(month).padStart(2, '0');
+                        monthLi.appendChild(monthLink);
+                        monthsDropdown.appendChild(monthLi);
+                    });
 
-                yearLi.appendChild(yearLink);
-                yearLi.appendChild(monthsDropdown);
-                dropdown.appendChild(yearLi);
+                    yearLi.appendChild(yearLink);
+                    yearLi.appendChild(monthsDropdown);
+                    dropdown.appendChild(yearLi);
+                }
+            } catch (error) {
+                console.error('Ошибка при загрузке:', error);
             }
-        } catch (error) {
-            console.error('Ошибка при загрузке:', error);
         }
-    }
+        async function loadContragents() {
+            try {
+                const response = await fetch('/api/contragents/all'); // Замените на ваш реальный путь
+                if (!response.ok) throw new Error('Ошибка загрузки контрагентов');
+
+                const contragents = await response.json(); // Должен быть массив объектов
 
 
-    loadDateDropdown();
-</script>
-
-<script>
-    async function loadContragents() {
-        try {
-            const response = await fetch('/api/contragents/all'); // Замените на ваш реальный путь
-            if (!response.ok) throw new Error('Ошибка загрузки контрагентов');
-
-            const contragents = await response.json(); // Должен быть массив объектов
-
-
-            // Пример: Добавляем заголовок "В РАБОТЕ"
-            const ul = document.getElementById("contragentList");
+                // Пример: Добавляем заголовок "В РАБОТЕ"
+                const ul = document.getElementById("contragentList");
 
 // Добавляем заголовок "В РАБОТЕ" со ссылкой
-            const titleLi = document.createElement("li");
-            titleLi.classList.add("nav-item");
+                const titleLi = document.createElement("li");
+                titleLi.classList.add("nav-item");
 
-            const titleA = document.createElement("a");
-            titleA.classList.add("nav-link");
-            titleA.href = "/requests/assigned";
-            const strong = document.createElement("strong");
-            strong.textContent = "В РАБОТЕ";
-            titleA.appendChild(strong);
+                const titleA = document.createElement("a");
+                titleA.classList.add("nav-link");
+                titleA.href = "/requests/assigned";
+                const strong = document.createElement("strong");
+                strong.textContent = "В РАБОТЕ";
+                titleA.appendChild(strong);
 
-            titleLi.appendChild(titleA);
-            ul.appendChild(titleLi);
+                titleLi.appendChild(titleA);
+                ul.appendChild(titleLi);
 
 // Добавляем элементы контрагентов
-            contragents.forEach(c => {
-                const li = document.createElement("li");
-                li.classList.add("nav-item");
+                contragents.forEach(c => {
+                    const li = document.createElement("li");
+                    li.classList.add("nav-item");
 
-                const a = document.createElement("a");
-                a.classList.add("nav-link");
+                    const a = document.createElement("a");
+                    a.classList.add("nav-link");
 
-                // Если у тебя есть поле `id`, формируем путь вручную
-                a.href = `/contragents/${c.id}`;
-                a.textContent = c.name;
+                    // Если у тебя есть поле `id`, формируем путь вручную
+                    a.href = `/contragents/${c.id}`;
+                    a.textContent = c.name;
 
-                li.appendChild(a);
-                ul.appendChild(li);
-            });
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
 
 
-        } catch (error) {
-            console.error("Ошибка при загрузке контрагентов:", error);
+            } catch (error) {
+                console.error("Ошибка при загрузке контрагентов:", error);
+            }
         }
-    }
+        loadDateDropdown();
+        loadContragents();
 
-    // Запускаем при загрузке страницы
-    loadContragents();
+    });
 </script>
-    </sec:authorize>
+
+
 </header>
