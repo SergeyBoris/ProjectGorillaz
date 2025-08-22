@@ -6,21 +6,19 @@ import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Equipment;
 import com.javarush.borisov.entity.User;
-import com.javarush.borisov.entity.dto.ContragentDto;
-import com.javarush.borisov.entity.dto.EquipmentDto;
 import com.javarush.borisov.entity.dto.RequestDto;
 
 import com.javarush.borisov.entity.Request;
-import com.javarush.borisov.entity.dto.UserDto;
-import com.javarush.borisov.entity.mapper.RequestMapper;
-import jakarta.annotation.PostConstruct;
 
-import jakarta.persistence.EntityManager;
+import com.javarush.borisov.entity.mapper.RequestMapper;
+
+import org.springframework.context.event.EventListener;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -36,7 +34,7 @@ public class ReqService {
     private final ContragentRepo contragentRepo;
     private final UserRepo userRepo;
     private final EquipmentRepo equipmentRepo;
-    private final EntityManager entityManager;
+
     private Map<Integer, List<Integer>> cachedDates = new ConcurrentHashMap<>();
 
     @Transactional(readOnly = true)
@@ -56,7 +54,7 @@ public class ReqService {
         return requests.stream().map(requestMapper::toDto).toList();
     }
 
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void initCache() {
         List<YearMonthProjection> raw = requestRepo.findAvailableRequests_ClosedDatesGroupedByYearMonth();
         cachedDates = raw.stream()
@@ -65,7 +63,10 @@ public class ReqService {
                         Collectors.mapping(
                                 YearMonthProjection::getMonth,
                                 Collectors.collectingAndThen(Collectors.toSet(),
-                                        set -> set.stream().sorted().toList())
+                                        set -> set.stream()
+                                                .sorted()
+                                                .collect(Collectors.toCollection(ArrayList::new))
+                                )
                         )
                 ));
     }
@@ -74,8 +75,11 @@ public class ReqService {
         return cachedDates;
     }
 
-    public void addClosedDateToCache(LocalDate closedDate) {
-        if (closedDate == null) return;
+
+    public void addDatesToCache(LocalDateTime closedDate) {
+        if(closedDate == null){
+            return;
+        }
 
         int year = closedDate.getYear();
         int month = closedDate.getMonthValue();
@@ -127,6 +131,7 @@ public class ReqService {
         request.setStatus(RequestStatus.COMPLETED);
         request.setCloseDate(dto.getCloseDate());
         request.setLastUpdate(LocalDateTime.now());
+        addDatesToCache(dto.getCloseDate());
         return true;
     }
     @Transactional

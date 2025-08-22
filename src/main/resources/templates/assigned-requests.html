@@ -103,14 +103,14 @@
             </td>
             <td th:text="${req.status.getName()}"></td>
             <td th:utext="${req.createDate != null ?
-            #temporals.format(req.createDate, 'yyyy-MM-dd') + '<br/>' + #temporals.format(req.createDate, 'HH:mm') : '-'}">
+            #temporals.format(req.createDate, 'dd.MM.yyyy') + '<br/>' + #temporals.format(req.createDate, 'HH:mm') : '-'}">
             </td>
             <td th:utext="${req.sla != null ?
-            #temporals.format(req.sla, 'yyyy-MM-dd') + '<br/>' + #temporals.format(req.sla, 'HH:mm') : '-'}">
+            #temporals.format(req.sla, 'dd.MM.yyyy') + '<br/>' + #temporals.format(req.sla, 'HH:mm') : '-'}">
             </td>
             <td>
                 <input type="datetime-local" class="close-date-input"
-                       th:value="${req.closeDate != null ? #temporals.format(req.closeDate, 'yyyy-MM-dd HH:mm') : ''}"/>
+                       th:value="${req.closeDate != null ? #temporals.format(req.closeDate, 'dd.MM.yyyy') : ''}"/>
             </td>
             <td sec:authorize="hasAnyRole('ADMIN','COORDINATOR')">
                 <label th:for="${'user-select-' + req.id}" class="visually-hidden">Пользователь</label>
@@ -436,6 +436,9 @@
             dto.equipmentsMontage = montageList;
             dto.equipmentsUnmontage = unmontageList
             const closeDate = (document.querySelector('.close-date-input')).value;
+            const [date, time] = closeDate.split('T');
+            const [year, month, day] = date.split('-');
+            dto.closeDate = `${day}.${month}.${year} ${time}`; // "22.06.2026 14:30"
 
             if(!closeDate){
                 let errorMsg = 'НЕ ЗАПОЛНЕНА ДАТА ВЫПОЛНЕНИЯ'
