@@ -52,16 +52,22 @@
                        style="display:none;"/>
             </td>
             <td>
+                <a class="tid-inline text-decoration-none"
+                   th:href="@{/request/tid(tid=${req.tid})}"
+                   target="_blank"
+                   style="font-size: 0.8rem;">
                 <span class="view-text" data-field="tid" th:text="${req.tid}"></span>
-                <input type="text" name="tid" class="form-control editable" th:value="${req.tid}"
-                       style="display:none;"/>
+                </a>
+                <input type="text" name="tid" class="form-control editable"
+                       th:value="${req.tid}" style="display:none;"/>
+
             </td>
             <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;">
                 <span class="view-text" data-field="workType" th:text="${req.workType}"></span>
                 <input type="text" name="workType" class="form-control editable" th:value="${req.workType}"
                        style="display:none;"/>
             </td>
-            <td>
+            <td style="white-space: normal; word-wrap: break-word;">
                 <span class="view-text" data-field="address" th:text="${req.address}"></span>
                 <input type="text" name="address" class="form-control editable" th:value="${req.address}"
                        style="display:none;"/>
@@ -128,6 +134,8 @@
 
             <td data-bs-toggle="tooltip" th:title="${req.comment}">
                 <span th:text="${#strings.abbreviate(req.comment, 15)}"></span>
+                <input type="text" name="comment" class="form-control editable" th:value="${req.comment}"
+                       style="display:none;"/>
             </td>
             <td></td>
             <td>
@@ -205,6 +213,7 @@
             const modal = new bootstrap.Modal(document.getElementById('equipmentModal'));
             modal.show();
         }
+
     });
 
     // Поиск оборудования при вводе серийного номера

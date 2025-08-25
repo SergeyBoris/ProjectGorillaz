@@ -10,6 +10,7 @@ public enum UserRoles {
     ADMIN(List.of("", "/start-page", "/requests-list", "/login","/select-equipment")),
     COORDINATOR(List.of("", "/start-page", "/requests-list", "/login")),
     ENGINEER(List.of("", "/start-page", "/requests-list", "/login")),
+    CONTRAGENT(List.of("", "/start-page", "/requests-list", "/login")),
     GUEST(List.of("", "/start-page", "/login"));
 
     private final List<String> permissions;

@@ -1,4 +1,4 @@
-<!-- templates/serial-info.html -->
+<!-- templates/info.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 
@@ -35,11 +35,11 @@
         </thead>
         <tbody>
         <tr th:each="req : ${requests}">
-            <td th:text="${req.reqNumber}"></td>
-            <td th:text="${req.customer}"></td>
-            <td th:text="${req.customerPhone}"></td>
-            <td th:text="${req.address}"></td>
-            <td>
+            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;" th:text="${req.reqNumber}"></td>
+            <td data-bs-toggle="tooltip" th:text="${req.customer}"></td>
+            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;" th:text="${req.customerPhone}"></td>
+            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;" th:text="${req.address}"></td>
+            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;">
                 <div th:if="${req.equipmentsMontage != null}"
                      th:id="'equipment-list-' + ${req.id}">
                     <div th:each="equipmentMontage : ${req.equipmentsMontage}"
@@ -50,23 +50,23 @@
                             <strong th:text="${equipmentMontage.model}"></strong> /
                             <span th:text="${equipmentMontage.serialNumber}"></span>
                         </a>
-                        <button type="button"
-                                class="btn btn-sm btn-outline-danger remove-equipment-btn"
-                                th:data-eqid="${equipmentMontage.id}"
+<!--                        <button type="button"-->
+<!--                                class="btn btn-sm btn-outline-danger remove-equipment-btn"-->
+<!--                                th:data-eqid="${equipmentMontage.id}"-->
 
-                                th:data-serial="${equipmentMontage.serialNumber}"
-                                th:data-reqid="${req.id}"
-                                data-type="montage">✖
-                        </button>
+<!--                                th:data-serial="${equipmentMontage.serialNumber}"-->
+<!--                                th:data-reqid="${req.id}"-->
+<!--                                data-type="montage">✖-->
+<!--                        </button>-->
                     </div>
                 </div>
-                <button type="button"
-                        class="btn btn-xs btn-success add-equipment-btn"
-                        th:data-reqid="${req.id}">
-                    ➕ Добавить оборудование
-                </button>
+<!--                <button type="button"-->
+<!--                        class="btn btn-xs btn-success add-equipment-btn"-->
+<!--                        th:data-reqid="${req.id}">-->
+<!--                    ➕ Добавить оборудование-->
+<!--                </button>-->
             </td>
-            <td>
+            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;">
                 <div th:if="${req.equipmentsUnmontage != null}"
                      th:id="'unmount-equipment-list-' + ${req.id}">
                     <div th:each="equipmentUnmontage : ${req.equipmentsUnmontage}"
@@ -76,25 +76,25 @@
                             <strong th:text="${equipmentUnmontage.model}"></strong> /
                             <span th:text="${equipmentUnmontage.serialNumber}"></span>
                         </a>
-                        <button type="button"
-                                class="btn btn-sm btn-outline-danger remove-equipment-btn"
-                                th:data-eqId="${equipmentUnmontage.id}"
-                                th:data-serial="${equipmentUnmontage.serialNumber}"
-                                th:data-reqid="${req.id}"
-                                data-type="unmontage">✖
-                        </button>
+<!--                        <button type="button"-->
+<!--                                class="btn btn-sm btn-outline-danger remove-equipment-btn"-->
+<!--                                th:data-eqId="${equipmentUnmontage.id}"-->
+<!--                                th:data-serial="${equipmentUnmontage.serialNumber}"-->
+<!--                                th:data-reqid="${req.id}"-->
+<!--                                data-type="unmontage">✖-->
+<!--                        </button>-->
                     </div>
                 </div>
-                <button type="button"
-                        class="btn btn-xs btn-success add-equipment-btn"
-                        th:data-reqid="${req.id}">
-                    ➕ Добавить оборудование
-                </button>
+<!--                <button type="button"-->
+<!--                        class="btn btn-xs btn-success add-equipment-btn"-->
+<!--                        th:data-reqid="${req.id}">-->
+<!--                    ➕ Добавить оборудование-->
+<!--                </button>-->
             </td>
-            <td th:text="${req.status.name}"></td>
-            <td th:text="${#temporals.format(req.closeDate, 'dd.MM.yyyy')}"></td>
-            <td th:text="${req.user.getName()}"></td>
-            <td th:text="${req.comment}"></td>
+            <td data-bs-toggle="tooltip" th:text="${req.status.name}"></td>
+            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;" th:text="${#temporals.format(req.closeDate, 'dd.MM.yyyy')}"></td>
+            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;" th:text="${req.user.getName()}"></td>
+            <td data-bs-toggle="tooltip" th:text="${req.comment}"></td>
         </tr>
         </tbody>
     </table>
@@ -104,6 +104,13 @@
 <th:block th:replace="fragments/footer :: footer"></th:block>
 
 <script>
+    //раскрытие комментария
+    document.addEventListener("DOMContentLoaded", function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    })
     document.querySelectorAll('.remove-equipment-btn').forEach(button => {
         button.addEventListener('click', async () => {
             const eqId = button.dataset.eqid;

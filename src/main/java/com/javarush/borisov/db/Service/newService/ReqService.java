@@ -47,7 +47,9 @@ public class ReqService {
 
 
     }
-
+    public List<RequestDto> getRequestWithTid(String tid) {
+        return requestRepo.findRequestByTid(tid).stream().map(requestMapper::toDto).toList();
+    }
 
     public List<RequestDto> getRequestWithSerial(String serial) {
         List<Request> requests = requestRepo.findByEquipmentsMontage_SerialNumberOrEquipmentsUnmontage_SerialNumber(serial, serial);

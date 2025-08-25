@@ -30,7 +30,7 @@ public class EquipmentController {
                 .orElse(Collections.emptyList());
         model.addAttribute("requests", requests);
 
-        return "serial-info";
+        return "info";
 
     }
 

@@ -29,5 +29,7 @@ public interface RequestRepo extends JpaRepository<Request,Long> {
     ORDER BY r.createDate ASC
 """)
     List<Request> findByStatusIn(@Param("statuses") Collection<RequestStatus> statuses);
+    List<Request> findRequestByTid(String tid);
 
 }
+
