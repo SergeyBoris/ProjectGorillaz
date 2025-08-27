@@ -4,10 +4,14 @@ import com.javarush.borisov.db.Service.newService.ReqService;
 import com.javarush.borisov.entity.dto.RequestDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/request")
@@ -27,9 +31,17 @@ public class RestRequest {
     }
 
     @PostMapping("/close-req")
-    public ResponseEntity<Void> closeRequest(@RequestParam Long id,@RequestBody RequestDto requestDto) {
+    public ResponseEntity<Void> closeRequest(
+            @RequestParam Long id,
+            @RequestBody RequestDto requestDto,
+            @AuthenticationPrincipal UserDetails user) {
 
-        if (reqService.closeRequest(id,requestDto)) {
+      String userRole = user.getAuthorities().stream()
+              .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("ROLE_ANONYMOUS");
+
+        if (reqService.closeRequest(id,requestDto,userRole)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();

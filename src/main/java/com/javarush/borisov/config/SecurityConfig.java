@@ -5,6 +5,7 @@ import com.javarush.borisov.db.Service.newService.UserSecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +23,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers("/login",  "/assets/**","/","/index",
                                 "/assigned-requests","/equipment/active-equipment").permitAll()
                         .anyRequest().authenticated()
@@ -45,6 +45,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Primary
     public UserDetailsService userDetailsService() {
 
         return new UserSecurityService(userRepo);

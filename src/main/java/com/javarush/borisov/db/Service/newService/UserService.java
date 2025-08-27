@@ -13,9 +13,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepo userRepository;
-    private final UserMapper userMapperImpl;
+    private final UserMapper userMapper;
 
     public List<UserDto> getAllUsersDto(){
-                return userRepository.findAll().stream().map(userMapperImpl::toDto).toList();
+                return userRepository.findAll().stream().map(userMapper::toDto).toList();
+    }
+    public UserDto getUserByEmail(String email){
+        return userRepository.findByMail(email).stream().map(userMapper::toDto).toList().get(0);
     }
 }

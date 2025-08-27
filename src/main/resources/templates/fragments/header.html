@@ -10,9 +10,10 @@
                     <a class="nav-link active" href="/index">Главная</a>
                 </li>
 
-                <li sec:authorize="hasAnyRole('ADMIN','ENGINEER','COORDINATOR')" class="nav-item">
+                <li sec:authorize="hasAnyRole('ADMIN','ENGINEER','COORDINATOR','CONTRAGENT')" class="nav-item">
                     <a class="nav-link" href="/assigned-requests">Заявки</a>
                 </li>
+
 
                 <li sec:authorize="hasRole('ADMIN')" class="nav-item">
                     <a class="nav-link" href="#">Third Item</a>

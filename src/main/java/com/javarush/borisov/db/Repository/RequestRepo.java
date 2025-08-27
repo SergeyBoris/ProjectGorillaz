@@ -2,7 +2,9 @@ package com.javarush.borisov.db.Repository;
 
 
 import com.javarush.borisov.db.constants.RequestStatus;
+import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Request;
+import com.javarush.borisov.entity.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,6 +32,10 @@ public interface RequestRepo extends JpaRepository<Request,Long> {
 """)
     List<Request> findByStatusIn(@Param("statuses") Collection<RequestStatus> statuses);
     List<Request> findRequestByTid(String tid);
+    List<Request> findByStatusInAndUser(@Param("statuses") Collection<RequestStatus> statuses, User user);
+    List<Request> findByStatusInAndContragent_Id(@Param("statuses") Collection<RequestStatus> statuses, Long contragentId);
+
+
 
 }
 

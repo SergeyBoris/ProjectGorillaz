@@ -21,6 +21,7 @@ public class Contragent {
     @Column(name = "contragent_name")
     private String name;
 
+
     @Override
     public String toString() {
         return "Contragent{" +

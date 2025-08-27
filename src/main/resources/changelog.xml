@@ -100,7 +100,14 @@
             <column name="role" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="contragent_id" type="BIGINT">
+
+                <constraints nullable="true" foreignKeyName="users_contragents_contragent_id_fk"
+                             references="contragents(contragent_id)"/>
+            </column>
         </createTable>
+        <addUniqueConstraint tableName="users" columnNames="contragent_id"
+                             constraintName="uk_users_contragent_id"/>
 
     </changeSet>
 
@@ -183,6 +190,13 @@
             <column name="mail" value="nata@mail.ru"/>
             <column name="password" value="1234"/>
             <column name="role" value="COORDINATOR"/>
+        </insert>
+        <insert tableName="users">
+            <column name="name" value="Страйк"/>
+            <column name="mail" value="strike@mail.ru"/>
+            <column name="password" value="1234"/>
+            <column name="role" value="CONTRAGENT"/>
+            <column name="contragent_id" value="1"/>
         </insert>
 
     </changeSet>

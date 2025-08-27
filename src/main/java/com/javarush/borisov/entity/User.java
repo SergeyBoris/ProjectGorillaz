@@ -34,6 +34,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRoles role;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "contragent_id", unique = true)
+    private Contragent contragent;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

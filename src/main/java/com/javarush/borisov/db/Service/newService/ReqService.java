@@ -3,15 +3,20 @@ package com.javarush.borisov.db.Service.newService;
 import com.javarush.borisov.db.Repository.*;
 import com.javarush.borisov.db.constants.EquipmentStatus;
 import com.javarush.borisov.db.constants.RequestStatus;
+import com.javarush.borisov.db.constants.UserRoles;
 import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Equipment;
 import com.javarush.borisov.entity.User;
+import com.javarush.borisov.entity.dto.ContragentDto;
 import com.javarush.borisov.entity.dto.RequestDto;
 
 import com.javarush.borisov.entity.Request;
 
+import com.javarush.borisov.entity.dto.UserDto;
+import com.javarush.borisov.entity.mapper.ContragentMapper;
 import com.javarush.borisov.entity.mapper.RequestMapper;
 
+import com.javarush.borisov.entity.mapper.UserMapperImpl;
 import org.springframework.context.event.EventListener;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -32,21 +37,46 @@ public class ReqService {
     private final RequestMapper requestMapper;
     private final RequestRepo requestRepo;
     private final ContragentRepo contragentRepo;
+    private final ContragentMapper contragentMapper;
     private final UserRepo userRepo;
     private final EquipmentRepo equipmentRepo;
+    private final UserMapperImpl userMapper;
 
     private Map<Integer, List<Integer>> cachedDates = new ConcurrentHashMap<>();
 
     @Transactional(readOnly = true)
-    public List<RequestDto> getAssignedRequests() {
-        return requestRepo.findByStatusIn(
-                        List.of(RequestStatus.ASSIGNED, RequestStatus.IN_PROGRESS, RequestStatus.CLOSED_BY_USER))
-                .stream()
-                .map(requestMapper::toDto)
-                .toList();
+    public List<RequestDto> getAssignedRequests(UserDto userDto) {
 
+        UserRoles role = userDto.getRole();
+
+        switch (role) {
+            case ADMIN, COORDINATOR -> {
+                return requestRepo.findByStatusIn(
+                                List.of(RequestStatus.ASSIGNED, RequestStatus.IN_PROGRESS, RequestStatus.CLOSED_BY_USER))
+                        .stream()
+                        .map(requestMapper::toDto)
+                        .toList();
+            }
+            case ENGINEER -> {
+                return requestRepo.findByStatusInAndUser(
+                                List.of(RequestStatus.ASSIGNED, RequestStatus.IN_PROGRESS), userMapper.toEntity(userDto))
+                        .stream()
+                        .map(requestMapper::toDto)
+                        .toList();
+            }
+            case CONTRAGENT -> {
+                Long contragentId = userDto.getContragent().getId();
+                return requestRepo.findByStatusInAndContragent_Id(
+                                List.of(RequestStatus.ASSIGNED, RequestStatus.IN_PROGRESS), contragentId)
+                        .stream()
+                        .map(requestMapper::toDto)
+                        .toList();
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + role);
+        }
 
     }
+
     public List<RequestDto> getRequestWithTid(String tid) {
         return requestRepo.findRequestByTid(tid).stream().map(requestMapper::toDto).toList();
     }
@@ -79,7 +109,7 @@ public class ReqService {
 
 
     public void addDatesToCache(LocalDateTime closedDate) {
-        if(closedDate == null){
+        if (closedDate == null) {
             return;
         }
 
@@ -120,22 +150,26 @@ public class ReqService {
     }
 
     @Transactional
-    public boolean closeRequest(Long requestId, RequestDto dto) {
-
+    public boolean closeRequest(Long requestId, RequestDto dto, String userRole) {
         Request request = requestRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
+        if (userRole.equalsIgnoreCase("ROLE_ADMIN") || userRole.equalsIgnoreCase("ROLE_COORDINATOR")) {
 
 
-        // Обновляем простые поля через mapper
-        requestMapper.updateEntityFromDto(dto, request);
-        changeEquipmentStatus(request.getEquipmentsMontage(),"montage");
-        changeEquipmentStatus(request.getEquipmentsUnmontage(),"unmontage");
-        request.setStatus(RequestStatus.COMPLETED);
-        request.setCloseDate(dto.getCloseDate());
-        request.setLastUpdate(LocalDateTime.now());
-        addDatesToCache(dto.getCloseDate());
+            // Обновляем простые поля через mapper
+            requestMapper.updateEntityFromDto(dto, request);
+            changeEquipmentStatus(request.getEquipmentsMontage(), "montage");
+            changeEquipmentStatus(request.getEquipmentsUnmontage(), "unmontage");
+            request.setStatus(RequestStatus.COMPLETED);
+            request.setCloseDate(dto.getCloseDate());
+            request.setLastUpdate(LocalDateTime.now());
+            addDatesToCache(dto.getCloseDate());
+        }else {
+           request.setStatus(RequestStatus.CLOSED_BY_USER);
+        }
         return true;
     }
+
     @Transactional
     public boolean addEquipment(Long requestId, Long equipmentId, String eqType) {
         Request request = requestRepo.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
@@ -147,6 +181,7 @@ public class ReqService {
         }
         return true;
     }
+
     @Transactional
     public void assignUser(Long requestId, Long userId) {
         Request request = requestRepo.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
@@ -155,7 +190,7 @@ public class ReqService {
         //отправка в бот ToDo
     }
 
-    private void changeEquipmentStatus(Set<Equipment> equipments, String eqType){
+    private void changeEquipmentStatus(Set<Equipment> equipments, String eqType) {
         if (equipments == null) return;
         for (Equipment equipment : equipments) {
             switch (eqType.toLowerCase()) {

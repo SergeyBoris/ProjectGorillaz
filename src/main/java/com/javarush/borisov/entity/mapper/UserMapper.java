@@ -5,7 +5,7 @@ import com.javarush.borisov.entity.dto.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",uses ={ContragentMapper.class})
 public interface UserMapper {
 
     UserDto toDto(User user);
