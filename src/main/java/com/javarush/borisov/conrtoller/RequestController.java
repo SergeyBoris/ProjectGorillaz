@@ -5,7 +5,6 @@ import com.javarush.borisov.db.Service.newService.UserService;
 import com.javarush.borisov.entity.dto.RequestDto;
 import com.javarush.borisov.entity.dto.UserDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -36,6 +35,13 @@ public class RequestController {
     @GetMapping("/request/tid")
     public String requestsWithTid (Model model, @RequestParam String tid){
         List<RequestDto> requests = reqService.getRequestWithTid(tid);
+        model.addAttribute("requests", requests);
+        return "info";
+    }
+
+    @GetMapping("/requests-in-adress")
+    public String requestsInAdress (Model model,@RequestParam String address){
+        List<RequestDto> requests = reqService.findByAddressContainingAll(address);
         model.addAttribute("requests", requests);
         return "info";
     }

@@ -2,18 +2,17 @@ package com.javarush.borisov.db.Repository;
 
 
 import com.javarush.borisov.db.constants.RequestStatus;
-import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Request;
 import com.javarush.borisov.entity.User;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface RequestRepo extends JpaRepository<Request,Long> {
+public interface RequestRepo extends JpaRepository<Request,Long>, JpaSpecificationExecutor<Request> {
 
 
     List<Request> findByEquipmentsMontage_SerialNumberOrEquipmentsUnmontage_SerialNumber(String s1, String s2);
@@ -35,6 +34,9 @@ public interface RequestRepo extends JpaRepository<Request,Long> {
     List<Request> findByStatusInAndUser(@Param("statuses") Collection<RequestStatus> statuses, User user);
     List<Request> findByStatusInAndContragent_Id(@Param("statuses") Collection<RequestStatus> statuses, Long contragentId);
 
+    default List<Request> findByAddressContainingAll(List<String> keywords) {
+        return findAll(RequestSpecifications.addressContainsAll(keywords));
+    }
 
 
 }

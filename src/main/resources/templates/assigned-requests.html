@@ -29,28 +29,32 @@
             <th>Дата выполнения</th>
             <th>Пользователь</th>
             <th>Комментарий</th>
-            <th></th> <!-- Пустая колонка -->
+            <th></th> <!-- Для кнопки печати -->
             <th>Действия</th>
             <th></th> <!-- Для кнопки закрытия -->
         </tr>
         </thead>
         <tbody>
         <tr th:each="req : ${requests}" th:attr="data-req-id=${req.id}">
+            <!--Номер заявки -->
             <td>
                 <span class="view-text" data-field="reqNumber" th:text="${req.reqNumber}"></span>
                 <input type="text" name="reqNumber" class="form-control editable" th:value="${req.reqNumber}"
                        style="display:none;"/>
             </td>
+            <!-- заказчик в зявке -->
             <td data-bs-toggle="tooltip" th:title="${req.customer}">
                 <span class="view-text" data-field="customer" th:text="${#strings.abbreviate(req.customer, 8)}"></span>
                 <input type="text" name="customer" class="form-control editable" th:value="${req.customer}"
                        style="display:none;"/>
             </td>
+            <!-- номер тел заказчика -->
             <td>
                 <span class="view-text" data-field="customerPhone" th:text="${req.customerPhone}"></span>
                 <input type="text" name="customerPhone" class="form-control editable" th:value="${req.customerPhone}"
                        style="display:none;"/>
             </td>
+            <!-- Тид терминала -->
             <td>
                 <a class="tid-inline text-decoration-none"
                    th:href="@{/request/tid(tid=${req.tid})}"
@@ -60,18 +64,46 @@
                 </a>
                 <input type="text" name="tid" class="form-control editable"
                        th:value="${req.tid}" style="display:none;"/>
-
             </td>
+            <!-- тип работ -->
             <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;">
                 <span class="view-text" data-field="workType" th:text="${req.workType}"></span>
                 <input type="text" name="workType" class="form-control editable" th:value="${req.workType}"
                        style="display:none;"/>
             </td>
+            <!-- адрес -->
             <td style="white-space: normal; word-wrap: break-word;">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#addressModal">
                 <span class="view-text" data-field="address" th:text="${req.address}"></span>
                 <input type="text" name="address" class="form-control editable" th:value="${req.address}"
                        style="display:none;"/>
+                </a>
+                <!-- Модалка ля адреса-->
+                <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addressModalLabel">
+                                    Введите ключевые слова адрсеа для поиска
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" id="addressInput" class="form-control" th:value="${req.address}" />
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <a id="saveLink" class="btn btn-primary"
+                                   th:href="@{'/requests-in-adress'(address=${req.address})}">
+                                    Найти
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </td>
+            <!-- оборудование установлено -->
             <td style="width: 150px; font-size: 0.8rem;">
                 <div th:each="equipment : ${req.equipmentsMontage}"
                      class="equipment-view-block d-flex align-items-center gap-2">
@@ -89,6 +121,7 @@
                     ➕ Добавить оборудование
                 </button>
             </td>
+            <!-- оборудование снято -->
             <td style="width: 150px; font-size: 0.8rem;">
                 <div th:each="equipment : ${req.equipmentsUnmontage}"
                      class="equipment-view-block d-flex align-items-center gap-2">
@@ -107,17 +140,22 @@
                     ➕ Добавить оборудование
                 </button>
             </td>
+            <!-- статус выполнения -->
             <td th:text="${req.status.getName()}"></td>
+            <!-- дата создания -->
             <td th:utext="${req.createDate != null ?
             #temporals.format(req.createDate, 'dd.MM.yyyy') + '<br/>' + #temporals.format(req.createDate, 'HH:mm') : '-'}">
             </td>
+            <!-- СЛА -->
             <td th:utext="${req.sla != null ?
             #temporals.format(req.sla, 'dd.MM.yyyy') + '<br/>' + #temporals.format(req.sla, 'HH:mm') : '-'}">
             </td>
+            <!-- дата закрытия  -->
             <td>
                 <input type="datetime-local" class="close-date-input"
                        th:value="${req.closeDate != null ? #temporals.format(req.closeDate, 'dd.MM.yyyy') : ''}"/>
             </td>
+            <!-- назначенный инженер -->
             <td sec:authorize="hasAnyRole('ADMIN','COORDINATOR')">
                 <label th:for="${'user-select-' + req.id}" class="visually-hidden">Пользователь</label>
                 <select th:id="${'user-select-' + req.id}" class="user-select" th:data-req-id="${req.id}">
@@ -131,19 +169,22 @@
             <td sec:authorize="!hasAnyRole('ADMIN','COORDINATOR')">
                 <span th:text="${req.user != null ? req.user.name : 'Пользователь'}"></span>
             </td>
-
+            <!-- комент -->
             <td data-bs-toggle="tooltip" th:title="${req.comment}">
                 <span th:text="${#strings.abbreviate(req.comment, 15)}"></span>
                 <input type="text" name="comment" class="form-control editable" th:value="${req.comment}"
                        style="display:none;"/>
             </td>
+            <!-- печать акта -->
             <td></td>
+            <!-- изменить -->
             <td>
                 <button class="btn btn-primary ms-md-2 edit-btn">Изменить</button>
                 <button class="btn btn-success save-btn" style="display: none;"
                         th:attr="data-id=${req.id}">Сохранить
                 </button>
             </td>
+            <!--  кнопка закрытия-->
             <td>
                 <button class="btn btn-sm btn-danger close-btn"
                         th:attr="data-id=${req.id}">
@@ -176,6 +217,8 @@
         </div>
     </div>
 </div>
+
+
 
 <script th:src="@{/assets/bootstrap/js/bootstrap.min.js}"></script>
 <script>

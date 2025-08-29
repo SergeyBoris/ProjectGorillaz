@@ -7,7 +7,6 @@ import com.javarush.borisov.db.constants.UserRoles;
 import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Equipment;
 import com.javarush.borisov.entity.User;
-import com.javarush.borisov.entity.dto.ContragentDto;
 import com.javarush.borisov.entity.dto.RequestDto;
 
 import com.javarush.borisov.entity.Request;
@@ -37,7 +36,6 @@ public class ReqService {
     private final RequestMapper requestMapper;
     private final RequestRepo requestRepo;
     private final ContragentRepo contragentRepo;
-    private final ContragentMapper contragentMapper;
     private final UserRepo userRepo;
     private final EquipmentRepo equipmentRepo;
     private final UserMapperImpl userMapper;
@@ -188,6 +186,14 @@ public class ReqService {
         User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         request.setUser(user);
         //отправка в бот ToDo
+    }
+
+    public List<RequestDto> findByAddressContainingAll (String address) {
+        List<String> keywords = List.of(address.split(" "));
+       return requestRepo.findByAddressContainingAll(keywords)
+               .stream()
+               .map(requestMapper::toDto)
+               .toList();
     }
 
     private void changeEquipmentStatus(Set<Equipment> equipments, String eqType) {
