@@ -17,6 +17,8 @@ public class Equipment {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "equipment_id")
     private Long id;
+    @Column()
+    private String name;
     @Column(nullable = false)
     private String model;
     @Column(name = "serial_number")

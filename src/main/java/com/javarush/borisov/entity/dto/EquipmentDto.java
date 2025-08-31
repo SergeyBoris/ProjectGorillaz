@@ -18,6 +18,7 @@ import java.util.Set;
 public class EquipmentDto {
 
     private Long id;
+    private String name;
     private String model;
     private String serialNumber;
     private EquipmentStatus equipmentStatus;

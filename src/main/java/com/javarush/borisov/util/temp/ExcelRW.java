@@ -16,10 +16,10 @@ import java.util.*;
 public class ExcelRW {
     private static final List<CellRangeAddress> mergedRegion = new ArrayList<>();
 
-    public List<Map<String, String>> readReqRow(String fileName, String openSheet, int rowToRead) {
+    public List<Map<String, String>> readReqRow(String fileName, String openSheet, int rowToRead,int rowEnd) {
+        int reqCount = rowEnd-rowToRead+1;
         rowToRead = rowToRead - 1;
         List<Map<String, String>> result = new ArrayList<>();
-
 
         try (FileInputStream file = new FileInputStream(fileName);
              Workbook workbook = WorkbookFactory.create(file);) {
@@ -27,7 +27,7 @@ public class ExcelRW {
             for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
                 mergedRegion.add(sheet.getMergedRegion(i));
             }
-            for (int l = 0; l < 50; l++) {
+            for (int l = 0; l < reqCount; l++) {
                 if (rowToRead == 0) {
                     rowToRead++;
                     continue;
@@ -53,8 +53,8 @@ public class ExcelRW {
                             //  System.out.println("cellFillHex = " + cellFillHex );
 
 
-                            String[] reqStrings = new String[21];
-                            for (int i = 0; i < 21; i++) {
+                            String[] reqStrings = new String[reqCount];
+                            for (int i = 0; i < reqCount; i++) {
                                 Cell cell = row.getCell(i);
                                 if (cell != null) {
                                     CellType cellType = cell.getCellType();

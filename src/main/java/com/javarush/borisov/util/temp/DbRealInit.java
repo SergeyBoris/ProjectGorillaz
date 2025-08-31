@@ -21,7 +21,7 @@ public class DbRealInit {
 
     public static void init() {
 
-        List<Map<String, String>> requests = excelRW.readReqRow("E:/НОВОКУЗНЕЦК.xlsm", "Альфа", 7831);
+        List<Map<String, String>> requests = excelRW.readReqRow("E:/НОВОКУЗНЕЦК.xlsm", "Альфа", 7831,7883);
 
         configuration.configure("hibernate.cfg.xml"); // путь к файлу конфигурации
 
@@ -41,7 +41,7 @@ public class DbRealInit {
 
                 requestToSave.setCustomer(request.get("Customer"));
                 requestToSave.setCustomerPhone(request.get("CustomerPhone"));
-                requestToSave.setTid(request.get("tid"));
+                requestToSave.setTid(request.get("Tid"));
                 requestToSave.setWorkType(request.get("WorkType"));
                 if (request.get("EquipmentMontage") == null) {
                     requestToSave.setEquipmentsMontage(null);
@@ -101,6 +101,7 @@ public class DbRealInit {
                 equipment = new Equipment();
                 equipment.setModel(split[0].trim().toUpperCase(Locale.ROOT));
                 equipment.setSerialNumber(split[1].trim());
+                equipment.setName("POS");
                 equipment.setEquipmentStatus(EquipmentStatus.WAREHOUSE);
                 equipment.setContragent(contragent);
                 session.persist(equipment);
@@ -114,6 +115,7 @@ public class DbRealInit {
             if (equipment1 == null) {
                 equipment1 = new Equipment();
                 equipment1.setModel(split[0].trim().toUpperCase(Locale.ROOT));
+                equipment1.setName("POS");
                 equipment1.setSerialNumber(split[2].trim());
                 equipment1.setEquipmentStatus(EquipmentStatus.WAREHOUSE);
                 equipment1.setContragent(contragent);
@@ -128,6 +130,7 @@ public class DbRealInit {
                 equipment2 = new Equipment();
                 equipment2.setModel(split[1].trim().toUpperCase(Locale.ROOT));
                 equipment2.setSerialNumber(split[3].trim());
+                equipment2.setName("POS");
                 equipment2.setEquipmentStatus(EquipmentStatus.WAREHOUSE);
                 equipment2.setContragent(contragent);
                 session.persist(equipment2);

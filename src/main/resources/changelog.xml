@@ -62,6 +62,9 @@
             <column name="equipment_id" type="BIGINT AUTO_INCREMENT">
                 <constraints primaryKey="true"/>
             </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
             <column name="model" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
