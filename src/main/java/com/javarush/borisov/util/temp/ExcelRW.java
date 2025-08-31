@@ -1,16 +1,178 @@
 package com.javarush.borisov.util.temp;
 
+import com.javarush.borisov.db.constants.RequestStatus;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ExcelRW {
+    private static final List<CellRangeAddress> mergedRegion = new ArrayList<>();
+
+    public List<Map<String, String>> readReqRow(String fileName, String openSheet, int rowToRead) {
+        rowToRead = rowToRead - 1;
+        List<Map<String, String>> result = new ArrayList<>();
+
+
+        try (FileInputStream file = new FileInputStream(fileName);
+             Workbook workbook = WorkbookFactory.create(file);) {
+            Sheet sheet = workbook.getSheet(openSheet);
+            for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
+                mergedRegion.add(sheet.getMergedRegion(i));
+            }
+            for (int l = 0; l < 50; l++) {
+                if (rowToRead == 0) {
+                    rowToRead++;
+                    continue;
+                }
+
+
+                Row row = sheet.getRow(rowToRead);
+
+                if (row != null) {
+
+                    Cell firstCell = row.getCell(0);
+
+                    if (firstCell != null) {
+                        if (!isMergedCell(rowToRead, 0)) {
+
+                            Map<String, String> req = new LinkedHashMap<>();
+
+                            RequestStatus cellFillHex = ExcelColorUtils.detectWorkType(row, workbook);
+                            if (cellFillHex == null) {
+                                System.out.println("cellFillHex is null " + (row.getRowNum() + 1));
+
+                            }
+                            //  System.out.println("cellFillHex = " + cellFillHex );
+
+
+                            String[] reqStrings = new String[21];
+                            for (int i = 0; i < 21; i++) {
+                                Cell cell = row.getCell(i);
+                                if (cell != null) {
+                                    CellType cellType = cell.getCellType();
+
+                                    if (cellType == CellType.STRING) {
+                                        if (cell.getStringCellValue().trim().isEmpty() || cell.getStringCellValue().trim().equals(" ")) {
+                                            reqStrings[i] = null;
+                                        } else {
+                                            reqStrings[i] = cell.getStringCellValue().trim();
+                                        }
+
+                                    } else if (cellType == CellType.NUMERIC) {
+                                        if (i == 4) {
+                                            String replace = String.valueOf(cell.getNumericCellValue()).replace(".", "");
+                                            String e = replace.substring(0, replace.indexOf("E") - 1);
+                                            reqStrings[i] = e;
+                                        } else if (DateUtil.isCellDateFormatted(cell)) {
+                                            Date date = cell.getDateCellValue();
+                                            reqStrings[i] = new SimpleDateFormat("dd.MM.yyyy").format(date);
+                                        } else {
+                                            reqStrings[i] = String.valueOf(cell.getNumericCellValue());
+                                        }
+                                    }
+                                    // System.out.println(reqStrings[i]);
+                                } else {
+                                    reqStrings[i] = "";
+                                }
+                            }
+
+                            req.put("ReqNum", reqStrings[0]);
+                            req.put("TST", reqStrings[1]);
+                            req.put("Customer", reqStrings[2]);
+                            req.put("CustomerPhone", reqStrings[3]);
+                            req.put("Tid", reqStrings[4]);
+                            req.put("WorkType", reqStrings[5]);
+                            if (!cellFillHex.equals(RequestStatus.CANCELED)) {
+                                req.put("ReqStatus" , cellFillHex.toString());
+                                if (isNull(reqStrings[6]) && isNull(reqStrings[7])) {
+                                    req.put("EquipmentMontage", null);
+
+                                } else if (isNull(reqStrings[6]) && !isNull(reqStrings[7])) {
+
+
+                                    System.out.println("ОШИБКА В ОБОРУДОВАНИИ!!! 1 " + reqStrings[0]);
+                                    System.out.println("|" + reqStrings[7] + "|");
+                                    req.put("EquipmentMontage", reqStrings[7].toUpperCase());
+
+                                } else if (!isNull(reqStrings[6]) && isNull(reqStrings[7])) {
+
+                                    System.out.println("ОШИБКА В ОБОРУДОВАНИИ!!! 2 " + reqStrings[0]);
+                                    System.out.println(reqStrings[6]);
+                                    req.put("EquipmentMontage", reqStrings[6].toUpperCase());
+
+                                } else {
+                                    // оба присутствуют
+                                    req.put("EquipmentMontage", reqStrings[6].toUpperCase() + " / " + reqStrings[7].toUpperCase());
+                                }
+                                if (isNull(reqStrings[8]) && isNull(reqStrings[9])) {
+                                    req.put("EquipmentUnMontage", null);
+                                } else if (isNull(reqStrings[8]) && !isNull(reqStrings[9])) {
+
+                                    System.out.println("ОШИБКА В ОБОРУДОВАНИИ!!! 1 " + reqStrings[0]);
+                                    System.out.println("|" + reqStrings[9] + "|");
+
+
+                                } else if (!isNull(reqStrings[8]) && isNull(reqStrings[9])) {
+
+                                    System.out.println("ОШИБКА В ОБОРУДОВАНИИ!!! 2 " + reqStrings[0]);
+                                    System.out.println(reqStrings[8]);
+                                } else {
+
+                                    // оба присутствуют
+                                    req.put("EquipmentUnMontage", reqStrings[8].toUpperCase() + " / " + reqStrings[9].toUpperCase());
+                                }
+                            }else {
+                                req.put("ReqStatus" , cellFillHex.toString());
+                            }
+
+                            req.put("Address", reqStrings[10]);
+                            req.put("Priority", reqStrings[11]);
+                            req.put("Zone", reqStrings[12]);
+                            req.put("DateOfComplete", reqStrings[13]);
+                            req.put("Sim", reqStrings[14]);
+                            req.put("Comment", reqStrings[15]);
+                            req.put("Range", reqStrings[18]);
+                            req.put("ClosedDate", reqStrings[19]);
+//                            System.out.println();
+//                            System.out.println("MAPA : ");
+//                            System.out.println();
+                            // req.forEach((k, v) -> System.out.println(k + ": " + v));
+                            result.add(req);
+                        } else {
+                            // System.out.println("first cell is merged " + (rowToRead + 1));
+                        }
+                        rowToRead++;
+                    } else {
+                        System.out.println("first cell is null " + (rowToRead + 1));
+                        rowToRead++;
+                    }
+
+                } else {
+                    System.out.println("row is null " + (rowToRead + 1));
+                    rowToRead++;
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private boolean isNull(String str) {
+        return str == null || str.trim().isEmpty() || str.trim().equals("null") || str.isBlank();
+
+    }
 
 
     public List<String[]> read(String fileName, String sheet, int rowBegin, int rowEnd, int colBegin, int colEnd) {
@@ -32,7 +194,7 @@ public class ExcelRW {
 
                             if (cell.getCellType() == CellType.NUMERIC) {
                                 cells[index] = cell.getLocalDateTimeCellValue().toString();
-                            }else {
+                            } else {
                                 cells[index] = cell.getStringCellValue();
                             }
 
@@ -91,6 +253,15 @@ public class ExcelRW {
                 e.printStackTrace();
             }
         }
+    }
+
+    private static boolean isMergedCell(int rowIndex, int colIndex) {
+        for (CellRangeAddress range : mergedRegion) {
+            if (range.isInRange(rowIndex, colIndex)) {
+                return true; // ячейка входит в объединённый диапазон
+            }
+        }
+        return false;
     }
 
 }

@@ -93,7 +93,9 @@
             </td>
             <td data-bs-toggle="tooltip" th:text="${req.status.name}"></td>
             <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;" th:text="${#temporals.format(req.closeDate, 'dd.MM.yyyy')}"></td>
-            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;" th:text="${req.user.getName()}"></td>
+            <td style="white-space: normal; word-break: break-word; overflow-wrap: break-word;"
+                th:text="${req.user != null ? req.user.name : 'Нет пользователя'}">
+            </td>
             <td data-bs-toggle="tooltip" th:text="${req.comment}"></td>
         </tr>
         </tbody>

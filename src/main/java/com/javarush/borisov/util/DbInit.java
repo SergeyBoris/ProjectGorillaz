@@ -4,6 +4,7 @@ package com.javarush.borisov.util;
 import com.javarush.borisov.db.constants.EquipmentStatus;
 import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.entity.*;
+import com.javarush.borisov.util.temp.DbRealInit;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import java.time.LocalDateTime;
@@ -17,8 +18,9 @@ public class DbInit {
 
     public static void start() {
 
-        CreateEquipment();
-        CreateReq();
+       // CreateEquipment();
+        DbRealInit.init();
+        //CreateReq();
 
 
     }

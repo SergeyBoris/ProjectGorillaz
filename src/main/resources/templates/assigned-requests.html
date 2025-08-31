@@ -126,7 +126,7 @@
                 <div th:each="equipment : ${req.equipmentsUnmontage}"
                      class="equipment-view-block d-flex align-items-center gap-2">
                     <a class="eq-inline text-decoration-none"
-                       th:href="@{/equipment(equipment=${equipment.serialNumber})}" target="_blank"
+                       th:href="@{/equipment/in-request(equipment=${equipment.serialNumber})}" target="_blank"
                        style="font-size: 0.8rem;">
                         <strong th:attr="data-id=${equipment.id}" th:text="${equipment.model}">Model</strong> / <span th:text="${equipment.serialNumber}">SN</span>
                     </a>

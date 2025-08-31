@@ -3,8 +3,6 @@ package com.javarush.borisov.db.constants;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Getter
@@ -17,20 +15,21 @@ public enum RequestStatus {
     CANCELED("Отменено"),
     CLOSED_BY_USER("Закрыто инженером");
 
+    @JsonValue
     private final String name;
     RequestStatus(String name) {
         this.name = name;
     }
 
-
-    @JsonValue
-    public String getName() {
-        return name;
-    }
-    public static List<String> getNames() {
+    public static RequestStatus engStatusByRuName(String name) {
         return Arrays.stream(values())
-                .map(RequestStatus::getName)
-                .collect(Collectors.toList());
+                .filter(s -> s.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Неизвестный статус: " + name));
     }
+
+
+
+
 
   }
