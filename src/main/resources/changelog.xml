@@ -259,6 +259,18 @@
                 tableName="requests">
             <column name="request_status"/>
         </createIndex>
+
+    </changeSet>
+    <changeSet id="create-fulltext-index-equipments-name" author="borisov">
+        <preConditions>
+            <dbms type="mysql" />
+        </preConditions>
+        <sql>
+            CREATE FULLTEXT INDEX idx_equipments_name_ngram ON equipments(name) WITH PARSER ngram
+        </sql>
+        <rollback>
+            DROP INDEX dx_equipments_name_ngram ON equipments
+        </rollback>
     </changeSet>
 
 

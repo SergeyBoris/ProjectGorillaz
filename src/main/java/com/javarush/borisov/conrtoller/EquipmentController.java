@@ -34,7 +34,7 @@ public class EquipmentController {
 
     }
 
-    @GetMapping("/active-equipment")
+    @GetMapping("/add-equipment")
     public String getActiveEquipment(Model model) {
 
         return "equip";

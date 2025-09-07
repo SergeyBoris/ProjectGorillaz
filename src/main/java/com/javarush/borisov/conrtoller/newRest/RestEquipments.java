@@ -29,4 +29,20 @@ private final EquService equService;
         return equService.findBySerialNumberContainingAndContragent(serial, contragentId);
     }
 
+    @GetMapping("/search-names")
+    public List<String> findAllNames(
+            @RequestParam("name") String name
+
+    ){
+      return equService.findAllNames(name);
+    }
+
+    @GetMapping("/search-model")
+    public List<String> findAllModels(
+            @RequestParam("model") String model
+
+    ){
+        return equService.findAllModels(model);
+    }
+
 }

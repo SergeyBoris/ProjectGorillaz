@@ -49,8 +49,8 @@
                        style="display:none;"/>
             </td>
             <!-- номер тел заказчика -->
-            <td>
-                <span class="view-text" data-field="customerPhone" th:text="${req.customerPhone}"></span>
+            <td data-bs-toggle="tooltip" th:title="${req.customerPhone}">
+                <span class="view-text" data-field="customerPhone" th:text="${#strings.abbreviate(req.customerPhone, 8)}"></span>
                 <input type="text" name="customerPhone" class="form-control editable" th:value="${req.customerPhone}"
                        style="display:none;"/>
             </td>
@@ -196,7 +196,7 @@
     </table>
 </main>
 
-<!-- Модалка для добавления оборудования -->
+<!-- Модалка для добавления оборудования в заявке-->
 <div class="modal fade" id="equipmentModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

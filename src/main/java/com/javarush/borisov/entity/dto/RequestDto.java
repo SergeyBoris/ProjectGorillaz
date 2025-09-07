@@ -6,6 +6,7 @@ import com.javarush.borisov.entity.Equipment;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,8 +22,8 @@ public class RequestDto {
     private String workType;
     private String address;
 
-    private Set<EquipmentDto> equipmentsMontage;
-    private Set<EquipmentDto> equipmentsUnmontage;
+    private List<EquipmentDto> equipmentsMontage;
+    private List<EquipmentDto> equipmentsUnmontage;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
     private LocalDateTime sla;

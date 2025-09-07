@@ -5,13 +5,13 @@ import com.javarush.borisov.entity.mapper.MapToJsonConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 @Getter
@@ -42,14 +42,14 @@ public class Request {
     @JoinTable(name = "requests_equipments_montage",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "equipment_id"))
-    private Set<Equipment> equipmentsMontage = new HashSet<>();
+    private List<Equipment> equipmentsMontage = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "requests_equipments_unmontage",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "equipment_id"))
-
-    private Set<Equipment> equipmentsUnmontage = new HashSet<>();
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Equipment> equipmentsUnmontage = new ArrayList<>();
 
 
     private LocalDateTime sla;

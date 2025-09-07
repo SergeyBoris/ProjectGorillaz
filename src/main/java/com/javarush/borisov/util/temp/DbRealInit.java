@@ -91,7 +91,7 @@ public class DbRealInit {
 
     }
 
-    private static Set<Equipment> eqCreate(String eq, Session session,Contragent contragent) {
+    private static List<Equipment> eqCreate(String eq, Session session,Contragent contragent) {
         String[] split = eq.split("/");
         if (split.length == 2) {
             Equipment equipment = session.createQuery("from Equipment where serialNumber = :serialNumber", Equipment.class)
@@ -107,7 +107,7 @@ public class DbRealInit {
                 session.persist(equipment);
 
             }
-            return Set.of(equipment);
+            return List.of(equipment);
         } else {
             Equipment equipment1 = session.createQuery("from Equipment where serialNumber = :serialNumber", Equipment.class)
                     .setParameter("serialNumber", split[2].trim())
@@ -136,7 +136,7 @@ public class DbRealInit {
                 session.persist(equipment2);
 
             }
-            return Set.of(equipment1, equipment2);
+            return List.of(equipment1, equipment2);
 
         }
     }
@@ -172,7 +172,7 @@ public class DbRealInit {
 
     }
 
-    private static Set<Equipment> getEquipment(String[] row, int indexModel) {
+    private static List<Equipment> getEquipment(String[] row, int indexModel) {
 
         if (row[indexModel] != null) {
 
@@ -185,14 +185,14 @@ public class DbRealInit {
                 String[] splitSerial = row[indexModel + 1].split("/");
                 equipment.setSerialNumber(splitSerial[0]);
                 equipment2.setSerialNumber(splitSerial[1]);
-                return Set.of(equipment, equipment2);
+                return List.of(equipment, equipment2);
 
             } else {
                 Equipment equipment = new Equipment();
                 equipment.setModel(row[indexModel]);
                 equipment.setSerialNumber(row[indexModel + 1]);
 
-                return Set.of(equipment);
+                return List.of(equipment);
             }
 
         }

@@ -23,9 +23,8 @@ public interface RequestRepo extends JpaRepository<Request,Long>, JpaSpecificati
     List<YearMonthProjection> findAvailableRequests_ClosedDatesGroupedByYearMonth();
 
     @Query("""
-    SELECT r FROM Request r
+    SELECT DISTINCT r FROM Request r
     LEFT JOIN FETCH r.equipmentsMontage
-    LEFT JOIN FETCH r.equipmentsUnmontage
     WHERE r.status IN :statuses
     ORDER BY r.createDate ASC
 """)

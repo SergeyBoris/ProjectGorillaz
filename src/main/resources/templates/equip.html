@@ -10,7 +10,24 @@
             <option value="">Загрузка...</option>
         </select>
     </div>
+    <!-- Поле ввода имени -->
+    <div class="mb-3 position-relative">
+        <label for="nameSearch" class="form-label">Введите наименование:</label>
+        <input type="text" id="nameSearch" class="form-control" placeholder="Начните вводить имя...">
 
+        <!-- Выпадающий список с результатами -->
+        <ul id="nameDropdown" class="list-group position-absolute w-100"
+            style="max-height: 200px; overflow-y: auto; display: none; z-index: 1000;"></ul>
+    </div>
+    <!-- Поле ввода модели -->
+    <div class="mb-3 position-relative">
+        <label for="modelSearch" class="form-label">Введите наименование:</label>
+        <input type="text" id="modelSearch" class="form-control" placeholder="Начните вводить модель...">
+
+        <!-- Выпадающий список с результатами -->
+        <ul id="modelDropdown" class="list-group position-absolute w-100"
+            style="max-height: 200px; overflow-y: auto; display: none; z-index: 1000;"></ul>
+    </div>
     <!-- Поле для поиска серийного номера -->
     <div class="mb-3 position-relative">
         <label for="serialSearch" class="form-label">Введите серийный номер:</label>
@@ -22,25 +39,10 @@
     </div>
 </div>
 
-<!-- Модальное окно с информацией -->
-<div class="modal fade" id="equipmentModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Информация об оборудовании</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-            </div>
-            <div class="modal-body">
-                <p><b>Модель:</b> <span id="modalModel"></span></p>
-                <p><b>Серийный номер:</b> <span id="modalSerial"></span></p>
-                <p><b>Статус:</b> <span id="modalStatus"></span></p>
-                <p><b>Контрагент:</b> <span id="modalContragent"></span></p>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
+    let debounceTimer;
     window.onload = async function () {
         const select = document.getElementById('contragents');
 
@@ -65,7 +67,99 @@
     document.addEventListener('DOMContentLoaded', function () {
         const serialSearch = document.getElementById('serialSearch');
         const serialDropdown = document.getElementById('serialDropdown');
+        const nameSearch = document.getElementById('nameSearch');
+        const nameDropdown = document.getElementById('nameDropdown');
+        const modelSearch = document.getElementById('modelSearch');
+        const modelDropdown = document.getElementById('modelDropdown');
+        nameSearch.addEventListener('input', async function (){
+            const query = this.value.trim();
 
+            nameDropdown.innerHTML='';
+            nameDropdown.style.display = 'none';
+            if(query.length < 1 ){
+                return;
+            }
+             debounceTimer = setTimeout(async () => {
+                try {
+                    nameDropdown.innerHTML='';
+                    nameDropdown.style.display = 'none';
+                    const response = await fetch(`/api/equipments/search-names?name=${encodeURIComponent(query)}`)
+                    if (!response.ok) throw new Error('Ошибка поиска');
+                    const results = await response.json();
+                    if (!Array.isArray(results) || results.length === 0) {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item text-muted';
+                        li.textContent = 'Нет результатов';
+                        nameDropdown.appendChild(li);
+                    } else {
+                        results.forEach(name => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item list-group-item-action';
+                            li.textContent = name;
+                            li.addEventListener('click', () => {
+                                nameSearch.value = name;
+                                nameDropdown.style.display = 'none';
+                            });
+                            nameDropdown.appendChild(li);
+                        });
+                        nameDropdown.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Ошибка при поиске оборудования:', error);
+                    nameDropdown.innerHTML = '';
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item text-danger';
+                    li.textContent = 'Ошибка загрузки данных';
+                    nameDropdown.appendChild(li);
+                    nameDropdown.style.display = 'block';
+                }
+            }, 600);
+        });
+        modelSearch.addEventListener('input', async function (){
+            const query = this.value.trim();
+
+            modelDropdown.innerHTML='';
+            modelDropdown.style.display = 'none';
+            if(query.length < 1 ){
+                return;
+            }
+            debounceTimer = setTimeout(async () => {
+                try {
+
+                    const response = await fetch(`/api/equipments/search-model?model=${encodeURIComponent(query)}`)
+                    if (!response.ok) throw new Error('Ошибка поиска');
+                    const results = await response.json();
+                    if (!Array.isArray(results) || results.length === 0) {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item text-muted';
+                        li.textContent = 'Нет результатов';
+                        modelDropdown.appendChild(li);
+                    } else {
+                        modelDropdown.innerHTML='';
+                        modelDropdown.style.display = 'none';
+                        results.forEach(name => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item list-group-item-action';
+                            li.textContent = name;
+                            li.addEventListener('click', () => {
+                                modelSearch.value = name;
+                                modelDropdown.style.display = 'none';
+                            });
+                            modelDropdown.appendChild(li);
+                        });
+                        modelDropdown.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Ошибка при поиске оборудования:', error);
+                    modelDropdown.innerHTML = '';
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item text-danger';
+                    li.textContent = 'Ошибка загрузки данных';
+                    modelnameDropdown.appendChild(li);
+                    modelDropdown.style.display = 'block';
+                }
+            }, 600);
+        });
         serialSearch.addEventListener('input', async function () {
             const query = this.value.trim();
             const contragent = document.getElementById('contragents').value;
@@ -77,50 +171,62 @@
                 // Можно показать сообщение, что нужно выбрать склад
                 return;
             }
+            debounceTimer = setTimeout(async () => {
+                try {
+                    serialDropdown.innerHTML = '';
+                    serialDropdown.style.display = 'none';
+                    const response = await fetch(`/api/equipments/search-by-serial?serial=${encodeURIComponent(query)}&contragentId=${encodeURIComponent(contragent)}`);
+                    if (!response.ok) throw new Error('Ошибка поиска');
 
-            try {
-                const response = await fetch(`/api/equipments/search-by-serial?serial=${encodeURIComponent(query)}&contragentId=${encodeURIComponent(contragent)}`);
-                if (!response.ok) throw new Error('Ошибка поиска');
+                    const results = await response.json();
 
-                const results = await response.json();
-
-                if (!Array.isArray(results) || results.length === 0) {
-                    const li = document.createElement('li');
-                    li.className = 'list-group-item text-muted';
-                    li.textContent = 'Нет результатов';
-                    serialDropdown.appendChild(li);
-                } else {
-                    results.forEach(equipment => {
+                    if (!Array.isArray(results) || results.length === 0) {
                         const li = document.createElement('li');
-                        li.className = 'list-group-item list-group-item-action';
-                        li.textContent = `${equipment.model} / ${equipment.serialNumber}`;
-                        li.addEventListener('click', () => {
-                            serialSearch.value = equipment.serialNumber;
-                            serialDropdown.style.display = 'none';
-
-                            document.getElementById('modalModel').textContent = equipment.model || '—';
-                            document.getElementById('modalSerial').textContent = equipment.serialNumber || '—';
-                            document.getElementById('modalStatus').textContent = equipment.status || '—';
-                            document.getElementById('modalContragent').textContent = equipment.contragentName || '—';
-
-                            new bootstrap.Modal(document.getElementById('equipmentModal')).show();
-                        });
+                        li.className = 'list-group-item text-muted';
+                        li.textContent = 'Нет результатов';
                         serialDropdown.appendChild(li);
-                    });
-                }
+                    } else {
+                        results.forEach(equipment => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item list-group-item-action';
+                            li.textContent = `${equipment.serialNumber} ${equipment.model} | ${equipment.name} | ${equipment.equipmentStatus}`;
+                            li.addEventListener('click', () => {
+                                serialSearch.value = equipment.serialNumber;
+                                nameSearch.value = equipment.name;
+                                modelSearch.value = equipment.model;
+                                serialDropdown.style.display = 'none';
 
-                serialDropdown.style.display = 'block';
-            } catch (error) {
-                console.error('Ошибка при поиске по серийному номеру:', error);
-            }
+                            });
+                            serialDropdown.appendChild(li);
+                        });
+                    }
+
+                    serialDropdown.style.display = 'block';
+                } catch (error) {
+                    console.error('Ошибка при поиске оборудования:', error);
+                    serialDropdown.innerHTML = '';
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item text-danger';
+                    li.textContent = 'Ошибка загрузки данных';
+                    serialDropdown.appendChild(li);
+                    serialDropdown.style.display = 'block';
+                }
+            },600);
         });
 
         document.addEventListener('click', (e) => {
             if (!serialDropdown.contains(e.target) && e.target !== serialSearch) {
                 serialDropdown.style.display = 'none';
             }
+            if (!nameDropdown.contains(e.target) && e.target !== nameSearch) {
+                nameDropdown.style.display = 'none';
+            }
+            if (!modelDropdown.contains(e.target) && e.target !== modelSearch) {
+                modelDropdown.style.display = 'none';
+            }
         });
     });
+
 </script>
 
 </body>

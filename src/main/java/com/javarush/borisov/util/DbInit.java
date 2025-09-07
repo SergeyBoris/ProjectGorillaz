@@ -8,7 +8,9 @@ import com.javarush.borisov.util.temp.DbRealInit;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -38,7 +40,7 @@ public class DbInit {
                 request1.setContragent(session.get(Contragent.class, (long) random(1, 4)));
                 request1.setCustomerPhone("+79049600005");
 
-                request1.setEquipmentsMontage(new HashSet<>(session.createQuery("from Equipment where id = :id1 or id = :id2", Equipment.class)
+                request1.setEquipmentsMontage(new ArrayList<>(session.createQuery("from Equipment where id = :id1 or id = :id2", Equipment.class)
                         .setParameter("id1", (long) random(1, 5))
                         .setParameter("id2", (long) random(0, 10))
                         .list()));
@@ -48,7 +50,7 @@ public class DbInit {
 
                 int random1 = random(1, 7);
                 if (random1 <= 4) {
-                    Set<Equipment> id = Set.of(session.createQuery(
+                    List<Equipment> id = List.of(session.createQuery(
                                     "from Equipment where id = :id", Equipment.class)
                             .setParameter("id", (long) random1)
                             .uniqueResult());

@@ -196,7 +196,7 @@ public class ReqService {
                .toList();
     }
 
-    private void changeEquipmentStatus(Set<Equipment> equipments, String eqType) {
+    private void changeEquipmentStatus(List<Equipment> equipments, String eqType) {
         if (equipments == null) return;
         for (Equipment equipment : equipments) {
             switch (eqType.toLowerCase()) {

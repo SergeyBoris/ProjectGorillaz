@@ -39,4 +39,19 @@ public interface EquipmentRepo extends JpaRepository<Equipment, Long> {
    List<Equipment> findByContragentId(Long contragentId);
 
    List<Equipment> findBySerialNumberContainingAndContragent_Id(String serialNumber, Long contragentId);
+
+
+   @Transactional(readOnly = true)
+   @Query(value = """
+    SELECT DISTINCT name FROM equipments WHERE MATCH(name) AGAINST(:name IN NATURAL LANGUAGE MODE)
+    """, nativeQuery = true)
+   List<String> findAllNames(@Param("name") String name);
+
+   @Transactional(readOnly = true)
+   @Query(value = """
+    SELECT DISTINCT model
+    FROM equipments
+    WHERE model LIKE CONCAT('%', :model, '%')
+    """, nativeQuery = true)
+   List<String> findAllModels(@Param("model") String model);
 }
