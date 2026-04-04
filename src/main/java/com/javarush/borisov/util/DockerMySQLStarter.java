@@ -38,7 +38,7 @@ public class DockerMySQLStarter  {
             // startOrRestartWSL.start();
            DbUpdate.start(appStartConfig);
 
-           DbInit.start();
+           DbInit.start(appStartConfig);
         }
 
 
@@ -139,6 +139,7 @@ public class DockerMySQLStarter  {
             try (Connection conn = DriverManager.getConnection(jdbcUrl, user, password)) {
 
                 System.out.println("MySQL доступен, подключение успешно!");
+                MySessionCreator.configuration.setProperty("hibernate.connection.url", jdbcUrl + appStartConfig.get("my_db"));
                 return;
             } catch (SQLException e) {
                 System.out.println(jdbcUrl);

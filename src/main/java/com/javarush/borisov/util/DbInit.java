@@ -18,10 +18,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DbInit {
     static int COUNT_CREATED_TEST_REQUEST = 100;
 
-    public static void start() {
+    public static void start(AppStartConfig appStartConfig) {
 
        // CreateEquipment();
-        DbRealInit.init();
+        DbRealInit.init(appStartConfig);
         //CreateReq();
 
 

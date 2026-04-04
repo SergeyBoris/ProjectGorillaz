@@ -11,7 +11,8 @@ public class MySessionCreator {
 
     private static MySessionCreator instance;
     private static SessionFactory sessionFactory;
-    private static Configuration configuration;
+    public static Configuration configuration;
+    private static AppStartConfig appStartConfig;
 
     private MySessionCreator() {
         configuration = new Configuration().configure(); // Читает hibernate.cfg.xml
@@ -30,6 +31,7 @@ public class MySessionCreator {
         if (instance == null) {
             instance = new MySessionCreator();
         }
+
         return configuration;
     }
 

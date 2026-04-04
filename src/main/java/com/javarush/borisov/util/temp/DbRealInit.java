@@ -5,6 +5,7 @@ import com.javarush.borisov.db.constants.RequestStatus;
 import com.javarush.borisov.entity.Contragent;
 import com.javarush.borisov.entity.Equipment;
 import com.javarush.borisov.entity.Request;
+import com.javarush.borisov.util.AppStartConfig;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -19,13 +20,13 @@ public class DbRealInit {
     private static final Configuration configuration = new Configuration();
     private static Session session;
 
-    public static void init() {
+    public static void init(AppStartConfig appStartConfig) {
 
         List<Map<String, String>> requests = excelRW.readReqRow("E:/НОВОКУЗНЕЦК.xlsm", "Альфа", 7831,7883);
 
-        configuration.configure("hibernate.cfg.xml"); // путь к файлу конфигурации
-
-        try (SessionFactory sessionFactory = configuration.buildSessionFactory()) {
+        Configuration configure = configuration.configure("hibernate.cfg.xml");// путь к файлу конфигурации
+        configure.setProperty("hibernate.connection.url", configure.getProperty("hibernate.connection.url") + appStartConfig.get("DBSchema"));
+        try (SessionFactory sessionFactory = configure.buildSessionFactory()) {
             session = sessionFactory.openSession();
             session.beginTransaction();
             Contragent contragent = session.get(Contragent.class, 2);
